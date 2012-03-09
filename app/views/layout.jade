@@ -1,0 +1,21 @@
+!!! 5
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/javascripts/bootstrap.min.js')
+  body
+    nav.navbar.navbar-fixed-top
+      .navbar-inner
+        .container
+          .brand Boomer Sooner
+          ul.nav
+            li.active
+              a(href='/') Home
+
+    #main
+      .container
+        .row
+          .span12
+            != body
