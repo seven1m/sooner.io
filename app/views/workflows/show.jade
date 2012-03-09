@@ -1,0 +1,13 @@
+extends ../layout
+
+block content
+  h2= workflow.name
+
+  table.table.table-bordered
+    tbody
+      tr
+        th Schedule
+        td.schedule= workflow.schedule
+
+  p
+    a.btn(href="/workflows/#{workflow._id}/edit") Edit

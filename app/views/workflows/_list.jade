@@ -1,0 +1,28 @@
+h2 You have #{pluralize(workflows.length, 'workflow')}.
+if workflows.length > 0
+  table.table.table-bordered.table-striped
+    thead
+      tr
+        th Name
+        th Created
+        th Last Run
+        th Last Result
+        th
+    tbody
+      each workflow in workflows
+        tr('data-workflow'=workflow.id)
+          td
+            a(href="/workflows/#{workflow._id}")= workflow.name
+          td= workflow.createdAt
+          td
+          td
+          td.actions
+            a(href="/workflows/#{workflow._id}/edit")
+              i(class='icon-pencil')
+            a(href="/workflows/#{workflow._id}", 'data-method'='delete', 'data-confirm'='Are you sure?')
+              i(class='icon-remove')
+  p
+    a(href='/workflows/new') Create another...
+else
+  p
+    a(href='/workflows/new') <em>Create one!</em>

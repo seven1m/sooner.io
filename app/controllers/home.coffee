@@ -8,5 +8,4 @@ module.exports =
         res.send('error retreiving workflows', 500)
       else
         res.render 'home/show.jade',
-          title: 'Boomer Sooner'
           workflows: workflows

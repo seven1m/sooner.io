@@ -1,21 +1,30 @@
 !!! 5
 html
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src='/javascripts/bootstrap.min.js')
+    title
+      block title
+        | Boomer Sooner
+    != css('bootstrap.min')
+    != css('main')
+    != js('jquery.min')
+    != js('bootstrap.min')
+    != js('rails')
+    != js('main')
+    link(href='http://fonts.googleapis.com/css?family=Inconsolata', rel='stylesheet', type='text/css')
+
   body
     nav.navbar.navbar-fixed-top
       .navbar-inner
         .container
           .brand Boomer Sooner
           ul.nav
-            li.active
+            li
               a(href='/') Home
+            li
+              a(href='/workflows') Workflows
 
     #main
       .container
         .row
           .span12
-            != body
+            block content

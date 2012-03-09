@@ -4,7 +4,10 @@
   , "private": true
   , "dependencies": {
       "express": "2.5.8"
-    , "stylus": ">= 0.0.1"
+    , "connect-assets": "latest"
+    , "coffee-script": "latest"
+    , "nib": "latest"
+    , "bootstrap-stylus": "latest"
     , "jade": ">= 0.0.1"
     , "mongoose": "latest"
     , "underscore": "latest"
