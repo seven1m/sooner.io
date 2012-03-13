@@ -1,5 +1,5 @@
 controllers = require './app/controllers'
 
 module.exports = (app) ->
-  app.resource '/', controllers.home
+  app.get '/', (_, res) -> res.redirect('/workflows')
   app.resources '/workflows', controllers.workflows
