@@ -12,6 +12,8 @@
     , "mongoose": "latest"
     , "underscore": "latest"
     , "resource-routes": "git://github.com/seven1m/express-resource-routes.git"
+    , "hook.io": "0.8.x"
+    , "socket.io": "0.9.x"
   }
   , "devDependencies": {
       "jasmine-node": "latest"
