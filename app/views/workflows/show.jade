@@ -11,13 +11,10 @@ block content
     tbody
       tr
         th Schedule
-        td.formatted= workflow.schedule
+        td.formatted(class=!workflow.enabled && 'disabled')= workflow.schedule
       tr
         th Worker Name
         td= workflow.workerName
-      tr
-        th Enabled
-        td= workflow.enabled ? 'yes' : 'no'
 
   .form-actions
     a.btn(href="/workflows/#{workflow._id}/edit")

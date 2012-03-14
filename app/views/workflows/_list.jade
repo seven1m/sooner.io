@@ -5,16 +5,16 @@ if workflows.length > 0
     thead
       tr
         th Name
-        th Created
+        th Schedule
         th Last Run
         th Last Result
         th
     tbody
       each workflow in workflows
-        tr('data-workflow'=workflow.id, class=workflow.enabled ? 'enabled' : 'disabled')
+        tr('data-workflow'=workflow.id)
           td
             a(href="/workflows/#{workflow._id}")= workflow.name
-          td= workflow.createdAt.toString('M/d/yyyy h:mm tt')
+          td.formatted(class=!workflow.enabled && 'disabled')= workflow.schedule
           td
           td
           td.actions
