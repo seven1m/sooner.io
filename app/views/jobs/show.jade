@@ -10,6 +10,9 @@ block content
       tr
         th Workflow
         td
+          .right
+            a(href="/workflows/#{job.workflowId}/edit")
+              i.icon-pencil
           a(href="/workflows/#{job.workflowId}")= job.workflowId
       tr
         th Definition
