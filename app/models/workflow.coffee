@@ -1,5 +1,6 @@
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
+models = require __dirname
 cronJob = require('cron').CronJob
 
 schema = new Schema
@@ -23,5 +24,13 @@ schema = new Schema
   createdAt:
     type: Date
     default: -> new Date()
+  definition:
+    type: String
+
+schema.methods.newJob = ->
+  new models.job
+    workflowId: @_id
+    name:       @name
+    definition: @definition
 
 module.exports = mongoose.model 'Workflow', schema

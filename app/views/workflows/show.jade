@@ -3,6 +3,7 @@ extends ../layout
 block content
   h2
     = workflow.name
+    |  Workflow
     unless workflow.enabled
       |  (disabled)
 
@@ -18,5 +19,31 @@ block content
         th Enabled
         td= workflow.enabled ? 'yes' : 'no'
 
+  .form-actions
+    a.btn(href="/workflows/#{workflow._id}/edit")
+      i.icon-pencil
+      |  Edit
+    .right
+      a.btn(href="/workflows/#{workflow._id}/jobs", 'data-method'='post')
+        i.icon-cog
+        |  Run Now
+
+  h3 Job Log
+
+  table.table.table-bordered.table-striped
+    thead
+      tr
+        th ID
+        th Ran
+        th Status
+    tbody
+      for job in jobs
+        tr
+          th
+            a(href="/jobs/#{job._id}")= job.id
+          th= job.ranAt && job.ranAt.toString('M/dd/yyyy h:mm:ss tt')
+          td= job.status
+
   p
-    a.btn(href="/workflows/#{workflow._id}/edit") Edit
+    | page:
+    != paginator.pageLinks()

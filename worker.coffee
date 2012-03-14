@@ -1,6 +1,5 @@
 Hook = require('hook.io').Hook
 CronJob = require('cron').CronJob
-vm = require('vm')
 
 argv = require('optimist')
        .usage("Start a worker process.\nUsage: $0")
@@ -21,7 +20,7 @@ argv = require('optimist')
        .default('dbname', 'boomer-sooner')
        .argv
 
-hook = new Hook
+GLOBAL.hook = hook = new Hook
   name: argv.name
   "hook-host": argv.host
   "hook-port": argv.port
@@ -41,22 +40,15 @@ crons = []
 hook.on 'hook::ready', ->
   hook.on '**::reload-workflows', ->
     console.log 'loading workflows into cron...'
-    job.stop() for job in crons
+    cron.stop() for cron in crons
     models.workflow.find enabled: true, workerName: argv.name, (err, workflows) ->
       if err
         console.log 'error retrieving workflows'
       else
         console.log "workflows: #{JSON.stringify(w.name for w in workflows)}"
         for workflow in workflows
-          job = new CronJob workflow.schedule, ->
-            console.log "running #{workflow.name}..."
-          crons.push job
+          cron = new CronJob workflow.schedule, ->
+            job = workflow.newJob()
+            job.run()
+          crons.push cron
   hook.emit 'reload-workflows'
-
-# start of basic sandboxing
-try
-  context =
-    console: console
-  vm.runInNewContext('console.log(13)', context, 'sandbox.vm')
-catch err
-  console.log(err)

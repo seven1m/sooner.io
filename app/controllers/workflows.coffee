@@ -1,4 +1,5 @@
 models = require __dirname + '/../models'
+Paginator = require __dirname + '/../../lib/paginator'
 
 module.exports =
 
@@ -11,12 +12,19 @@ module.exports =
           workflows: workflows
 
   show: (req, res) ->
-    models.workflow.findOne {_id: req.params.id}, (err, workflow) ->
+    models.workflow.findById req.params.id, (err, workflow) ->
       if err
         res.send 'Not found', 404
       else
-        res.render 'workflows/show.jade',
-          workflow: workflow
+        query = models.job.where(workflowId: workflow._id)
+        new Paginator perPage: 10, page: req.query.page, query: query, (paginator) ->
+          query.skip(paginator.skip).limit(paginator.limit).desc('ranAt').run (err, jobs) ->
+            if err
+              jobs = []
+            res.render 'workflows/show.jade',
+              workflow: workflow
+              jobs: jobs
+              paginator: paginator
 
   new: (req, res) ->
     workflow = new models.workflow()
@@ -36,7 +44,7 @@ module.exports =
         res.redirect("/workflows/#{workflow._id}")
 
   edit: (req, res) ->
-    models.workflow.findOne {_id: req.params.id}, (err, workflow) ->
+    models.workflow.findById req.params.id, (err, workflow) ->
       if err
         res.send 'Not found', 404
       else
@@ -44,7 +52,7 @@ module.exports =
           workflow: workflow
 
   update: (req, res) ->
-    models.workflow.findOne {_id: req.params.id}, (err, workflow) ->
+    models.workflow.findById req.params.id, (err, workflow) ->
       if err
         res.send 'Not found', 404
       else
@@ -65,6 +73,7 @@ module.exports =
       else
         res.redirect("/workflows")
 
+# TODO move to the model
 _set = (workflow, data) ->
   workflow.name       = data.name
   workflow.schedule   = data.schedule

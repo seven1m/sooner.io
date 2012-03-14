@@ -1,0 +1,28 @@
+extends ../layout
+
+block content
+  h2
+    = job.name
+    |  Job
+
+  table.table.table-bordered
+    tbody
+      tr
+        th Workflow
+        td
+          a(href="/workflows/#{job.workflowId}")= job.workflowId
+      tr
+        th Definition
+        td.definition= job.definition
+      tr
+        th Status
+        td= job.status
+      tr
+        th Output
+        td.output= job.output
+      tr
+        th Created
+        td= job.createdAt.toString('M/dd/yyyy h:mm:ss tt')
+      tr
+        th Ran
+        td= job.ranAt && job.ranAt.toString('M/dd/yyyy h:mm:ss tt')

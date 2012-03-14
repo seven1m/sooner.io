@@ -8,8 +8,9 @@ a
 #main
   margin-top 25px;
 
-textarea#definition, input#schedule, .table .schedule
-  font 12pt Inconsolata, monospace;
+textarea#definition, input#schedule, .table .schedule, .table .definition, .table .output
+  font 12pt Inconsolata, monospace
+  white-space pre
 
 textarea#definition
   height 200px
@@ -21,3 +22,12 @@ table
 table td.actions
   a
     margin-right 15px
+
+.page-link
+  display inline-block
+  padding 1px 5px
+  border 1px solid #ccc
+  text-decoration none
+
+.form-actions .right
+  float right
