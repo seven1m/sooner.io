@@ -13,15 +13,28 @@ class Paginator
       @total = count
       callback(@)
 
+  window: 10
+
   pageLinks: ->
-    pages = @total / @perPage
+    pages = Math.floor(@total / @perPage)
     unless @total % @perPage == 0
       pages++
-    links = for page in [1..pages]
-      if @page == page
-        "<strong class='page-link'>#{page}</strong>"
-      else
-        "<a class='page-link' href='?page=#{page}'>#{page}</a>"
+    start = Math.max(1, @page - @window/2)
+    stop = Math.min(pages, start + @window)
+    links = (@pageLink(page) for page in [start..stop])
+    if start > 1
+      links.unshift '...' if start > 2
+      links.unshift @pageLink(1)
+    if stop < pages
+      links.push '...' if stop < pages - 1
+      links.push @pageLink(pages)
     links.join ' '
+
+  pageLink: (page) ->
+    if @page == page
+      "<strong class='page-link'>#{page}</strong>"
+    else
+      "<a class='page-link' href='?page=#{page}'>#{page}</a>"
+
 
 module.exports = Paginator
