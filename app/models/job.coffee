@@ -3,6 +3,7 @@ Sandbox = require(__dirname + '/../../lib/sandbox')
 util = require 'util'
 _ = require 'underscore'
 
+models = require __dirname
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
 ObjectId = Schema.ObjectId
@@ -51,7 +52,11 @@ schema.methods.run = (callback) ->
       else
         # TODO if no running hooks
         @status = 'success'
+    GLOBAL.hook.emit 'job-complete', jobId: @_id, workflowId: @workflowId, name: @name
     @save
+    models.workflow.update {_id: @workflowId}, {lastStatus: @status, lastRanAt: @ranAt}, (err, _) ->
+      if err
+        console.log("error saving workflow details: #{err}")
   @save(callback)
 
 schema.methods.log = ->

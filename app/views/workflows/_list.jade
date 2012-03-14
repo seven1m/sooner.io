@@ -7,7 +7,7 @@ if workflows.length > 0
         th Name
         th Schedule
         th Last Run
-        th Last Result
+        th Last Status
         th
     tbody
       each workflow in workflows
@@ -15,8 +15,11 @@ if workflows.length > 0
           td
             a(href="/workflows/#{workflow._id}")= workflow.name
           td.formatted(class=!workflow.enabled && 'disabled')= workflow.schedule
+          td= workflow.lastRanAt && workflow.lastRanAt.toString('M/dd/yyyy h:mm:ss tt')
           td
-          td
+            != statusIcon(workflow.lastStatus)
+            | 
+            = workflow.lastStatus
           td.actions
             a(href="/workflows/#{workflow._id}/edit")
               i(class='icon-pencil')

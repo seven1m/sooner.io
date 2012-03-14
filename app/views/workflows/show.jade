@@ -4,8 +4,6 @@ block content
   h2
     = workflow.name
     |  Workflow
-    unless workflow.enabled
-      |  (disabled)
 
   table.table.table-bordered
     tbody
@@ -15,6 +13,15 @@ block content
       tr
         th Worker Name
         td= workflow.workerName
+      tr
+        th Last Run
+        td= workflow.lastRanAt && workflow.lastRanAt.toString('M/dd/yyyy h:mm:ss tt')
+      tr
+        th Last Status
+        td
+          != statusIcon(workflow.lastStatus)
+          | 
+          = workflow.lastStatus
 
   .form-actions
     a.btn(href="/workflows/#{workflow._id}/edit")
@@ -25,7 +32,7 @@ block content
         i.icon-cog
         |  Run Now
 
-  h3 Job Log
+  h3 Jobs
 
   table.table.table-bordered.table-striped
     thead

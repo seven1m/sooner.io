@@ -24,6 +24,10 @@ schema = new Schema
   createdAt:
     type: Date
     default: -> new Date()
+  lastRanAt:
+    type: Date
+  lastStatus:
+    type: String
   definition:
     type: String
 
