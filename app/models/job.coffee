@@ -46,8 +46,11 @@ schema.methods.run = (callback) ->
       @status = 'fail'
     else
       @result = util.inspect(result)
-      # TODO if no running hooks
-      @status = 'success'
+      if result == false
+        @status = 'fail'
+      else
+        # TODO if no running hooks
+        @status = 'success'
     @save
   @save(callback)
 
