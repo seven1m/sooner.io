@@ -5,33 +5,31 @@ Boomer Sooner is the distributed workflow engine and web-based management app bu
 Workflows are written in CoffeeScript via the web interface.
 
 ## Distributed
-
+m
 Thanks to [Hook.io](https://github.com/hookio/hook.io), "workers" and "listeners" can reside on any number of machines, and need only connected to one another via a TCP port you choose.
 
 ## Fault Tolerant
 
 Depending on how your workflow is written, it can be semi-tolerant of failures in the worker process.
 
-First, whenever a workflow registers a hook with Hook.io, the callback is persisted to the database. This allows Boomer Sooner to re-register the same event(s) whenever the worker server is restarted.
+1. Whenever a workflow registers a hook with Hook.io, the callback is persisted to the database. This allows Boomer Sooner to re-register the same event(s) whenever the worker server is restarted.
+2. Your workflow must call `@done()` whenever it is finished; incomplete workflows are restarted when the worker comes back up.
+3. Save data using `@vars`, which persists your data to the database and allows your event callbacks access to the data, even if the worker server is restarted.
 
-Second, since your workflow must call `@done()` whenever it is finished, incomplete workflows can be identified and restarted when needed.
+## Worker
 
-And third, you are encouraged to save relevant data using `@vars`, which persists the data to the database and allows your event callbacks access to the data, even if the worker server is restarted.
+To start up the worker, run:
+
+    coffee worker -h IP_OF_WORKER
+
+Where `IP_OF_WORKER` should be this host's bind address, which allows other nodes to connect to it.
 
 ## Web UI
 
 To start up the web server, run:
 
-    coffee web
+    coffee web -h IP_OF_WORKER
 
 ## CLI
 
-TBW
-
-## Worker
-
-TBW
-
-## Listener
-
-TBW
+    coffee worker -c -h IP_OF_WORKER --repl
