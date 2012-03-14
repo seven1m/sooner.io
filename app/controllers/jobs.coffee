@@ -16,8 +16,9 @@ module.exports =
         res.send 'Not found', 404
       else
         job = workflow.newJob()
-        job.run (err, job) ->
+        job.save (err, job) ->
           if err
             res.send 'Error creating job', 500
           else
+            GLOBAL.hook.emit 'trigger-job', jobId: job._id, name: job.name
             res.redirect("/jobs/#{job._id}")

@@ -9,12 +9,13 @@ class Sandbox
     @consoleLog = consoleLog || console.log
 
   # transpiles coffeescript and runs the resulting code in a psuedo-sandbox
-  run: (code) ->
+  run: (code, callback) ->
     js = CoffeeScript.compile code
     try
-      vm.runInNewContext js, @buildContext(), 'sandbox.vm'
+      result = vm.runInNewContext js, @buildContext(), 'sandbox.vm'
+      callback null, result
     catch err
-      @consoleLog err
+      callback err
 
   # objects to which we're willing to give access
   buildContext: =>
