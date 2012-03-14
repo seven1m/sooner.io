@@ -27,6 +27,13 @@ schema = new Schema
   definition:
     type: String
 
+schema.methods.updateAttributes = (attrs) ->
+  @name       = attrs.name
+  @schedule   = attrs.schedule
+  @workerName = attrs.workerName
+  @enabled    = attrs.enabled == '1'
+  @definition = attrs.definition
+
 schema.methods.newJob = ->
   new models.job
     workflowId: @_id

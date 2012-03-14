@@ -33,7 +33,7 @@ module.exports =
 
   create: (req, res) ->
     workflow = new models.workflow()
-    _set(workflow, req.body)
+    workflow.updateAttributes(req.body)
     workflow.save (err) ->
       if err
         workflow.errors = err.errors
@@ -56,7 +56,7 @@ module.exports =
       if err
         res.send 'Not found', 404
       else
-        _set(workflow, req.body)
+        workflow.updateAttributes(req.body)
         workflow.save (err) ->
           if err
             workflow.errors = err.errors
@@ -72,11 +72,3 @@ module.exports =
         res.send err, 404
       else
         res.redirect("/workflows")
-
-# TODO move to the model
-_set = (workflow, data) ->
-  workflow.name       = data.name
-  workflow.schedule   = data.schedule
-  workflow.workerName = data.workerName
-  workflow.enabled    = data.enabled == '1'
-  workflow.definition = data.definition
