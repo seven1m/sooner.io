@@ -48,7 +48,9 @@ hook.on 'hook::ready', ->
         console.log "workflows: #{JSON.stringify(w.name for w in workflows)}"
         for workflow in workflows
           cron = new CronJob workflow.schedule, ->
-            hook.emit 'trigger-job', workflowId: workflow._id, name: workflow.name
+            job = workflow.newJob()
+            job.save (err, job) ->
+              hook.emit 'trigger-job', jobId: job._id, name: job.name
           crons.push cron
   hook.on '**::trigger-job', (data) ->
     models.job.findById data.jobId, (err, job) ->
