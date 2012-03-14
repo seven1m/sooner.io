@@ -39,7 +39,10 @@ block content
           th
             a(href="/jobs/#{job._id}")= job.id
           th= job.ranAt && job.ranAt.toString('M/dd/yyyy h:mm:ss tt')
-          td= job.status
+          td
+            != statusIcon(job.status)
+            | 
+            = job.status
 
   p
     | page:
