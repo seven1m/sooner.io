@@ -24,6 +24,12 @@ To start up the worker, run:
 
 Where `IP_OF_WORKER` should be this host's bind address, which allows other nodes to connect to it.
 
+You can have multiple workers, each responsible for handling different workflows. Designate one worker as the "main" worker, and connect all others to it via the `-c` (connect) switch:
+
+    coffee worker -c -h IP_OF_MAIN_WORKER -n vip-worker
+
+We named this worker "vip-worker" which allows us to target it with different workflows.
+
 ## Web UI
 
 To start up the web server, run:
@@ -32,4 +38,4 @@ To start up the web server, run:
 
 ## CLI
 
-    coffee worker -c -h IP_OF_WORKER --repl
+    coffee repl -h IP_OF_WORKER

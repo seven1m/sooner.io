@@ -10,10 +10,10 @@ if workflows.length > 0
         th
     tbody
       each workflow in workflows
-        tr('data-workflow'=workflow.id)
+        tr('data-workflow'=workflow.id, class=workflow.enabled ? 'enabled' : 'disabled')
           td
             a(href="/workflows/#{workflow._id}")= workflow.name
-          td= workflow.createdAt
+          td= workflow.createdAt.toString('M/d/yyyy h:mm tt')
           td
           td
           td.actions

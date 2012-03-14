@@ -1,13 +1,22 @@
 extends ../layout
 
 block content
-  h2= workflow.name
+  h2
+    = workflow.name
+    unless workflow.enabled
+      |  (disabled)
 
   table.table.table-bordered
     tbody
       tr
         th Schedule
         td.schedule= workflow.schedule
+      tr
+        th Worker Name
+        td= workflow.workerName
+      tr
+        th Enabled
+        td= workflow.enabled ? 'yes' : 'no'
 
   p
     a.btn(href="/workflows/#{workflow._id}/edit") Edit

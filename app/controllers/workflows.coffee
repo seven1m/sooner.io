@@ -24,13 +24,15 @@ module.exports =
       workflow: workflow
 
   create: (req, res) ->
-    workflow = new models.workflow(req.body)
+    workflow = new models.workflow()
+    _set(workflow, req.body)
     workflow.save (err) ->
       if err
         workflow.errors = err.errors
         res.render 'workflows/new.jade',
           workflow: workflow
       else
+        GLOBAL.hook.emit 'reload-workflows'
         res.redirect("/workflows/#{workflow._id}")
 
   edit: (req, res) ->
@@ -46,13 +48,14 @@ module.exports =
       if err
         res.send 'Not found', 404
       else
-        workflow[attr] = req.body[attr] for attr of req.body
+        _set(workflow, req.body)
         workflow.save (err) ->
           if err
             workflow.errors = err.errors
             res.render 'workflows/edit.jade',
               workflow: workflow
           else
+            GLOBAL.hook.emit 'reload-workflows'
             res.redirect("/workflows/#{workflow._id}")
 
   delete: (req, res) ->
@@ -61,3 +64,10 @@ module.exports =
         res.send err, 404
       else
         res.redirect("/workflows")
+
+_set = (workflow, data) ->
+  workflow.name       = data.name
+  workflow.schedule   = data.schedule
+  workflow.workerName = data.workerName
+  workflow.enabled    = data.enabled == '1'
+  workflow.definition = data.definition
