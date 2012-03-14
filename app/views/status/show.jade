@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+  h3 Connected Nodes
+  table#nodes.table.table-bordered.table-striped
+    thead
+      tr
+        th Name
+        th IP
+    tbody
+      tr
+        td(colspan=2): em loading...
+
+  h3 Real-Time Log
+  table#log.table.table-bordered.table-striped
+    thead
+      tr
+        th Node
+        th Event
+        th Data
+        th Time
+    tbody
+
+  :coffeescript
+    showLog()
+    socket.on 'connect', showNodes

@@ -8,6 +8,7 @@ html
     != css('main')
     != js('jquery.min')
     != js('bootstrap.min')
+    != js('date')
     != js('rails')
     script(src='/socket.io/socket.io.js')
     != js('main')
@@ -19,8 +20,10 @@ html
         .container
           .brand Boomer Sooner
           ul.nav
-            li
+            li(class=req.path.match(/^\/workflows/) && 'active')
               a(href='/workflows') Workflows
+            li(class=req.path.match(/^\/status/) && 'active')
+              a(href='/status') Status
 
     #main
       .container

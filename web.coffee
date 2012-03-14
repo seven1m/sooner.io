@@ -43,17 +43,31 @@ console.log "Express server listening on port %d in %s mode", app.address().port
 # Hook.io bridge
 # note: I gave up on hook.js; this seems simpler
 hook = new Hook
-  name: 'web-server'
+  name: 'web'
+
+argv = require('optimist')
+       .usage("Start a web process.\nUsage: $0")
+       .demand('h')
+       .alias('h', 'host')
+       .describe('h', 'host ip address of main worker process')
+       .alias('p', 'port')
+       .describe('p', 'host port of main worker process, defaults to 5000')
+       .default('p', 5000)
+       .argv
 
 hook.connect
-  'hook-host': process.env.HOOK_HOST || '127.0.0.1'
-  'hook-port': process.env.HOOK_PORT || 5000
+  'hook-host': argv.host
+  'hook-port': argv.port
 
 io = socketio.listen app
 io.sockets.on 'connection', (socket) ->
+  # bridge from hook.io to the browser on the specified event
+  socket.on 'bridge', (event) ->
+    hook.on event, ->
+      socket.emit.apply socket, [event, this.event].concat(Array.prototype.slice.call(arguments, 0))
+  # emit to the hook.io stream from the browser
   socket.on 'hook', (msg, data) ->
     hook.emit msg, data
-  hook.on '*::*', (data) ->
-    socket.emit 'hook', data
-
-
+  socket.on 'info', ->
+    hook.emit 'query', type: 'hook', (err, results) ->
+      socket.emit 'info', results
