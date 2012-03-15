@@ -22,13 +22,21 @@ argv = require('optimist')
 
 GLOBAL.hook = hook = new Hook
   name: argv.name
-  "hook-host": argv.host
-  "hook-port": argv.port
+
+hook.on '**::list-nodes', ->
+  hook.emit 'i-am'
+    name: hook.name
+    host: hook['hook-host']
+    port: hook['hook-port']
+
+connDetails =
+  'hook-host': argv.host
+  'hook-port': argv.port
 
 if argv.connect
-  hook.connect()
+  hook.connect connDetails
 else
-  hook.listen()
+  hook.listen connDetails
 
 # setup db
 mongoose = require 'mongoose'

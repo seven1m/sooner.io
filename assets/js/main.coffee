@@ -5,20 +5,31 @@ socket.bridge = (event, callback) ->
   socket.emit 'bridge', event
 
 updateDelay = 30000
+
+socket.on 'i-am', (node) ->
+  html = "<tr><td>#{node.name}</td><td>#{node.host}</td><td>#{node.port}</td></tr>"
+  $('#nodes tbody').append html
+
 window.showNodes = ->
-  socket.on 'info', (nodes) ->
-    html = ("<tr><td>#{node.name}</td><td>#{node.remote.host}</td><td>#{node.remote.port}</td></tr>" for node in nodes).join('')
-    $('#nodes tbody').html(html)
-  socket.emit 'info'
-  setInterval (-> socket.emit 'info'), updateDelay
+  $('#nodes tbody').html('')
+  socket.emit 'list-nodes'
+  setTimeout showNodes, updateDelay
 
 maxLogLines = 1000
 window.showLog = ->
-  socket.bridge '**::worker::**', (event, data) ->
-    node = event.split('::')[0]
-    event = event.replace(/^\w+::/, '')
-    data = JSON.stringify(data)
-      .replace(/"(job|workflow)Id":"(\w+)"/g, '"$1Id":"<a href="/$1s/$2">$2</a>"')
-    row = "<tr><td>#{node}</td><td>#{event}</td><td>#{data}</td><td>#{new Date().toString 'h:mm:ss tt'}</td></tr>"
-    e = $('#log tbody')
+  socket.on 'log', (event, data) ->
+    props = (propRow(prop, val) for prop, val of data)
+    data = "<table>#{props.join('')}</table>"
+    console.log data
+    row = "<tr><td>#{event}</td><td>#{data}</td><td>#{new Date().toString 'h:mm:ss tt'}</td></tr>"
+    e = $('#log tbody').eq(0)
     e.prepend row
+
+propRow = (prop, val) ->
+  if prop == 'jobId'
+    val = "<a href='/jobs/#{val}'>#{val}</a>"
+  else if prop == 'workflowId'
+    val = "<a href='/workflows/#{val}'>#{val}</a>"
+  else
+    val = $('<div/>').text(JSON.stringify(val)).html()
+  "<tr><td>#{prop}:</td><td>#{val}</td></tr>"

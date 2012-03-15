@@ -60,17 +60,25 @@ if argv.host
     'hook-host': argv.host
     'hook-port': argv.port
 
+  hook.on '**::list-nodes', ->
+    hook.emit 'i-am'
+      name: hook.name
+      host: hook['hook-host']
+      port: hook['hook-port']
+
+  # hack to work around hook.io bug
+  hook.connect = ->
+  hook.listen = ->
+
   io = socketio.listen app
+
+  # bridge everything from hook io, for logging
+  hook.on '**', (data) -> io.sockets.emit 'log', @event, data
+  # bridge i-am responses
+  hook.on '**::i-am', (data) -> io.sockets.emit 'i-am', data
+  # bridge list-nodes queries and generic hook messages
   io.sockets.on 'connection', (socket) ->
-    # bridge from hook.io to the browser on the specified event
-    socket.on 'bridge', (event) ->
-      hook.on event, ->
-        socket.emit.apply socket, [event, this.event].concat(Array.prototype.slice.call(arguments, 0))
-    # emit to the hook.io stream from the browser
-    socket.on 'hook', (msg, data) ->
-      hook.emit msg, data
-    socket.on 'info', ->
-      hook.emit 'query', type: 'hook', (err, results) ->
-        socket.emit 'info', results
+    socket.on 'list-nodes', -> hook.emit 'list-nodes'
+    socket.on 'hook', hook.emit
 else
   console.log 'WARNING: no worker connection; run with --help'
