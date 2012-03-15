@@ -35,6 +35,9 @@ schema = new Schema
   ranAt:
     type: Date
 
+schema.methods.trigger = ->
+  GLOBAL.hook.emit 'trigger-job', jobId: @_id, workflowId: @workflowId, name: @name
+
 schema.methods.run = (callback) ->
   console.log "running #{@name}..."
   GLOBAL.hook.emit 'running-job', jobId: @_id, workflowId: @workflowId, name: @name
@@ -43,16 +46,16 @@ schema.methods.run = (callback) ->
   sandbox = new Sandbox(_.bind(@log, @))
   sandbox.run new String(@definition), (err, result) =>
     if err
-      @result = util.inspect(err)
+      @result = "#{err}\n#{err.stack || '(no stack trace)'}"
       @status = 'fail'
     else
       @result = util.inspect(result)
-      if result == false
-        @status = 'fail'
-      else
+      if result == true
         # TODO if no running hooks
         @status = 'success'
-    GLOBAL.hook.emit 'job-complete', jobId: @_id, workflowId: @workflowId, name: @name
+      else
+        @status = 'fail'
+    GLOBAL.hook.emit 'job-complete', jobId: @_id, workflowId: @workflowId, name: @name, status: @status
     @save
     models.workflow.update {_id: @workflowId}, {lastStatus: @status, lastRanAt: @ranAt}, (err, _) ->
       if err
