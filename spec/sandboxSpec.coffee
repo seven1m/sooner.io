@@ -51,14 +51,14 @@ describe 'Sandbox', ->
     describe 'spawn()', ->
       it 'calls childProcess.spawn()', ->
         spyOn childProcess, 'spawn'
-        proc = context.spawn 'listDir', ['/home']
+        proc = context.shell.spawn 'listDir', ['/home']
         expect(childProcess.spawn).toHaveBeenCalledWith 'ls', ['/home']
 
     describe 'run()', ->
       it 'executes the callback', ->
         callback = jasmine.createSpy 'callback'
         runs ->
-          context.run 'listDir', [__dirname], callback
+          context.shell.run 'listDir', [__dirname], callback
         waits 100
         runs ->
           expect(callback).toHaveBeenCalled()
@@ -66,7 +66,7 @@ describe 'Sandbox', ->
       it 'runs the command and passes output to the callback', ->
         results = []
         runs ->
-          context.run 'listDir', [__dirname], -> results = arguments
+          context.shell.run 'listDir', [__dirname], -> results = arguments
         waitsFor (-> results[0] != undefined), null, 500
         runs ->
           expect(results[0]).toEqual(0)
