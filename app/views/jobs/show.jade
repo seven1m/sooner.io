@@ -2,33 +2,33 @@ extends ../layout
 
 block content
   h2
-    = workflow.name
-    |  Workflow
+    = job.name
+    |  Job
 
   table.table.table-bordered
     tbody
       tr
         th Schedule
-        td.formatted(class=!workflow.enabled && 'disabled')= workflow.schedule
+        td.formatted(class=!job.enabled && 'disabled')= job.schedule
       tr
         th Worker Name
-        td= workflow.workerName
+        td= job.workerName
       tr
         th Last Run
-        td= workflow.lastRanAt && workflow.lastRanAt.toString('M/dd/yyyy h:mm:ss tt')
+        td= job.lastRanAt && job.lastRanAt.toString('M/dd/yyyy h:mm:ss tt')
       tr
         th Last Status
         td
-          != statusIcon(workflow.lastStatus)
+          != statusIcon(job.lastStatus)
           | 
-          = workflow.lastStatus
+          = job.lastStatus
 
   .form-actions
-    a.btn(href="/workflows/#{workflow._id}/edit")
+    a.btn(href="/jobs/#{job._id}/edit")
       i.icon-pencil
       |  Edit
     .right
-      a.btn(href="/workflows/#{workflow._id}/runs", 'data-method'='post')
+      a.btn(href="/jobs/#{job._id}/runs", 'data-method'='post')
         i.icon-cog
         |  Run Now
 

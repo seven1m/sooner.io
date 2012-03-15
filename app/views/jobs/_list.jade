@@ -1,0 +1,32 @@
+h2 Jobs
+
+if jobs.length > 0
+  table.table.table-bordered.table-striped
+    thead
+      tr
+        th Name
+        th Schedule
+        th Last Run
+        th Last Status
+        th
+    tbody
+      each job in jobs
+        tr('data-job'=job.id)
+          td
+            a(href="/jobs/#{job._id}")= job.name
+          td.formatted(class=!job.enabled && 'disabled')= job.schedule
+          td= job.lastRanAt && job.lastRanAt.toString('M/dd/yyyy h:mm:ss tt')
+          td
+            != statusIcon(job.lastStatus)
+            | 
+            = job.lastStatus
+          td.actions
+            a(href="/jobs/#{job._id}/edit")
+              i(class='icon-pencil')
+            a(href="/jobs/#{job._id}", 'data-method'='delete', 'data-confirm'='Are you sure?')
+              i(class='icon-remove')
+
+p
+  a.btn(href='/jobs/new')
+    i.icon-asterisk
+    |  New Job

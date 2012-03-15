@@ -44,17 +44,17 @@ models = require(__dirname + '/app/models')
 # setup cron
 crons = []
 hook.on 'hook::ready', ->
-  hook.on '**::reload-workflows', ->
-    console.log 'loading workflows into cron...'
+  hook.on '**::reload-jobs', ->
+    console.log 'loading jobs into cron...'
     cron.stop() for cron in crons
-    models.workflow.find enabled: true, workerName: argv.name, (err, workflows) ->
+    models.job.find enabled: true, workerName: argv.name, (err, jobs) ->
       if err
-        console.log 'error retrieving workflows'
+        console.log 'error retrieving jobs'
       else
-        console.log "workflows: #{JSON.stringify(w.name for w in workflows)}"
-        for workflow in workflows
-          cron = new CronJob workflow.schedule, ->
-            run = workflow.newRun()
+        console.log "jobs: #{JSON.stringify(w.name for w in jobs)}"
+        for job in jobs
+          cron = new CronJob job.schedule, ->
+            run = job.newRun()
             run.save (err, run) ->
               hook.emit 'trigger-job', runId: run._id, name: run.name
           crons.push cron
@@ -64,4 +64,4 @@ hook.on 'hook::ready', ->
         console.log "Could not find run with id #{data.runId}."
       else
         run.run()
-  hook.emit 'reload-workflows'
+  hook.emit 'reload-jobs'

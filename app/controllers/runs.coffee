@@ -11,11 +11,11 @@ module.exports =
           run: run
 
   create: (req, res) ->
-    models.workflow.findById req.params.workflowId, (err, workflow) ->
+    models.job.findById req.params.jobId, (err, job) ->
       if err
         res.send 'Not found', 404
       else
-        run = workflow.newRun()
+        run = job.newRun()
         run.save (err, run) ->
           if err
             res.send 'Error creating run', 500

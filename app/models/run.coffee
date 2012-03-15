@@ -9,7 +9,7 @@ Schema = mongoose.Schema
 ObjectId = Schema.ObjectId
 
 schema = new Schema
-  workflowId:
+  jobId:
     type: ObjectId
     required: true
   name:
@@ -36,7 +36,7 @@ schema = new Schema
     type: Date
 
 schema.methods.trigger = ->
-  GLOBAL.hook.emit 'trigger-job', runId: @_id, workflowId: @workflowId, name: @name
+  GLOBAL.hook.emit 'trigger-job', runId: @_id, jobId: @jobId, name: @name
 
 schema.methods.run = (callback) ->
   console.log "running #{@name}..."
@@ -46,7 +46,7 @@ schema.methods.run = (callback) ->
 
   sandbox = childProcess.spawn "coffee", ["#{__dirname}/../../lib/sandbox.coffee"], {}
   sandbox.stdin.end @definition
-  GLOBAL.hook.emit 'running-job', pid: sandbox.pid, runId: @_id, workflowId: @workflowId, name: @name
+  GLOBAL.hook.emit 'running-job', pid: sandbox.pid, runId: @_id, jobId: @jobId, name: @name
   sandbox.stdout.on 'data', (data) =>
     @output += data.toString()
     @save()
@@ -59,11 +59,11 @@ schema.methods.run = (callback) ->
     else
       @status = 'fail'
       @result = code.toString()
-    GLOBAL.hook.emit 'job-complete', runId: @_id, workflowId: @workflowId, name: @name, status: @status
+    GLOBAL.hook.emit 'job-complete', runId: @_id, jobId: @jobId, name: @name, status: @status
     @save()
-    models.workflow.update {_id: @workflowId}, {lastStatus: @status, lastRanAt: @ranAt}, (err, _) ->
+    models.job.update {_id: @jobId}, {lastStatus: @status, lastRanAt: @ranAt}, (err, _) ->
       if err
-        console.log("error saving workflow details: #{err}")
+        console.log("error saving job details: #{err}")
 
 schema.methods.log = ->
   for arg in arguments
@@ -73,4 +73,4 @@ schema.methods.log = ->
       @output += util.inspect(arg) + "\n"
   @save()
 
-module.exports = mongoose.model 'Job', schema
+module.exports = mongoose.model 'Run', schema

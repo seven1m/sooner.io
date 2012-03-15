@@ -40,8 +40,8 @@ schema.methods.updateAttributes = (attrs) ->
 
 schema.methods.newRun = ->
   new models.run
-    workflowId: @_id
+    jobId:      @_id
     name:       @name
     definition: @definition
 
-module.exports = mongoose.model 'Workflow', schema
+module.exports = mongoose.model 'Job', schema

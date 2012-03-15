@@ -1,8 +1,8 @@
 controllers = require './app/controllers'
 
 module.exports = (app) ->
-  app.get '/', (_, res) -> res.redirect('/workflows')
-  app.resources '/workflows', controllers.workflows
+  app.get '/', (_, res) -> res.redirect('/jobs')
+  app.resources '/jobs', controllers.jobs
   app.resources '/runs', controllers.runs
-  app.post '/workflows/:workflowId/runs', controllers.runs.create
+  app.post '/jobs/:jobId/runs', controllers.runs.create
   app.resource '/status', controllers.status

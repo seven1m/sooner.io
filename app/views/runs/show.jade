@@ -8,11 +8,11 @@ block content
   table.table.table-bordered
     tbody
       tr
-        th Workflow
+        th Job
         td
-          a(href="/workflows/#{run.workflowId}")= run.workflowId
+          a(href="/jobs/#{run.jobId}")= run.jobId
           |  
-          a(href="/workflows/#{run.workflowId}/edit")
+          a(href="/jobs/#{run.jobId}/edit")
             i.icon-pencil
       tr
         th Definition

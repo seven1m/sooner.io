@@ -1,6 +1,6 @@
 # Boomer Sooner
 
-Boomer Sooner is the distributed workflow processing engine and web-based management app built on Node.js and Hook.io, brought to you from the <a href="http://en.wikipedia.org/wiki/Oklahoma">Sooner State</a>.
+Boomer Sooner is the distributed job processing engine and web-based management app built on Node.js and Hook.io, brought to you from the <a href="http://en.wikipedia.org/wiki/Oklahoma">Sooner State</a>.
 
 Workflows are written in CoffeeScript via the web interface.
 
@@ -18,7 +18,7 @@ To start up the primary worker, run:
 
     coffee worker
 
-You can have multiple workers, each responsible for handling different workflows. Designate one worker as the "main" worker, and connect all others to it via the `-c` (connect) switch:
+You can have multiple workers, each responsible for handling different jobs. Designate one worker as the "main" worker, and connect all others to it via the `-c` (connect) switch:
 
 To start up another worker, run:
 
@@ -26,7 +26,7 @@ To start up another worker, run:
 
 Where `IP_OF_MAIN_WORKER` should be the first's IP address.
 
-You can name your additional worker in order to target it with different workflows.
+You can name your additional worker in order to target it with different jobs.
 
 ## Web UI
 
@@ -40,11 +40,11 @@ To start up the web server, run:
 
 ## Workflow API
 
-Each workflow runs in a separate Node.js context, which has the effect of sandboxing the running code from the parent worker process.
+Each job runs in a separate Node.js context, which has the effect of sandboxing the running code from the parent worker process.
 
 This technique is not full proof, as their are still ways you can crash the parent process, but it helps.
 
-As such, your workflow only has access to the objects provided it by the sandbox, namely:
+As such, your job only has access to the objects provided it by the sandbox, namely:
 
 ### db.connect
 

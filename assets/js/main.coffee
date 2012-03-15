@@ -28,8 +28,8 @@ window.showLog = ->
 propRow = (prop, val) ->
   if prop == 'runId'
     val = "<a href='/runs/#{val}'>#{val}</a>"
-  else if prop == 'workflowId'
-    val = "<a href='/workflows/#{val}'>#{val}</a>"
+  else if prop == 'jobId'
+    val = "<a href='/jobs/#{val}'>#{val}</a>"
   else
     val = $('<div/>').text(JSON.stringify(val)).html()
   "<tr><td>#{prop}:</td><td>#{val}</td></tr>"
