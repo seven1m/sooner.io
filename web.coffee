@@ -4,9 +4,12 @@ helpers = require './app/helpers'
 socketio = require 'socket.io'
 require __dirname + '/assets/js/date'
 Hook = require('hook.io').Hook
+fs = require "fs"
 
+# setup db
+config = JSON.parse(fs.readFileSync(__dirname + '/config.json'))
 mongoose = require 'mongoose'
-mongoose.connect 'mongodb://localhost/boomer-sooner'
+mongoose.connect "mongodb://#{config.db.host}/#{config.db.name}"
 
 app = module.exports = express.createServer()
 

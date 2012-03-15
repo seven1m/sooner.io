@@ -1,5 +1,6 @@
 Hook = require('hook.io').Hook
 CronJob = require('cron').CronJob
+fs = require "fs"
 
 argv = require('optimist')
        .usage("Start a worker process.\nUsage: $0")
@@ -14,10 +15,6 @@ argv = require('optimist')
        .default('port', 5000)
        .alias('c', 'connect')
        .describe('c', 'connect to a remote host (use this option if not the server)')
-       .describe('dbhost', 'host running mongodb database')
-       .default('dbhost', 'localhost')
-       .describe('dbname', 'name of mongodb database')
-       .default('dbname', 'boomer-sooner')
        .argv
 
 GLOBAL.hook = hook = new Hook
@@ -39,8 +36,9 @@ else
   hook.listen connDetails
 
 # setup db
+config = JSON.parse(fs.readFileSync(__dirname + '/config.json'))
 mongoose = require 'mongoose'
-mongoose.connect "mongodb://#{argv.dbhost}/#{argv.dbname}"
+mongoose.connect "mongodb://#{config.db.host}/#{config.db.name}"
 models = require(__dirname + '/app/models')
 
 # setup cron
