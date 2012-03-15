@@ -67,7 +67,7 @@ describe 'Sandbox', ->
         results = []
         runs ->
           context.run 'listDir', [__dirname], -> results = arguments
-        waitsFor (-> results != undefined), null, 500
+        waitsFor (-> results[0] != undefined), null, 500
         runs ->
           expect(results[0]).toEqual(0)
           expect(results[1]).toMatch(/sandboxSpec\.coffee/)
