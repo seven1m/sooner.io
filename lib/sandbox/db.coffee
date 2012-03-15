@@ -5,6 +5,13 @@ exports.init = (context, options) ->
   options ||= {}
   connections = options.connections || JSON.parse(fs.readFileSync(__dirname + '/../../config.json')).connections
 
+  context.connection = class
+    constructor: (conn) ->
+      @conn = conn
+    query: (sql, cb) ->
+      @conn.query sql, (err, result) =>
+        cb err, result && result.rows
+
   context.db =
     connect: (conn, callback) ->
       connStr = connections[conn]
@@ -13,7 +20,7 @@ exports.init = (context, options) ->
           pg.connect connStr.replace(/^postgres:/, 'tcp:'), (err, client) ->
             if err
               throw err
-            callback(err, client)
+            callback(err, new context.connection(client))
         else
           throw 'unsupported database type'
       else
