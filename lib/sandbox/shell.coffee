@@ -1,5 +1,4 @@
 childProcess = require 'child_process'
-_ = require 'underscore'
 
 exports.init = (context, options) ->
   commands = options.shellCommands
