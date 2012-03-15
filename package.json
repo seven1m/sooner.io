@@ -5,6 +5,7 @@
   , "dependencies": {
       "express": "2.5.8"
     , "connect-assets": "latest"
+    , "stylus": "latest"
     , "coffee-script": "latest"
     , "nib": "latest"
     , "bootstrap-stylus": "latest"
@@ -16,6 +17,7 @@
     , "cron": "git://github.com/ncb000gt/node-cron.git"
     , "socket.io": "0.9.x"
     , "optimist": "0.3.x"
+    , "pg": "0.6.x"
   }
   , "devDependencies": {
       "jasmine-node": "latest"
