@@ -54,7 +54,7 @@ As such, your workflow only has access to the objects provided it by the sandbox
 
 *Example:*
 ```coffeescript
-db.connect 'foo', (err, conn) ->
+db.connect 'foo', (conn) ->
   # use conn here
 ```
 
@@ -75,8 +75,8 @@ The `connectionName` is a named connection provided in `config.json` under `dbCo
 
 *Example:*
 ```coffeescript
-db.connect 'foo', (err, conn) ->
-  conn.query 'select now() as when', (err, rows) ->
+db.connect 'foo', (conn) ->
+  conn.query 'select now() as when', (rows) ->
     # use rows here
 ```
 
