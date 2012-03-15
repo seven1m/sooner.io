@@ -1,14 +1,14 @@
 vm = require 'vm'
+fs = require 'fs'
 CoffeeScript = require 'coffee-script'
 
 # this isn't a super safe sandbox --
-# just something to keep honest people from accidentaly crashing the whole server
+# just something to keep honest people from accidentaly stepping on the parent namespace
 class Sandbox
 
   constructor: (consoleLog) ->
     @consoleLog = consoleLog || console.log
 
-  # transpiles coffeescript and runs the resulting code in a psuedo-sandbox
   run: (code, callback) ->
     js = CoffeeScript.compile code
     try
@@ -19,7 +19,14 @@ class Sandbox
 
   # objects to which we're willing to give access
   buildContext: =>
-    console: log: @consoleLog
+    context =
+      console: log: @consoleLog
+    # load in the other libs
+    for file in fs.readdirSync(__dirname + '/sandbox')
+      if file.match(/\.coffee$/)
+        name = file.substr 0, file.indexOf('.')
+        require(__dirname + '/sandbox/' + name).init(context)
+    context
 
 
 module.exports = Sandbox
