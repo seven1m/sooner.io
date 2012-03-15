@@ -1,34 +1,32 @@
 # Boomer Sooner
 
-Boomer Sooner is the distributed workflow engine and web-based management app built on Node.js and Hook.io, brought to you from the <a href="http://en.wikipedia.org/wiki/Oklahoma">Sooner State</a>.
+Boomer Sooner is the distributed workflow processing engine and web-based management app built on Node.js and Hook.io, brought to you from the <a href="http://en.wikipedia.org/wiki/Oklahoma">Sooner State</a>.
 
 Workflows are written in CoffeeScript via the web interface.
 
 ## Distributed
-m
-Thanks to [Hook.io](https://github.com/hookio/hook.io), "workers" and "listeners" can reside on any number of machines, and need only connected to one another via a TCP port you choose.
 
-## Fault Tolerant
+Thanks to [Hook.io](https://github.com/hookio/hook.io), "workers" reside on any number of machines, and need only connect to one another via a TCP port you choose.
 
-Depending on how your workflow is written, it can be semi-tolerant of failures in the worker process.
+## Long-Lived
 
-1. Whenever a workflow registers a hook with Hook.io, the callback is persisted to the database. This allows Boomer Sooner to re-register the same event(s) whenever the worker server is restarted.
-2. Your workflow must call `@done()` whenever it is finished; incomplete workflows are restarted when the worker comes back up.
-3. Save data using `@vars`, which persists your data to the database and allows your event callbacks access to the data, even if the worker server is restarted.
+TODO
 
 ## Worker
 
-To start up the worker, run:
+To start up the primary worker, run:
 
-    coffee worker -h IP_OF_WORKER
-
-Where `IP_OF_WORKER` should be this host's bind address, which allows other nodes to connect to it.
+    coffee worker
 
 You can have multiple workers, each responsible for handling different workflows. Designate one worker as the "main" worker, and connect all others to it via the `-c` (connect) switch:
 
+To start up another worker, run:
+
     coffee worker -c -h IP_OF_MAIN_WORKER -n vip-worker
 
-We named this worker "vip-worker" which allows us to target it with different workflows.
+Where `IP_OF_MAIN_WORKER` should be the first's IP address.
+
+You can name your additional worker in order to target it with different workflows.
 
 ## Web UI
 
@@ -39,3 +37,86 @@ To start up the web server, run:
 ## CLI
 
     coffee repl -h IP_OF_WORKER
+
+## Workflow API
+
+Each workflow runs in a separate Node.js context, which has the effect of sandboxing the running code from the parent worker process.
+
+This technique is not full proof, as their are still ways you can crash the parent process, but it helps.
+
+As such, your workflow only has access to the objects provided it by the sandbox, namely:
+
+### db.connect
+
+*Arguments:*
+* connectionName
+* callback
+
+*Example:*
+```coffeescript
+db.connect 'foo', (err, conn) ->
+  # use conn here
+```
+
+The `connectionName` is a named connection provided in `config.json` under `dbConnections`. Following is an example connection called "foo":
+```json
+{
+  "dbConnections": {
+    "foo": "postgres://postgres@localhost/foo"
+  }
+}
+```
+
+### conn.query
+
+*Arguments:*
+* sql
+* callback
+
+*Example:*
+```coffeescript
+db.connect 'foo', (err, conn) ->
+  conn.query 'select now() as when', (err, rows) ->
+    # use rows here
+```
+
+### shell.spawn
+
+*Arguments:*
+* commandName
+* args (array)
+
+Returns a [ChildProcess](http://nodejs.org/api/child_process.html).
+
+The `commandName` is a named shell command provided in `config.json` under `shellCommands`. Following is an example named shell command for "ls":
+```json
+{
+  "shellCommands": {
+    "listDir": "ls"
+  }
+}
+```
+
+### shell.run
+
+*Arguments:*
+* commandName
+* args (array)
+* callback
+
+This is a higher level function that executes spawn, then waits for the process to finish. `stdout` and `stderr` are both captured to a single string, then passed via the `callback` function.
+
+*Example:*
+```coffeescript
+db.run 'listDir', ['/tmp'], (code, output) ->
+  # code = return code of the completed process
+  # output = stdout+stderr
+```
+
+### ftp.connect
+
+*Arguments:*
+* connectionName
+* callback
+
+TODO
