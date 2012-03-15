@@ -28,11 +28,11 @@ block content
       i.icon-pencil
       |  Edit
     .right
-      a.btn(href="/workflows/#{workflow._id}/jobs", 'data-method'='post')
+      a.btn(href="/workflows/#{workflow._id}/runs", 'data-method'='post')
         i.icon-cog
         |  Run Now
 
-  h3 Jobs
+  h3 History
 
   table.table.table-bordered.table-striped
     thead
@@ -41,15 +41,15 @@ block content
         th Ran
         th Status
     tbody
-      for job in jobs
+      for run in runs
         tr
           th
-            a(href="/jobs/#{job._id}")= job.id
-          th= job.ranAt && job.ranAt.toString('M/dd/yyyy h:mm:ss tt')
+            a(href="/runs/#{run._id}")= run.id
+          th= run.ranAt && run.ranAt.toString('M/dd/yyyy h:mm:ss tt')
           td
-            != statusIcon(job.status)
+            != statusIcon(run.status)
             | 
-            = job.status
+            = run.status
 
   p
     | page:

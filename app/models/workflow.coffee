@@ -38,8 +38,8 @@ schema.methods.updateAttributes = (attrs) ->
   @enabled    = attrs.enabled == '1'
   @definition = attrs.definition
 
-schema.methods.newJob = ->
-  new models.job
+schema.methods.newRun = ->
+  new models.run
     workflowId: @_id
     name:       @name
     definition: @definition

@@ -26,8 +26,8 @@ window.showLog = ->
     e.prepend row
 
 propRow = (prop, val) ->
-  if prop == 'jobId'
-    val = "<a href='/jobs/#{val}'>#{val}</a>"
+  if prop == 'runId'
+    val = "<a href='/runs/#{val}'>#{val}</a>"
   else if prop == 'workflowId'
     val = "<a href='/workflows/#{val}'>#{val}</a>"
   else

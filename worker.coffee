@@ -54,14 +54,14 @@ hook.on 'hook::ready', ->
         console.log "workflows: #{JSON.stringify(w.name for w in workflows)}"
         for workflow in workflows
           cron = new CronJob workflow.schedule, ->
-            job = workflow.newJob()
-            job.save (err, job) ->
-              hook.emit 'trigger-job', jobId: job._id, name: job.name
+            run = workflow.newRun()
+            run.save (err, run) ->
+              hook.emit 'trigger-job', runId: run._id, name: run.name
           crons.push cron
   hook.on '**::trigger-job', (data) ->
-    models.job.findById data.jobId, (err, job) ->
-      if err or !job
-        console.log "Could not find job with id #{data.jobId}."
+    models.run.findById data.runId, (err, run) ->
+      if err or !run
+        console.log "Could not find run with id #{data.runId}."
       else
-        job.run()
+        run.run()
   hook.emit 'reload-workflows'

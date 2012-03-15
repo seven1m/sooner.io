@@ -36,7 +36,7 @@ schema = new Schema
     type: Date
 
 schema.methods.trigger = ->
-  GLOBAL.hook.emit 'trigger-job', jobId: @_id, workflowId: @workflowId, name: @name
+  GLOBAL.hook.emit 'trigger-job', runId: @_id, workflowId: @workflowId, name: @name
 
 schema.methods.run = (callback) ->
   console.log "running #{@name}..."
@@ -46,7 +46,7 @@ schema.methods.run = (callback) ->
 
   sandbox = childProcess.spawn "coffee", ["#{__dirname}/../../lib/sandbox.coffee"], {}
   sandbox.stdin.end @definition
-  GLOBAL.hook.emit 'running-job', pid: sandbox.pid, jobId: @_id, workflowId: @workflowId, name: @name
+  GLOBAL.hook.emit 'running-job', pid: sandbox.pid, runId: @_id, workflowId: @workflowId, name: @name
   sandbox.stdout.on 'data', (data) =>
     @output += data.toString()
     @save()
@@ -59,7 +59,7 @@ schema.methods.run = (callback) ->
     else
       @status = 'fail'
       @result = code.toString()
-    GLOBAL.hook.emit 'job-complete', jobId: @_id, workflowId: @workflowId, name: @name, status: @status
+    GLOBAL.hook.emit 'job-complete', runId: @_id, workflowId: @workflowId, name: @name, status: @status
     @save()
     models.workflow.update {_id: @workflowId}, {lastStatus: @status, lastRanAt: @ranAt}, (err, _) ->
       if err

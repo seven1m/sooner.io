@@ -1,0 +1,34 @@
+extends ../layout
+
+block content
+  h2
+    = run.name
+    |  Run
+
+  table.table.table-bordered
+    tbody
+      tr
+        th Workflow
+        td
+          a(href="/workflows/#{run.workflowId}")= run.workflowId
+          |  
+          a(href="/workflows/#{run.workflowId}/edit")
+            i.icon-pencil
+      tr
+        th Definition
+        td.formatted= run.definition
+      tr
+        th Status
+        td
+          != statusIcon(run.status)
+          | 
+          = run.status
+      tr
+        th Output
+        td.formatted= run.output
+      tr
+        th Created
+        td= run.createdAt.toString('M/dd/yyyy h:mm:ss tt')
+      tr
+        th Ran
+        td= run.ranAt && run.ranAt.toString('M/dd/yyyy h:mm:ss tt')

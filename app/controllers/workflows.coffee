@@ -16,14 +16,14 @@ module.exports =
       if err
         res.send 'Not found', 404
       else
-        query = models.job.where(workflowId: workflow._id)
+        query = models.run.where(workflowId: workflow._id)
         new Paginator perPage: 10, page: req.query.page, query: query, (paginator) ->
-          query.skip(paginator.skip).limit(paginator.limit).desc('ranAt').run (err, jobs) ->
+          query.skip(paginator.skip).limit(paginator.limit).desc('ranAt').run (err, runs) ->
             if err
-              jobs = []
+              runs = []
             res.render 'workflows/show.jade',
               workflow: workflow
-              jobs: jobs
+              runs: runs
               paginator: paginator
 
   new: (req, res) ->

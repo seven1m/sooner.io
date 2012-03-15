@@ -3,22 +3,22 @@ models = require __dirname + '/../models'
 module.exports =
 
   show: (req, res) ->
-    models.job.findById req.params.id, (err, job) ->
+    models.run.findById req.params.id, (err, run) ->
       if err
         res.send 'Not found', 404
       else
-        res.render 'jobs/show.jade',
-          job: job
+        res.render 'runs/show.jade',
+          run: run
 
   create: (req, res) ->
     models.workflow.findById req.params.workflowId, (err, workflow) ->
       if err
         res.send 'Not found', 404
       else
-        job = workflow.newJob()
-        job.save (err, job) ->
+        run = workflow.newRun()
+        run.save (err, run) ->
           if err
-            res.send 'Error creating job', 500
+            res.send 'Error creating run', 500
           else
-            job.trigger()
-            res.redirect("/jobs/#{job._id}")
+            run.trigger()
+            res.redirect("/runs/#{run._id}")
