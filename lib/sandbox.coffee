@@ -6,10 +6,6 @@ CoffeeScript = require 'coffee-script'
 
 config = JSON.parse(fs.readFileSync(__dirname + '/../config.json'))
 
-mongoose = require 'mongoose'
-mongoose.connect "mongodb://#{config.db.host}/#{config.db.name}"
-models = require __dirname + '/../app/models'
-
 # objects to which we're willing to give access
 buildContext = ->
   context =
@@ -21,15 +17,6 @@ buildContext = ->
       require(__dirname + '/sandbox/' + name).init(context, config)
   context
 
-models.job.findById process.argv[2], (err, job) ->
-  if err
-    mongoose.disconnect()
-    throw err
-  else if job
-    js = CoffeeScript.compile job.definition
-    vm.runInNewContext js, buildContext(), 'sandbox.vm'
-    mongoose.disconnect()
-  else
-    console.log "Error: job not found"
-    mongoose.disconnect()
-    process.exit(1)
+code = fs.readFileSync('/dev/stdin').toString()
+js = CoffeeScript.compile code
+vm.runInNewContext js, buildContext(), 'sandbox.vm'

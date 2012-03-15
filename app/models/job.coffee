@@ -44,7 +44,8 @@ schema.methods.run = (callback) ->
   @ranAt = new Date()
   @save(callback)
 
-  sandbox = childProcess.spawn "coffee", ["#{__dirname}/../../lib/sandbox.coffee", @_id], {}
+  sandbox = childProcess.spawn "coffee", ["#{__dirname}/../../lib/sandbox.coffee"], {}
+  sandbox.stdin.end @definition
   GLOBAL.hook.emit 'running-job', pid: sandbox.pid, jobId: @_id, workflowId: @workflowId, name: @name
   sandbox.stdout.on 'data', (data) =>
     @output += data.toString()
