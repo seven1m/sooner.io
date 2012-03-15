@@ -10,16 +10,19 @@ block content
       tr
         th Workflow
         td
-          .right
-            a(href="/workflows/#{job.workflowId}/edit")
-              i.icon-pencil
           a(href="/workflows/#{job.workflowId}")= job.workflowId
+          |  
+          a(href="/workflows/#{job.workflowId}/edit")
+            i.icon-pencil
       tr
         th Definition
         td.formatted= job.definition
       tr
         th Status
-        td= job.status
+        td
+          != statusIcon(job.status)
+          | 
+          = job.status
       tr
         th Output
         td.formatted= job.output
