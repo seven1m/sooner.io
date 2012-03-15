@@ -2,8 +2,7 @@ pg = require 'pg'
 fs = require 'fs'
 
 exports.init = (context, options) ->
-  options ||= {}
-  connections = options.connections || JSON.parse(fs.readFileSync(__dirname + '/../../config.json')).connections
+  connections = options.connections
 
   context.connection = class
     constructor: (conn) ->

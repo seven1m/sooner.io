@@ -12,7 +12,7 @@ describe 'Sandbox', ->
     connections =
       foo: 'postgres://postgres@localhost/foo'
     require(__dirname + '/../lib/sandbox/db')
-      .init(context, connections)
+      .init(context, connections: connections)
 
     describe 'connect()', ->
       beforeEach ->

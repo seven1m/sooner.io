@@ -19,13 +19,14 @@ class Sandbox
 
   # objects to which we're willing to give access
   buildContext: =>
+    config = JSON.parse(fs.readFileSync(__dirname + '/../config.json'))
     context =
       console: log: @consoleLog
     # load in the other libs
     for file in fs.readdirSync(__dirname + '/sandbox')
       if file.match(/\.coffee$/)
         name = file.substr 0, file.indexOf('.')
-        require(__dirname + '/sandbox/' + name).init(context)
+        require(__dirname + '/sandbox/' + name).init(context, config)
     context
 
 
