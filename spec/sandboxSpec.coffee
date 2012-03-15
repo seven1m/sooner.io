@@ -4,6 +4,7 @@ Sandbox = require '../lib/sandbox'
 sandbox = new Sandbox()
 
 pg = require('pg')
+childProcess = require('child_process')
 
 describe 'Sandbox', ->
 
@@ -39,3 +40,34 @@ describe 'Sandbox', ->
           connection.query sql, ->
           expect(clientSpy.query).toHaveBeenCalled()
           expect(clientSpy.query.mostRecentCall.args[0]).toEqual sql
+
+  describe 'shell', ->
+    context = {}
+    shellCommands =
+      listDir: 'ls'
+    require(__dirname + '/../lib/sandbox/shell')
+      .init(context, shellCommands: shellCommands)
+
+    describe 'spawn()', ->
+      it 'calls childProcess.spawn()', ->
+        spyOn childProcess, 'spawn'
+        proc = context.spawn 'listDir', ['/home']
+        expect(childProcess.spawn).toHaveBeenCalledWith 'ls', ['/home']
+
+    describe 'run()', ->
+      it 'executes the callback', ->
+        callback = jasmine.createSpy 'callback'
+        runs ->
+          context.run 'listDir', [__dirname], callback
+        waits 100
+        runs ->
+          expect(callback).toHaveBeenCalled()
+
+      it 'runs the command and passes output to the callback', ->
+        results = []
+        runs ->
+          context.run 'listDir', [__dirname], -> results = arguments
+        waitsFor (-> results != undefined), null, 500
+        runs ->
+          expect(results[0]).toEqual(0)
+          expect(results[1]).toMatch(/sandboxSpec\.coffee/)
