@@ -42,9 +42,18 @@ mongoose.connect "mongodb://#{config.db.host}/#{config.db.name}"
 models = require(__dirname + '/app/models')
 
 # clean up
-models.run.update {status: 'busy'}, {$set: {status: 'fail'}}, {multi: true}, (err, num) ->
+models.run.find {status: 'busy'}, (err, runs) ->
+  console.log "Searching for runs in limbo..."
+  #{$set: {status: 'fail'}}, {multi: true}, (err, num) ->
   if err then throw err
-  console.log "#{num} runs marked as failed"
+  for run in runs
+    console.log "...marking run #{run._id} as failed."
+    run.status = 'fail'
+    run.save (err) ->
+      if err then throw err
+      hook.emit 'job-complete', runId: run._id, jobId: run.jobId, name: run.name, status: run.status
+  if runs.length == 0
+    console.log "...none found."
 
 # setup cron
 crons = []
