@@ -75,13 +75,13 @@ if argv.host
 
   io = socketio.listen app
 
-  # bridge everything from hook io, for logging
-  hook.on '**', (data) -> io.sockets.emit 'log', @event, data
+  # bridge these events from hook io, for logging
+  bridge = (ev) -> hook.on "*::#{ev}", (data) -> io.sockets.emit 'log', @event, data
+  bridge(ev) for ev in ['running-job', 'job-output', 'job-complete', 'i-am', 'list-nodes', 'reload-jobs'] # do NOT include trigger-job (causes dupes for some reason)
   # bridge i-am responses
   hook.on '**::i-am', (data) -> io.sockets.emit 'i-am', data
   # bridge list-nodes queries and generic hook messages
   io.sockets.on 'connection', (socket) ->
     socket.on 'list-nodes', -> hook.emit 'list-nodes'
-    socket.on 'hook', hook.emit
 else
   console.log 'WARNING: no worker connection; run with --help'
