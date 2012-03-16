@@ -12,6 +12,7 @@ schema = new Schema
   jobId:
     type: ObjectId
     required: true
+    index: true
   name:
     type: String
   definition:

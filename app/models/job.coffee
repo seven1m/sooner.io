@@ -18,9 +18,11 @@ schema = new Schema
   workerName:
     type: String
     default: 'worker'
+    index: true
   enabled:
     type: Boolean
     default: 'true'
+    index: true
   createdAt:
     type: Date
     default: -> new Date()
