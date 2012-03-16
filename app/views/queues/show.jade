@@ -7,12 +7,16 @@ block content
     thead
       tr
         th ID
+        th Status
         th Data
+        th Created
     tbody
       for entry in entries
         tr
           td= entry._id
-          td= entry.toString()
+          td= entry.status
+          td= entry.data && JSON.stringify(entry.data)
+          td= entry.createdAt && entry.createdAt.toString('M/dd/yyyy h:mm:ss tt')
 
   p
     | page:

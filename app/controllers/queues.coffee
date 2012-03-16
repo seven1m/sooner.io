@@ -16,7 +16,7 @@ module.exports =
   show: (req, res) ->
     q = context.queue(req.params.id).where({})
     new Paginator perPage: 5, page: req.query.page, query: q, (paginator) ->
-      q.skip(paginator.skip).limit(paginator.limit).run (err, entries) ->
+      q.skip(paginator.skip).limit(paginator.limit).desc('createdAt').run (err, entries) ->
         if err
           entries = []
         res.render 'queues/show.jade',

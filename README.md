@@ -53,8 +53,18 @@ Call `done()` at the end of every workflow so the db connections can be cleaned 
 *Arguments:*
 * name
 
-Returns the Mongoose object for the named queue collection.
+Returns the [Mongoose](http://mongoosejs.com/) object for the named queue collection.
 
+See the [Querying](http://mongoosejs.com/docs/query.html) and [Updating](http://mongoosejs.com/docs/updating-documents.html) docs for help.
+
+Each entry in the queue has the following fields defined:
+
+* `_id`
+* `status`
+* `data`
+* `createdAt`
+
+You should only set the `status` and `data` fields yourself.
 
 ### db.connect
 

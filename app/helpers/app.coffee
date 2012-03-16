@@ -7,4 +7,3 @@ module.exports =
       "#{count} #{word}"
     else
       "#{count} #{plural}"
-
