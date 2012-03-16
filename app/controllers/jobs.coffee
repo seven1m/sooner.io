@@ -16,7 +16,7 @@ module.exports =
       if err
         res.send 'Not found', 404
       else
-        query = models.run.where(jobId: job._id)
+        query = models.run.where('jobId', job._id)
         new Paginator perPage: 10, page: req.query.page, query: query, (paginator) ->
           query.skip(paginator.skip).limit(paginator.limit).desc('ranAt').run (err, runs) ->
             if err
