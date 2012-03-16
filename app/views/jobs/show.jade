@@ -32,7 +32,7 @@ block content
 
   h3 History
 
-  table.table.table-bordered.table-striped
+  table.table.table-bordered.table-striped#job-history-table
     thead
       tr
         th ID
@@ -40,13 +40,19 @@ block content
         th Status
     tbody
       for run in runs
-        tr
-          th
+        tr('data-run-meta'=run._id)
+          td
             a(href="/runs/#{run._id}")= run.id
-          th= run.ranAt && run.ranAt.toString('M/dd/yyyy h:mm:ss tt')
+          td= run.ranAt && run.ranAt.toString('M/dd/yyyy h:mm:ss tt')
           td
             != statusIcon(run.status)
             | 
             = run.status
+        tr
+          td.formatted(colspan=3, 'data-run-output'=run._id)
+            != escapeAndLink(run.output)
 
   p!= paginator.pageLinks()
+
+  :coffeescript
+    watchJobChanges()

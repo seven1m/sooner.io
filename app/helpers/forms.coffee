@@ -4,6 +4,9 @@ escape = (text) ->
 escapeAttr = (text) ->
   escape(text).replace(/'/g, "\\'")
 
+escapeAndLink = (text) ->
+  escape(text).replace(/https?:\/\/\S+/g, "<a href='$&'>$&</a>")
+
 inputTag = exports.inputTag = (obj, field, options) ->
   options ||= {}
   if options.tag == 'input' || !options.tag
@@ -26,3 +29,4 @@ exports.field = (obj, field, options) ->
     </div>
   </div>"
 
+exports.escapeAndLink = escapeAndLink

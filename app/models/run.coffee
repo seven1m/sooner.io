@@ -49,12 +49,14 @@ schema.methods.run = (callback) ->
 
   sandbox = childProcess.spawn "coffee", ["#{__dirname}/../../lib/sandbox.coffee"], {}
   sandbox.stdin.end @definition
-  GLOBAL.hook.emit 'running-job', pid: sandbox.pid, runId: @_id, jobId: @jobId, name: @name
+  GLOBAL.hook.emit 'running-job', pid: sandbox.pid, runId: @_id, jobId: @jobId, name: @name, ranAt: @ranAt
   sandbox.stdout.on 'data', (data) =>
     @output += data.toString()
+    GLOBAL.hook.emit 'job-output', pid: sandbox.pid, runId: @_id, jobId: @jobId, name: @name, output: data.toString()
     @save()
   sandbox.stderr.on 'data', (data) =>
     @output += data.toString()
+    GLOBAL.hook.emit 'job-output', pid: sandbox.pid, runId: @_id, jobId: @jobId, name: @name, output: data.toString()
     @save()
   sandbox.on 'exit', (code) =>
     @completedAt = new Date()
