@@ -18,6 +18,4 @@ block content
           td= entry.data && JSON.stringify(entry.data)
           td= entry.createdAt && entry.createdAt.toString('M/dd/yyyy h:mm:ss tt')
 
-  p
-    | page:
-    != paginator.pageLinks()
+  p!= paginator.pageLinks()

@@ -19,16 +19,17 @@ class Paginator
     pages = Math.floor(@total / @perPage)
     unless @total % @perPage == 0
       pages++
-    start = Math.max(1, @page - @window/2)
-    stop = Math.min(pages, start + @window)
-    links = (@pageLink(page) for page in [start..stop])
-    if start > 1
-      links.unshift '...' if start > 2
-      links.unshift @pageLink(1)
-    if stop < pages
-      links.push '...' if stop < pages - 1
-      links.push @pageLink(pages)
-    links.join ' '
+    if pages > 0
+      start = Math.max(1, @page - @window/2)
+      stop = Math.min(pages, start + @window)
+      links = (@pageLink(page) for page in [start..stop])
+      if start > 1
+        links.unshift '...' if start > 2
+        links.unshift @pageLink(1)
+      if stop < pages
+        links.push '...' if stop < pages - 1
+        links.push @pageLink(pages)
+      "<span class='paginator-intro'>page:</span> #{links.join(' ')}"
 
   pageLink: (page) ->
     if @page == page

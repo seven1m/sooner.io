@@ -49,6 +49,4 @@ block content
             | 
             = run.status
 
-  p
-    | page:
-    != paginator.pageLinks()
+  p!= paginator.pageLinks()
