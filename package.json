@@ -19,6 +19,7 @@
     , "optimist": "0.3.x"
     , "pg": "0.6.x"
     , "ftp": "0.1.x"
+    , "markdown": "latest"
   }
   , "devDependencies": {
       "jasmine-node": "latest"

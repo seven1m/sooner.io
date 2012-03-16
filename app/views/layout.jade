@@ -3,7 +3,7 @@ html
   head
     title
       block title
-        | Boomer Sooner
+        | Sooner.io
     != css('bootstrap.min')
     != css('main')
     != js('jquery.min')
@@ -18,7 +18,7 @@ html
     nav.navbar.navbar-fixed-top
       .navbar-inner
         .container
-          .brand Boomer Sooner
+          .brand Sooner.io
           ul.nav
             li(class=req.path.match(/^\/jobs/) && 'active')
               a(href='/jobs') Jobs

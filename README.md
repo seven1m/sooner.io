@@ -1,16 +1,8 @@
-# Boomer Sooner
+# Sooner.io
 
-Boomer Sooner is the distributed job processing engine and web-based management app built on Node.js and Hook.io, brought to you from the <a href="http://en.wikipedia.org/wiki/Oklahoma">Sooner State</a>.
+Sooner.io is the distributed job processing engine and web-based management app built on [Node.js](http://nodejs.org) and [Hook.io](http://hook.io), brought to you from the [Sooner State](http://en.wikipedia.org/wiki/Oklahoma).
 
-Workflows are written in CoffeeScript via the web interface.
-
-## Distributed
-
-Thanks to [Hook.io](https://github.com/hookio/hook.io), "workers" reside on any number of machines, and need only connect to one another via a TCP port you choose.
-
-## Long-Lived
-
-TODO
+Workflows are written in CoffeeScript and run on a scheduled or on-demand basis via a distributed network of "workers."
 
 ## Worker
 
@@ -34,13 +26,17 @@ To start up the web server, run:
 
     coffee web -h IP_OF_WORKER
 
-## CLI
+## REPL (Read-Eval-Print-Loop)
+
+You can peek inside the Hook.io cloud and receive and emit messages via the REPL:
 
     coffee repl -h IP_OF_WORKER
 
 ## Workflow API
 
 Each job runs in a separate Node.js process with limited context, which has the effect of sandboxing the running code from the parent worker process.
+
+The idea is to make it difficult for someone to do naughty things to your worker process, the host machine, and your network, but **I explicitly disclaim the secureness of this system -- In fact, I recommend you NOT make this system available via the public web, and that you restrict access with .htaccess or some other technique (authenticationn/authorization is not yet present).**
 
 The following functions are available to your running code:
 
@@ -139,4 +135,14 @@ db.run 'listDir', ['/tmp'], (code, output) ->
 * connectionName
 * callback
 
-TODO
+This is a light wrapper around [node-ftp](https://github.com/mscdex/node-ftp).
+
+## License
+
+Copyright (c) 2011, [Tim Morgan](http://timmorgan.org)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
