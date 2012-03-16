@@ -6,7 +6,7 @@ module.exports =
   index: (req, res) ->
     models.job.find {}, (err, jobs) ->
       if(err)
-        res.send('error retreiving jobs', 500)
+        res.send 'error retreiving jobs', 500
       else
         res.render 'jobs/index.jade',
           jobs: jobs

@@ -25,6 +25,8 @@ if jobs.length > 0
               i(class='icon-pencil')
             a(href="/jobs/#{job._id}", 'data-method'='delete', 'data-confirm'='Are you sure?')
               i(class='icon-remove')
+else
+  p: em no jobs defined
 
 p
   a.btn(href='/jobs/new')
