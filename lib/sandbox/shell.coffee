@@ -1,7 +1,7 @@
 childProcess = require 'child_process'
 
 exports.init = (context, options) ->
-  commands = options.shellCommands
+  commands = options.shellCommands || {}
 
   # low-level, creates a ChildProcess
   spawn = (cmd, args) ->

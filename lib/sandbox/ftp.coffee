@@ -1,7 +1,7 @@
 FTPClient = require 'ftp'
 
 exports.init = (context, options) ->
-  servers = options.ftpServers
+  servers = options.ftpServers || {}
 
   context.ftp =
 

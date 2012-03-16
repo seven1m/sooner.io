@@ -2,7 +2,7 @@ pg = require 'pg'
 fs = require 'fs'
 
 exports.init = (context, options) ->
-  connections = options.dbConnections
+  connections = options.dbConnections || {}
 
   context.connection = class
     constructor: (conn) ->
