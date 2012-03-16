@@ -4,6 +4,8 @@ Sooner.io is the distributed job processing engine and web-based management app 
 
 Jobs are written in CoffeeScript and run on a scheduled or on-demand basis via a distributed network of "workers."
 
+I created a short presentation about Sooner.io [here](https://docs.google.com/a/timmorgan.org/presentation/d/1RQyZjI77Xb2jVJCvFwXWHpZEFAhbzgnPzn-WbWlc6Ik/present).
+
 ## Installation and Configuration
 
 You'll need at least Node.js 0.6.x (I've only tested on 0.6.12).
