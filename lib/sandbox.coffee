@@ -14,7 +14,9 @@ buildContext = ->
   context =
     console: log: console.log
     setTimeout: setTimeout
+    clearTimeout: clearTimeout
     setInterval: setInterval
+    clearInterval: clearInterval
     done: -> mongoose.disconnect()
   # load in the other libs
   for file in fs.readdirSync(__dirname + '/sandbox')
