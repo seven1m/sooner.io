@@ -6,9 +6,10 @@ if queues.length > 0
       tr
         th Name
     tbody
-      each queue in queues
+      for queue in queues
         tr
-          td= queue
+          td
+            a(href="/queues/#{queue}")= queue
 else
   p: em no queues defined
 

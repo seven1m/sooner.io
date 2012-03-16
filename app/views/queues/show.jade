@@ -1,0 +1,19 @@
+extends ../layout
+
+block content
+  h2= queue
+
+  table.table.table-bordered.table-striped
+    thead
+      tr
+        th ID
+        th Data
+    tbody
+      for entry in entries
+        tr
+          td= entry._id
+          td= entry.toString()
+
+  p
+    | page:
+    != paginator.pageLinks()
