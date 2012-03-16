@@ -1,12 +1,13 @@
 extends ../layout
 
 block content
-  h2
-    = run.name
-    |  Run
+  h2= run.name
 
   table.table.table-bordered
     tbody
+      tr
+        th Ran
+        td= run.ranAt && run.ranAt.toString('M/dd/yyyy h:mm:ss tt')
       tr
         th Job
         td
@@ -26,9 +27,3 @@ block content
       tr
         th Output
         td.formatted= run.output
-      tr
-        th Created
-        td= run.createdAt.toString('M/dd/yyyy h:mm:ss tt')
-      tr
-        th Ran
-        td= run.ranAt && run.ranAt.toString('M/dd/yyyy h:mm:ss tt')
