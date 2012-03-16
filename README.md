@@ -2,7 +2,7 @@
 
 Sooner.io is the distributed job processing engine and web-based management app built on [Node.js](http://nodejs.org) and [Hook.io](http://hook.io), brought to you from the [Sooner State](http://en.wikipedia.org/wiki/Oklahoma).
 
-Workflows are written in CoffeeScript and run on a scheduled or on-demand basis via a distributed network of "workers."
+Jobs are written in CoffeeScript and run on a scheduled or on-demand basis via a distributed network of "workers."
 
 ## Worker
 
@@ -32,7 +32,7 @@ You can peek inside the Hook.io cloud and receive and emit messages via the REPL
 
     coffee repl -h IP_OF_WORKER
 
-## Workflow API
+## Job API
 
 Each job runs in a separate Node.js process with limited context, which has the effect of sandboxing the running code from the parent worker process.
 
@@ -42,7 +42,7 @@ The following functions are available to your running code:
 
 ### done
 
-Call `done()` at the end of every workflow so the db connections can be cleaned up, otherwise your job may be marked as failed.
+Call `done()` at the end of every job so the db connections can be cleaned up, otherwise your job may be marked as failed.
 
 ### queue
 
