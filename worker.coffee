@@ -41,6 +41,11 @@ mongoose = require 'mongoose'
 mongoose.connect "mongodb://#{config.db.host}/#{config.db.name}"
 models = require(__dirname + '/app/models')
 
+# clean up
+models.run.update {status: 'busy'}, {$set: {status: 'fail'}}, {multi: true}, (err, num) ->
+  if err then throw err
+  console.log "#{num} runs marked as failed"
+
 # setup cron
 crons = []
 hook.on 'hook::ready', ->

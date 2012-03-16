@@ -6,10 +6,16 @@ CoffeeScript = require 'coffee-script'
 
 config = JSON.parse(fs.readFileSync(__dirname + '/../config.json'))
 
+mongoose = require 'mongoose'
+mongoose.connect "mongodb://#{config.db.host}/#{config.db.name}"
+
 # objects to which we're willing to give access
 buildContext = ->
   context =
     console: log: console.log
+    setTimeout: setTimeout
+    setInterval: setInterval
+    done: -> mongoose.disconnect()
   # load in the other libs
   for file in fs.readdirSync(__dirname + '/sandbox')
     if file.match(/\.coffee$/)

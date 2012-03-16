@@ -45,5 +45,6 @@ schema.methods.newRun = ->
     jobId:      @_id
     name:       @name
     definition: @definition
+    workerName: @workerName
 
 module.exports = mongoose.model 'Job', schema

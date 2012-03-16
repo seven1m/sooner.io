@@ -40,11 +40,21 @@ To start up the web server, run:
 
 ## Workflow API
 
-Each job runs in a separate Node.js context, which has the effect of sandboxing the running code from the parent worker process.
+Each job runs in a separate Node.js process with limited context, which has the effect of sandboxing the running code from the parent worker process.
 
-This technique is not full proof, as their are still ways you can crash the parent process, but it helps.
+The following functions are available to your running code:
 
-As such, your job only has access to the objects provided it by the sandbox, namely:
+### done
+
+Call `done()` at the end of every workflow so the db connections can be cleaned up, otherwise your job may be marked as failed.
+
+### queue
+
+*Arguments:*
+* name
+
+Returns the Mongoose object for the named queue collection.
+
 
 ### db.connect
 

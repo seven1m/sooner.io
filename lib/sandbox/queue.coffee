@@ -1,4 +1,3 @@
-fs = require 'fs'
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
 
@@ -10,7 +9,7 @@ exports.init = (context, options) ->
     name = "queue_#{name}"
     model = queues[name]
     unless model
-      schema = new Schema()
+      schema = new Schema({}, {strict: no})
       model = mongoose.model name, schema
       queues[name] = model
     model
