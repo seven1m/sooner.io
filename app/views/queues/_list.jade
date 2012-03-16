@@ -1,0 +1,31 @@
+h2 Queues
+
+if queues.length > 0
+  table.table.table-bordered.table-striped
+    thead
+      tr
+        th Name
+    tbody
+      each queue in queues
+        tr
+          td= queue
+else
+  p: em no queues defined
+
+h3 Help
+
+p
+  | A queue is simply a <a href="http://mongoosejs.com/">Mongoose</a> model.
+  | Call <code>queue(name)</code> to retrieve the model:
+
+pre
+  | queue('widgets').find completed: no, (err, widgets) ->
+  |   if err then throw err
+  |   for widget in widgets
+  |     # do something
+  | queue('widgets').update({_id: id}, {completed: yes})
+
+p
+  | See the <a href="http://mongoosejs.com/docs/query.html">Querying</a> and
+  | <a href="http://mongoosejs.com/docs/updating-documents.html">Updating</a> docs
+  | for help.

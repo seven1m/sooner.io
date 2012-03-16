@@ -22,6 +22,8 @@ html
           ul.nav
             li(class=req.path.match(/^\/jobs/) && 'active')
               a(href='/jobs') Jobs
+            li(class=req.path.match(/^\/queues/) && 'active')
+              a(href='/queues') Queues
             li(class=req.path.match(/^\/status/) && 'active')
               a(href='/status') Status
 
