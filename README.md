@@ -10,12 +10,10 @@ I created a short presentation about Sooner.io [here](https://docs.google.com/a/
 
 You'll need at least Node.js 0.6.x (I've only tested on 0.6.12).
 
-```bash
-git clone git://github.com/seven1m/sooner.io.git
-cd sooner.io
-npm install
-cp config{.example,}.json
-```
+    git clone git://github.com/seven1m/sooner.io.git
+    cd sooner.io
+    npm install
+    cp config{.example,}.json
 
 ## Worker
 
