@@ -1,9 +1,5 @@
 window.socket = io.connect()
 
-socket.bridge = (event, callback) ->
-  socket.on event, callback
-  socket.emit 'bridge', event
-
 updateDelay = 30000
 
 socket.on 'i-am', (node) ->
@@ -33,3 +29,8 @@ propRow = (prop, val) ->
   else
     val = $('<div/>').text(JSON.stringify(val)).html()
   "<tr><td>#{prop}:</td><td>#{val}</td></tr>"
+
+window.watchForFinish = ->
+  socket.on 'log', (event, data) ->
+    if event.match(/job\-complete/)
+      location.reload()
