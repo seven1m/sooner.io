@@ -47,6 +47,7 @@ Call `done()` at the end of every job so the db connections can be cleaned up, o
 ### queue
 
 *Arguments:*
+
 * name
 
 Returns the [Mongoose](http://mongoosejs.com/) object for the named queue collection.
@@ -65,16 +66,19 @@ You should only set the `status` and `data` fields yourself.
 ### db.connect
 
 *Arguments:*
+
 * connectionName
 * callback
 
 *Example:*
+
 ```coffeescript
 db.connect 'foo', (conn) ->
   # use conn here
 ```
 
 The `connectionName` is a named connection provided in `config.json` under `dbConnections`. Following is an example connection called "foo":
+
 ```json
 {
   "dbConnections": {
@@ -86,10 +90,12 @@ The `connectionName` is a named connection provided in `config.json` under `dbCo
 ### conn.query
 
 *Arguments:*
+
 * sql
 * callback
 
 *Example:*
+
 ```coffeescript
 db.connect 'foo', (conn) ->
   conn.query 'select now() as when', (rows) ->
@@ -99,12 +105,14 @@ db.connect 'foo', (conn) ->
 ### shell.spawn
 
 *Arguments:*
+
 * commandName
 * args (array)
 
 Returns a [ChildProcess](http://nodejs.org/api/child_process.html).
 
 The `commandName` is a named shell command provided in `config.json` under `shellCommands`. Following is an example named shell command for "ls":
+
 ```json
 {
   "shellCommands": {
@@ -116,6 +124,7 @@ The `commandName` is a named shell command provided in `config.json` under `shel
 ### shell.run
 
 *Arguments:*
+
 * commandName
 * args (array)
 * callback
@@ -123,6 +132,7 @@ The `commandName` is a named shell command provided in `config.json` under `shel
 This is a higher level function that executes spawn, then waits for the process to finish. `stdout` and `stderr` are both captured to a single string, then passed via the `callback` function.
 
 *Example:*
+
 ```coffeescript
 db.run 'listDir', ['/tmp'], (code, output) ->
   # code = return code of the completed process
@@ -132,6 +142,7 @@ db.run 'listDir', ['/tmp'], (code, output) ->
 ### ftp.connect
 
 *Arguments:*
+
 * connectionName
 * callback
 
