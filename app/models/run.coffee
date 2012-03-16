@@ -35,6 +35,8 @@ schema = new Schema
     default: -> new Date()
   ranAt:
     type: Date
+  completedAt:
+    type: Date
 
 schema.methods.trigger = ->
   GLOBAL.hook.emit 'trigger-job', runId: @_id, jobId: @jobId, name: @name
@@ -55,6 +57,7 @@ schema.methods.run = (callback) ->
     @output += data.toString()
     @save()
   sandbox.on 'exit', (code) =>
+    @completedAt = new Date()
     if code == 0
       @status = 'success'
     else

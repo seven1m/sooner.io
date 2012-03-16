@@ -9,6 +9,9 @@ block content
         th Ran
         td= run.ranAt && run.ranAt.toString('M/dd/yyyy h:mm:ss tt')
       tr
+        th Completed
+        td= run.completedAt && run.completedAt.toString('M/dd/yyyy h:mm:ss tt')
+      tr
         th Job
         td
           a(href="/jobs/#{run.jobId}")= run.jobId
