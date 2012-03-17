@@ -1,6 +1,6 @@
 # Sooner.io
 
-Sooner.io is the distributed job processing engine and web-based management app built on [Node.js](http://nodejs.org) and [Hook.io](http://hook.io), brought to you from the [Sooner State](http://en.wikipedia.org/wiki/Oklahoma).
+Sooner.io is the distributed job scheduling engine and web-based management app built on [Node.js](http://nodejs.org) and [Hook.io](http://hook.io), brought to you from the [Sooner State](http://en.wikipedia.org/wiki/Oklahoma).
 
 Jobs are written in CoffeeScript and run on a scheduled or on-demand basis via a distributed network of "workers."
 
