@@ -2,3 +2,23 @@ extends ../layout
 
 block content
   include _list
+
+  h3 Help
+
+  p
+    | A queue is simply a <a href="http://mongoosejs.com/">Mongoose</a> model.
+    | Call <code>queue(name)</code> to retrieve the model:
+
+  pre
+    | q = queue('widgets')
+    | q.find status: 'pending', (err, widgets) ->
+    |   if err then throw err
+    |   for widget in widgets
+    |     # do something
+    |     widget.status = 'complete'
+    |     widget.save()
+
+  p
+    | See the <a href="http://mongoosejs.com/docs/query.html">Querying</a> and
+    | <a href="http://mongoosejs.com/docs/updating-documents.html">Updating</a> docs
+    | for help.

@@ -21,7 +21,7 @@ inputTag = exports.inputTag = (obj, field, options) ->
     "unsupported"
 
 exports.field = (obj, field, options) ->
-  "<div class='control-group #{obj.errors && obj.errors[field] && 'error'}'>
+  "<div class='control-group #{obj.errors && obj.errors[field] && 'error' || ''}'>
     <label class='control-label' for='#{field}'>#{options.label || field[0].toUpperCase() + field.slice(1)}</label>
     <div class='controls'>
       #{options.input || inputTag(obj, field, options)}

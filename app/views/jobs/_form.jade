@@ -6,6 +6,6 @@ form#job(action="/jobs/#{params.id || ''}", method='post')
     != field(job, 'schedule', {inputClass: 'input-large', help: 'in the form: "sec min hour dayofmonth month dayofweek" (<a href="http://help.sap.com/saphelp_xmii120/helpdata/en/44/89a17188cc6fb5e10000000a155369/content.htm">help</a>)'})
     != field(job, 'enabled', {label: 'Schedule Enabled', tagType: 'checkbox'})
     != field(job, 'workerName', {label: 'Worker Name', help: 'which worker will process this job'})
-    != field(job, 'definition', {tag: 'textarea', inputClass: 'input-xxlarge'})
+    != field(job, 'definition', {tag: 'textarea', inputClass: 'input-xxlarge', help: 'See the <a href="https://github.com/seven1m/sooner.io/blob/master/README.md#job-api">README</a> for help writing your job definition.'})
     .form-actions
       button.btn.btn-primary(type='submit') Save
