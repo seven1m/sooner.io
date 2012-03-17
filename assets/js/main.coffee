@@ -30,11 +30,6 @@ propRow = (prop, val) ->
     val = $('<div/>').text(JSON.stringify(val)).html()
   "<tr><td>#{prop}:</td><td>#{val}</td></tr>"
 
-window.watchForFinish = ->
-  socket.on 'log', (event, data) ->
-    if event.match(/job\-complete/)
-      location.reload()
-
 statusIcons =
   success: 'ok'
   fail:    'exclamation-sign'
@@ -46,15 +41,17 @@ window.watchJobChanges = (jobId) ->
     if !jobId || data.jobId == jobId
       if event.match(/running\-job/) and $("tr[data-run-meta=#{data.runId}]").length == 0
         table = $("#job-history-table tbody")
-        table.prepend "<tr><td class='formatted' colspan='3' data-run-output='#{data.runId}'></td></tr>"
+        table.prepend "<tr><td class='formatted' colspan='4' data-run-output='#{data.runId}'></td></tr>"
         row = $("<tr data-run-meta='#{data.runId}'/>")
         row.append "<td><a href='/runs/#{data.runId}'>#{data.runId}</a></td>"
-        row.append "<td>#{new Date(data.ranAt).toString('M/dd/yyyy h:mm:ss tt')}</td>"
-        row.append "<td><i class='icon-cog'></i> busy</td>"
+        row.append "<td class='ran-at'>#{new Date(data.ranAt).toString('M/dd/yyyy h:mm:ss tt')}</td>"
+        row.append "<td class='completed-at'></td>"
+        row.append "<td class='status'><i class='icon-cog'></i> busy</td>"
         table.prepend row
       else if event.match(/job\-output/)
         html = $('<div/>').text(data.output).html().replace(/https?:\/\/\S+/g, "<a href='$&'>$&</a>")
         $("[data-run-output=#{data.runId}]").append(html)
       else if event.match(/job\-complete/)
-        $("[data-run-meta=#{data.runId}] td:eq(2)").html("<i class='icon-#{statusIcons[data.status]}'></i> #{data.status}")
+        $("[data-run-meta=#{data.runId}] td.status").html("<i class='icon-#{statusIcons[data.status]}'></i> #{data.status}")
+        $("[data-run-meta=#{data.runId}] td.completed-at").html(new Date(data.completedAt).toString('M/dd/yyyy h:mm:ss tt'))
 

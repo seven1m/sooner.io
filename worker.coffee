@@ -48,6 +48,7 @@ models.run.find {status: 'busy'}, (err, runs) ->
   for run in runs
     console.log "...marking run #{run._id} as failed."
     run.status = 'fail'
+    run.completedAt = new Date()
     run.save (err) ->
       if err then throw err
       hook.emit 'job-complete', runId: run._id, jobId: run.jobId, name: run.name, status: run.status

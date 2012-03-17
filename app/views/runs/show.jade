@@ -4,13 +4,13 @@ block content
   h2= run.name
 
   table.table.table-bordered
-    tbody
+    tbody('data-run-meta'=run._id)
       tr
-        th Ran
-        td= run.ranAt && run.ranAt.toString('M/dd/yyyy h:mm:ss tt')
+        th Started
+        td.ran-at= run.ranAt && run.ranAt.toString('M/dd/yyyy h:mm:ss tt')
       tr
         th Completed
-        td= run.completedAt && run.completedAt.toString('M/dd/yyyy h:mm:ss tt')
+        td.completed-at= run.completedAt && run.completedAt.toString('M/dd/yyyy h:mm:ss tt')
       tr
         th Job
         td
@@ -23,13 +23,13 @@ block content
         td.formatted= run.definition
       tr
         th Status
-        td
+        td.status
           != statusIcon(run.status)
           | 
           = run.status
       tr
         th Output
-        td.formatted= run.output
+        td.formatted('data-run-output'=run._id)= run.output
 
   :coffeescript
-    watchForFinish()
+    watchJobChanges '#{run.jobId}'

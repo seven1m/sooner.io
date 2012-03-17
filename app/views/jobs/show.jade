@@ -36,20 +36,22 @@ block content
     thead
       tr
         th ID
-        th Ran
+        th Started
+        th Completed
         th Status
     tbody
       for run in runs
         tr('data-run-meta'=run._id)
           td
             a(href="/runs/#{run._id}")= run.id
-          td= run.ranAt && run.ranAt.toString('M/dd/yyyy h:mm:ss tt')
-          td
+          td.ran-at= run.ranAt && run.ranAt.toString('M/dd/yyyy h:mm:ss tt')
+          td.completed-at= run.completedAt && run.completedAt.toString('M/dd/yyyy h:mm:ss tt')
+          td.status
             != statusIcon(run.status)
             | 
             = run.status
         tr
-          td.formatted(colspan=3, 'data-run-output'=run._id)
+          td.formatted(colspan=4, 'data-run-output'=run._id)
             != escapeAndLink(run.output)
 
   p!= paginator.pageLinks()
