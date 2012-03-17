@@ -43,6 +43,7 @@ You can peek inside the Hook.io cloud and receive and emit messages via the REPL
 
     coffee repl -h IP_OF_WORKER
 
+<a name="job-api"></a>
 ## Job API
 
 Each job runs in a separate Node.js process with limited context, which has the effect of sandboxing the running code from the parent worker process.
