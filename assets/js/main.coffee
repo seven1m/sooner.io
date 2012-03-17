@@ -41,19 +41,20 @@ statusIcons =
   busy:    'cog'
   idle:    'time'
 
-window.watchJobChanges = ->
+window.watchJobChanges = (jobId) ->
   socket.on 'log', (event, data) ->
-    if event.match(/running\-job/) and $("tr[data-run-meta=#{data.runId}]").length == 0
-      table = $('#job-history-table tbody')
-      table.prepend "<tr><td class='formatted' colspan='3' data-run-output='#{data.runId}'></td></tr>"
-      row = $("<tr data-run-meta='#{data.runId}'/>")
-      row.append "<td><a href='/runs/#{data.runId}'>#{data.runId}</a></td>"
-      row.append "<td>#{new Date(data.ranAt).toString('M/dd/yyyy h:mm:ss tt')}</td>"
-      row.append "<td><i class='icon-cog'></i> busy</td>"
-      table.prepend row
-    else if event.match(/job\-output/)
-      html = $('<div/>').text(data.output).html().replace(/https?:\/\/\S+/g, "<a href='$&'>$&</a>")
-      $("[data-run-output=#{data.runId}]").append(html)
-    else if event.match(/job\-complete/)
-      $("[data-run-meta=#{data.runId}] td:eq(2)").html("<i class='icon-#{statusIcons[data.status]}'></i> #{data.status}")
+    if !jobId || data.jobId == jobId
+      if event.match(/running\-job/) and $("tr[data-run-meta=#{data.runId}]").length == 0
+        table = $("#job-history-table tbody")
+        table.prepend "<tr><td class='formatted' colspan='3' data-run-output='#{data.runId}'></td></tr>"
+        row = $("<tr data-run-meta='#{data.runId}'/>")
+        row.append "<td><a href='/runs/#{data.runId}'>#{data.runId}</a></td>"
+        row.append "<td>#{new Date(data.ranAt).toString('M/dd/yyyy h:mm:ss tt')}</td>"
+        row.append "<td><i class='icon-cog'></i> busy</td>"
+        table.prepend row
+      else if event.match(/job\-output/)
+        html = $('<div/>').text(data.output).html().replace(/https?:\/\/\S+/g, "<a href='$&'>$&</a>")
+        $("[data-run-output=#{data.runId}]").append(html)
+      else if event.match(/job\-complete/)
+        $("[data-run-meta=#{data.runId}] td:eq(2)").html("<i class='icon-#{statusIcons[data.status]}'></i> #{data.status}")
 

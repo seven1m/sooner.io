@@ -55,4 +55,4 @@ block content
   p!= paginator.pageLinks()
 
   :coffeescript
-    watchJobChanges()
+    watchJobChanges '#{job._id}'
