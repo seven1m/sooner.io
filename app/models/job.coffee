@@ -1,7 +1,7 @@
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
 models = require __dirname
-cronJob = require('cron').CronJob
+CronJob = require('cron').CronJob
 
 schema = new Schema
   name:
@@ -11,7 +11,7 @@ schema = new Schema
     type: String
     validate: (v) ->
       try
-        new String(v).length > 0 && new cronJob(v)
+        new String(v).length > 0 && new CronJob(v)
       catch err
         console.log(err)
         false
@@ -46,5 +46,11 @@ schema.methods.newRun = ->
     name:       @name
     definition: @definition
     workerName: @workerName
+
+schema.methods.newCron = ->
+  new CronJob @schedule, =>
+    run = @newRun()
+    run.save (err, run) ->
+      GLOBAL.hook.emit 'trigger-job', runId: run._id, name: run.name
 
 module.exports = mongoose.model 'Job', schema

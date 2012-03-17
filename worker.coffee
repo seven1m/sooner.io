@@ -1,5 +1,4 @@
 Hook = require('hook.io').Hook
-CronJob = require('cron').CronJob
 fs = require "fs"
 
 argv = require('optimist')
@@ -67,11 +66,7 @@ hook.on 'hook::ready', ->
       else
         console.log "jobs: #{JSON.stringify(w.name for w in jobs)}"
         for job in jobs
-          cron = new CronJob job.schedule, ->
-            run = job.newRun()
-            run.save (err, run) ->
-              hook.emit 'trigger-job', runId: run._id, name: run.name
-          crons.push cron
+          crons.push job.newCron()
   hook.on '**::trigger-job', (data) ->
     models.run.findById data.runId, (err, run) ->
       if err or !run
