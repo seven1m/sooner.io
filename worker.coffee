@@ -24,7 +24,7 @@ if argv.help
 GLOBAL.hook = hook = new Hook
   name: argv.name
 
-hook.on '**::list-nodes', ->
+hook.on '*::list-nodes', ->
   hook.emit 'i-am'
     name: hook.name
     host: ifaces().join(', ')
@@ -62,7 +62,7 @@ models.run.find {status: 'busy', worker: hook.name}, (err, runs) ->
 # setup cron
 crons = []
 hook.on 'hook::ready', ->
-  hook.on '**::reload-jobs', ->
+  hook.on '*::reload-jobs', ->
     console.log 'loading jobs into cron...'
     cron.stop() for cron in crons
     models.job.find enabled: true, workerName: hook.name, (err, jobs) ->
@@ -72,10 +72,12 @@ hook.on 'hook::ready', ->
         console.log "jobs: #{JSON.stringify(w.name for w in jobs)}"
         for job in jobs
           crons.push job.newCron()
-  hook.on '**::trigger-job', (data) ->
+  jobTriggered = (data) ->
     models.run.findById data.runId, (err, run) ->
       if err or !run
         console.log "Could not find run with id #{data.runId}."
       else
         run.run()
+  hook.on 'trigger-job', jobTriggered
+  hook.on '*::trigger-job', jobTriggered
   hook.emit 'reload-jobs'

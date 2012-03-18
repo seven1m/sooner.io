@@ -23,6 +23,8 @@ To start up the primary worker, run:
 
     coffee worker
 
+*Note: the way Sooner.io is currently configured, there must be one worker that is the 'server' to which others connect. This limitation will likely be lifted once I better understand how to get Hook.io to do auto-discovery.*
+
 You can have multiple workers, each responsible for handling different jobs. Designate one worker as the "main" worker, and connect all others to it via the `-c` (connect) switch:
 
 To start up another worker, run:

@@ -67,24 +67,23 @@ if argv.host
     'hook-host': argv.host
     'hook-port': argv.port
 
-  hook.on '**::list-nodes', ->
+  iam = ->
     hook.emit 'i-am'
       name: hook.name
       host: ifaces().join(', ')
-      port: hook['hook-port']
-
-  # hack to work around hook.io bug
-  hook.connect = ->
-  hook.listen = ->
+      port: app.address().port
+  hook.on 'list-nodes', iam # self
+  hook.on '*::list-nodes', iam
 
   io = socketio.listen app
 
   # bridge these events from hook io, for logging
   bridge = (ev, pass) -> hook.on ev, (data) -> io.sockets.emit pass, @event, data
   bridge(ev, 'log') for ev in ['*::running-job', '*::job-output', '*::job-complete'] # do NOT include trigger-job (causes dupes for some reason)
-  bridge(ev, 'cxn') for ev in ['connection::end', 'hook::connected']
+  bridge(ev, 'cxn') for ev in ['hook::connected', '*::hook::connected', 'connection::end', '*::hook::disconnected']
   # bridge i-am responses
-  hook.on '**::i-am', (data) -> io.sockets.emit 'i-am', data
+  hook.on 'i-am', (data) -> io.sockets.emit 'i-am', data
+  hook.on '*::i-am', (data) -> io.sockets.emit 'i-am', data
   # bridge list-nodes queries and generic hook messages
   io.sockets.on 'connection', (socket) ->
     socket.on 'list-nodes', -> hook.emit 'list-nodes'
