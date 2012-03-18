@@ -46,7 +46,7 @@ mongoose.connect "mongodb://#{config.db.host}/#{config.db.name}"
 models = require(__dirname + '/app/models')
 
 # clean up
-models.run.find {status: 'busy'}, (err, runs) ->
+models.run.find {status: 'busy', worker: hook.name}, (err, runs) ->
   console.log "Searching for runs in limbo..."
   if err then throw err
   for run in runs
@@ -65,7 +65,7 @@ hook.on 'hook::ready', ->
   hook.on '**::reload-jobs', ->
     console.log 'loading jobs into cron...'
     cron.stop() for cron in crons
-    models.job.find enabled: true, workerName: argv.name, (err, jobs) ->
+    models.job.find enabled: true, workerName: hook.name, (err, jobs) ->
       if err
         console.log 'error retrieving jobs'
       else
