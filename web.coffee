@@ -50,14 +50,17 @@ console.log "Express server listening on port %d in %s mode", app.address().port
 GLOBAL.hook = hook = new Hook
   name: 'web'
 
-argv = require('optimist')
+opts = require('optimist')
        .usage("Start a web process.\nUsage: $0")
+       .describe('host', 'host ip address of main worker process')
        .alias('h', 'host')
-       .describe('h', 'host ip address of main worker process')
+       .describe('port', 'host port of main worker process, defaults to 5000')
        .alias('p', 'port')
-       .describe('p', 'host port of main worker process, defaults to 5000')
-       .default('port', 5000)
-       .argv
+argv = opts.argv
+
+if argv.help
+  console.log opts.help()
+  process.exit()
 
 if argv.host
   hook.connect

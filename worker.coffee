@@ -2,20 +2,24 @@ Hook = require('hook.io').Hook
 fs = require "fs"
 ifaces = require(__dirname + '/lib/ip').ifaces
 
-argv = require('optimist')
+opts = require('optimist')
        .usage("Start a worker process.\nUsage: $0")
-       .alias('n', 'name')
-       .describe('n', 'name this worker')
+       .describe('name', 'name this worker')
        .default('name', 'worker')
-       .alias('h', 'host')
-       .describe('h', 'host ip address; use own ip if this is to be the main worker process.')
+       .alias('n', 'name')
+       .describe('host', 'host ip address to connect to')
        .default('host', '0.0.0.0')
-       .alias('p', 'port')
-       .describe('p', 'host port')
+       .alias('h', 'host')
+       .describe('port', 'host port')
        .default('port', 5000)
+       .alias('p', 'port')
+       .describe('connect', 'connect to a remote host (use this option if not the server)')
        .alias('c', 'connect')
-       .describe('c', 'connect to a remote host (use this option if not the server)')
-       .argv
+argv = opts.argv
+
+if argv.help
+  console.log opts.help()
+  process.exit()
 
 GLOBAL.hook = hook = new Hook
   name: argv.name
