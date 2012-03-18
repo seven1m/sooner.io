@@ -10,15 +10,6 @@ block content
         th Port
     tbody
 
-  h3 Real-Time Log
-  table#log.table.table-bordered.table-striped
-    thead
-      tr
-        th Event
-        th Data
-        th Time
-    tbody
-
   :coffeescript
-    showLog()
-    socket.on 'connect', showNodes
+    showNodes()
+    socket.on 'cxn', showNodes

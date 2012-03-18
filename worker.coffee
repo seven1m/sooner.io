@@ -1,5 +1,6 @@
 Hook = require('hook.io').Hook
 fs = require "fs"
+ifaces = require(__dirname + '/lib/ip').ifaces
 
 argv = require('optimist')
        .usage("Start a worker process.\nUsage: $0")
@@ -22,7 +23,7 @@ GLOBAL.hook = hook = new Hook
 hook.on '**::list-nodes', ->
   hook.emit 'i-am'
     name: hook.name
-    host: hook['hook-host']
+    host: ifaces().join(', ')
     port: hook['hook-port']
 
 connDetails =
@@ -43,7 +44,6 @@ models = require(__dirname + '/app/models')
 # clean up
 models.run.find {status: 'busy'}, (err, runs) ->
   console.log "Searching for runs in limbo..."
-  #{$set: {status: 'fail'}}, {multi: true}, (err, num) ->
   if err then throw err
   for run in runs
     console.log "...marking run #{run._id} as failed."

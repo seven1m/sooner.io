@@ -5,6 +5,7 @@ socketio = require 'socket.io'
 require __dirname + '/assets/js/date'
 Hook = require('hook.io').Hook
 fs = require "fs"
+ifaces = require(__dirname + '/lib/ip').ifaces
 
 # setup db
 config = JSON.parse(fs.readFileSync(__dirname + '/config.json'))
@@ -66,7 +67,7 @@ if argv.host
   hook.on '**::list-nodes', ->
     hook.emit 'i-am'
       name: hook.name
-      host: hook['hook-host']
+      host: ifaces().join(', ')
       port: hook['hook-port']
 
   # hack to work around hook.io bug
@@ -76,8 +77,9 @@ if argv.host
   io = socketio.listen app
 
   # bridge these events from hook io, for logging
-  bridge = (ev) -> hook.on "*::#{ev}", (data) -> io.sockets.emit 'log', @event, data
-  bridge(ev) for ev in ['running-job', 'job-output', 'job-complete', 'i-am', 'list-nodes', 'reload-jobs'] # do NOT include trigger-job (causes dupes for some reason)
+  bridge = (ev, pass) -> hook.on ev, (data) -> io.sockets.emit pass, @event, data
+  bridge(ev, 'log') for ev in ['*::running-job', '*::job-output', '*::job-complete'] # do NOT include trigger-job (causes dupes for some reason)
+  bridge(ev, 'cxn') for ev in ['connection::end', 'hook::connected']
   # bridge i-am responses
   hook.on '**::i-am', (data) -> io.sockets.emit 'i-am', data
   # bridge list-nodes queries and generic hook messages

@@ -9,17 +9,6 @@ socket.on 'i-am', (node) ->
 window.showNodes = ->
   $('#nodes tbody').html('')
   socket.emit 'list-nodes'
-  setTimeout showNodes, updateDelay
-
-maxLogLines = 1000
-window.showLog = ->
-  socket.on 'log', (event, data) ->
-    props = (propRow(prop, val) for prop, val of data)
-    data = "<table>#{props.join('')}</table>"
-    console.log data
-    row = "<tr><td>#{event}</td><td>#{data}</td><td>#{new Date().toString 'h:mm:ss tt'}</td></tr>"
-    e = $('#log tbody').eq(0)
-    e.prepend row
 
 propRow = (prop, val) ->
   if prop == 'runId'
