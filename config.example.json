@@ -1,9 +1,15 @@
 {
-    "db": {
-        "host": "localhost"
-      , "name": "boomer-sooner"
-  }
-  , "dbConnections": {
-        "foo": "postgres://postgres@localhost/foo"
+  "db": {
+    "host": "localhost",
+    "name": "boomer-sooner"
+  },
+  "dbConnections": {
+    "foo": "postgres://postgres@localhost/foo"
+  },
+  "shellCommands": {
+    "bar": "/path/to/command"
+  },
+  "ftpServers": {
+    "baz": "ftphost-or-ip"
   }
 }
