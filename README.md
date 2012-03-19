@@ -4,7 +4,7 @@ Sooner.io is the distributed job scheduling engine and web-based management app 
 
 Jobs are written in CoffeeScript and run on a scheduled or on-demand basis via a distributed network of "workers."
 
-Some screenshots can be seen at [seven1m.github.com/sooner.io](http://seven1m.github.com/sooner.io).
+Some screenshots can be seen at [sooner.io](http://sooner.io).
 
 I created a short presentation about Sooner.io [here](https://docs.google.com/a/timmorgan.org/presentation/d/1RQyZjI77Xb2jVJCvFwXWHpZEFAhbzgnPzn-WbWlc6Ik/present).
 
