@@ -78,6 +78,8 @@ if argv.host
   hook.on '*::list-nodes', iam
 
   io = socketio.listen app
+  if process.env.NODE_DISABLE_WS
+    io.set 'transports', ['htmlfile', 'xhr-polling', 'jsonp-polling']
 
   # bridge these events from hook io, for logging
   bridge = (ev, pass) -> hook.on ev, (data) -> io.sockets.emit pass, @event, data
