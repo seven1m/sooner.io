@@ -34,7 +34,7 @@ app.configure ->
   app.use express.cookieParser()
   app.use express.session
     secret: 'your secret here'
-  app.use require('connect-assets')()
+  app.use require('connect-assets')(src: "#{__dirname}/assets")
   app.use app.router
   app.use express.static(__dirname + '/public')
   app.helpers helpers
