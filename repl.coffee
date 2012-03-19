@@ -2,7 +2,7 @@ process.argv.push '--repl'
 
 Hook = require('hook.io').Hook
 
-argv = require('optimist')
+opts = require('optimist')
        .usage("Start a repl process.\nUsage: $0")
        .describe('host', 'connect to host ip address')
        .demand('host')
@@ -10,7 +10,11 @@ argv = require('optimist')
        .describe('port', 'host port')
        .alias('p', 'port')
        .default('port', 5000)
-       .argv
+argv = opts.argv
+
+if argv.help
+  console.log opts.help()
+  process.exit()
 
 hook = new Hook
   name: 'repl'
