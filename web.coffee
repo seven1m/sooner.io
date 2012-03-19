@@ -7,6 +7,16 @@ Hook = require('hook.io').Hook
 fs = require "fs"
 ifaces = require(__dirname + '/lib/ip').ifaces
 
+opts = require('optimist')
+       .usage("Start a web process.\nUsage: $0")
+       .describe('host', 'host ip address of main worker process')
+       .alias('h', 'host')
+       .describe('port', 'host port of main worker process, defaults to 5000')
+       .alias('p', 'port')
+       .describe('webport', 'port to run web server')
+       .default('webport', 3000)
+argv = opts.argv
+
 # setup db
 config = JSON.parse(fs.readFileSync(__dirname + '/config.json'))
 mongoose = require 'mongoose'
@@ -42,21 +52,13 @@ require('express-resource-routes').init(app)
 
 routes(app)
 
-app.listen 3000
+app.listen argv.webport
 console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
 
 # Hook.io bridge
 # note: I gave up on hook.js; this seems simpler
 GLOBAL.hook = hook = new Hook
   name: 'web'
-
-opts = require('optimist')
-       .usage("Start a web process.\nUsage: $0")
-       .describe('host', 'host ip address of main worker process')
-       .alias('h', 'host')
-       .describe('port', 'host port of main worker process, defaults to 5000')
-       .alias('p', 'port')
-argv = opts.argv
 
 if argv.help
   console.log opts.help()
