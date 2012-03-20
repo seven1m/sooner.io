@@ -1,4 +1,5 @@
 Hook = require('hook.io').Hook
+_ = require "underscore"
 fs = require "fs"
 ifaces = require(__dirname + '/lib/ip').ifaces
 
@@ -59,25 +60,40 @@ models.run.find {status: 'busy', worker: hook.name}, (err, runs) ->
   if runs.length == 0
     console.log "...none found."
 
-# setup cron
-crons = []
+jobCache =
+  crons: []
+  hooks: []
+
 hook.on 'hook::ready', ->
-  hook.on '*::reload-jobs', ->
-    console.log 'loading jobs into cron...'
-    cron.stop() for cron in crons
-    models.job.find enabled: true, workerName: hook.name, (err, jobs) ->
+  reloadJobs = ->
+    console.log 'loading jobs...'
+    cron.stop() for cron in jobCache.crons
+    hook.off.apply(this, h) for h in jobCache.hooks
+
+    models.job.find workerName: hook.name, (err, jobs) ->
       if err
         console.log 'error retrieving jobs'
       else
-        console.log "jobs: #{JSON.stringify(w.name for w in jobs)}"
+        console.log "jobs: #{JSON.stringify(j.name for j in jobs)}"
         for job in jobs
-          crons.push job.newCron()
+          if job.enabled
+            console.log "setting up cron for #{job.name}."
+            jobCache.crons.push job.newCron()
+          if job.hooks and job.hooks != ''
+            for event in job.hooks.split(/\s*,\s*/)
+              console.log "setting up hook #{event} for #{job.name}."
+              cb = _.bind(job.hookEvent, job)
+              hook.on "*::#{event}", cb
+              jobCache.hooks.push [event, cb]
+
   jobTriggered = (data) ->
-    models.run.findById data.runId, (err, run) ->
+    models.run.findOne _id: data.runId, workerName: hook.name, (err, run) ->
       if err or !run
         console.log "Could not find run with id #{data.runId}."
       else
         run.run()
   hook.on 'trigger-job', jobTriggered
   hook.on '*::trigger-job', jobTriggered
+  hook.on 'reload-jobs', reloadJobs
+  hook.on '*::reload-jobs', reloadJobs
   hook.emit 'reload-jobs'

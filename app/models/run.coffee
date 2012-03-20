@@ -20,7 +20,7 @@ schema = new Schema
   hooks:
     type: Array
   data:
-    type: Array
+    type: {}
   status:
     type: String
     enum: ['busy', 'idle', 'fail', 'success']
@@ -47,8 +47,11 @@ schema.methods.run = (callback) ->
   @ranAt = new Date()
   @save(callback)
 
+  input =
+    code: @definition
+    data: @data || {}
   sandbox = childProcess.spawn "coffee", ["#{__dirname}/../../lib/sandbox.coffee"], {}
-  sandbox.stdin.end @definition
+  sandbox.stdin.end JSON.stringify(input)
   GLOBAL.hook.emit 'running-job', pid: sandbox.pid, runId: @_id, jobId: @jobId, name: @name, ranAt: @ranAt
   sandbox.stdout.on 'data', (data) =>
     @output += data.toString()

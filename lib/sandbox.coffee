@@ -10,8 +10,9 @@ mongoose = require 'mongoose'
 mongoose.connect "mongodb://#{config.db.host}/#{config.db.name}"
 
 # objects to which we're willing to give access
-buildContext = ->
+buildContext = (data) ->
   context =
+    data: data
     console: log: console.log
     setTimeout: setTimeout
     clearTimeout: clearTimeout
@@ -25,6 +26,6 @@ buildContext = ->
       require(__dirname + '/sandbox/' + name).init(context, config)
   context
 
-code = fs.readFileSync('/dev/stdin').toString()
-js = CoffeeScript.compile code
-vm.runInNewContext js, buildContext(), 'sandbox.vm'
+input = JSON.parse(fs.readFileSync('/dev/stdin').toString())
+js = CoffeeScript.compile input.code
+vm.runInNewContext js, buildContext(input.data || {}), 'sandbox.vm'

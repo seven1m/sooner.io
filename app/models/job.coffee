@@ -3,6 +3,8 @@ Schema = mongoose.Schema
 models = require __dirname
 CronJob = require('cron').CronJob
 
+VALID_EVENTS = /^fs::/
+
 schema = new Schema
   name:
     type: String
@@ -15,6 +17,14 @@ schema = new Schema
       catch err
         console.log(err)
         false
+  hooks:
+    type: String
+    trim: yes
+    validate: (v) ->
+      all = new String(v).split(/\s*,\s*/)
+      for hook in all
+        return false unless hook == '' or hook.match(VALID_EVENTS)
+      true
   workerName:
     type: String
     default: 'worker'
@@ -36,8 +46,9 @@ schema = new Schema
 schema.methods.updateAttributes = (attrs) ->
   @name       = attrs.name
   @schedule   = attrs.schedule
-  @workerName = attrs.workerName
   @enabled    = attrs.enabled == '1'
+  @hooks      = attrs.hooks
+  @workerName = attrs.workerName
   @definition = attrs.definition
 
 schema.methods.newRun = ->
@@ -52,5 +63,11 @@ schema.methods.newCron = ->
     run = @newRun()
     run.save (err, run) ->
       GLOBAL.hook.emit 'trigger-job', runId: run._id, name: run.name
+
+schema.methods.hookEvent = (data) ->
+  run = @newRun()
+  run.data = data
+  run.save (err, run) ->
+    GLOBAL.hook.emit 'trigger-job', runId: run._id, name: run.name
 
 module.exports = mongoose.model 'Job', schema

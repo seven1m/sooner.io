@@ -9,6 +9,9 @@ block content
         th Schedule
         td.formatted(class=!job.enabled && 'disabled')= job.schedule
       tr
+        th Hooks
+        td= job.hooks
+      tr
         th Worker Name
         td= job.workerName
       tr

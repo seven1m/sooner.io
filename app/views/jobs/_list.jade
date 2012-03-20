@@ -6,6 +6,7 @@ if jobs.length > 0
       tr
         th Name
         th Schedule
+        th Hooks
         th Last Run
         th Last Status
         th
@@ -15,6 +16,7 @@ if jobs.length > 0
           td
             a(href="/jobs/#{job._id}")= job.name
           td.formatted(class=!job.enabled && 'disabled')= job.schedule
+          td= job.hooks
           td= job.lastRanAt && job.lastRanAt.toString('M/dd/yyyy h:mm:ss tt')
           td
             != statusIcon(job.lastStatus)
