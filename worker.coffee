@@ -47,7 +47,7 @@ mongoose.connect "mongodb://#{config.db.host}/#{config.db.name}"
 models = require(__dirname + '/app/models')
 
 # clean up
-models.run.find {status: 'busy', worker: hook.name}, (err, runs) ->
+models.run.find {status: 'busy', workerName: hook.name}, (err, runs) ->
   console.log "Searching for runs in limbo..."
   if err then throw err
   for run in runs
