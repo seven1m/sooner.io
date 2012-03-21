@@ -40,7 +40,10 @@ window.watchJobChanges = (jobId) ->
       else if event.match(/job\-output/)
         html = $('<div/>').text(data.output).html().replace(/https?:\/\/\S+/g, "<a href='$&'>$&</a>")
         $("[data-run-output=#{data.runId}]").append(html)
-      else if event.match(/job\-complete/)
+      else if event.match(/job\-status/)
         $("[data-run-meta=#{data.runId}] td.status").html("<i class='icon-#{statusIcons[data.status]}'></i> #{data.status}")
-        $("[data-run-meta=#{data.runId}] td.completed-at").html(new Date(data.completedAt).toString('M/dd/yyyy h:mm:ss tt'))
+        if data.ranAt
+          $("[data-run-meta=#{data.runId}] td.ran-at").html(new Date(data.ranAt).toString('M/dd/yyyy h:mm:ss tt'))
+        if data.completedAt
+          $("[data-run-meta=#{data.runId}] td.completed-at").html(new Date(data.completedAt).toString('M/dd/yyyy h:mm:ss tt'))
 

@@ -56,7 +56,7 @@ models.run.find {status: 'busy', workerName: hook.name}, (err, runs) ->
     run.completedAt = new Date()
     run.save (err) ->
       if err then throw err
-      hook.emit 'job-complete', runId: run._id, jobId: run.jobId, name: run.name, status: run.status
+      hook.emit 'job-status', runId: run._id, jobId: run.jobId, name: run.name, status: run.status
   if runs.length == 0
     console.log "...none found."
 
@@ -92,8 +92,8 @@ hook.on 'hook::ready', ->
         console.log "Could not find run with id #{data.runId}."
       else
         run.run()
-  hook.on 'trigger-job', jobTriggered
-  hook.on '*::trigger-job', jobTriggered
+  hook.on 'trigger-job', (data) -> _.delay jobTriggered, 1500, data
+  hook.on '*::trigger-job', (data) -> _.delay jobTriggered, 1500, data
   hook.on 'reload-jobs', reloadJobs
   hook.on '*::reload-jobs', reloadJobs
   hook.emit 'reload-jobs'

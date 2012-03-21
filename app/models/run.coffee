@@ -46,6 +46,7 @@ schema.methods.run = (callback) ->
   @status = 'busy'
   @ranAt = new Date()
   @save(callback)
+  GLOBAL.hook.emit 'job-status', runId: @_id, jobId: @jobId, name: @name, status: @status, ranAt: @ranAt
 
   input =
     code: @definition
@@ -68,7 +69,7 @@ schema.methods.run = (callback) ->
     else
       @status = 'fail'
       @result = code.toString()
-    GLOBAL.hook.emit 'job-complete', runId: @_id, jobId: @jobId, name: @name, status: @status, completedAt: @completedAt
+    GLOBAL.hook.emit 'job-status', runId: @_id, jobId: @jobId, name: @name, status: @status, completedAt: @completedAt
     @save()
     models.job.update {_id: @jobId}, {lastStatus: @status, lastRanAt: @ranAt}, (err, _) ->
       if err

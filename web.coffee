@@ -83,7 +83,7 @@ if argv.host
 
   # bridge these events from hook io, for logging
   bridge = (ev, pass) -> hook.on ev, (data) -> io.sockets.emit pass, @event, data
-  bridge(ev, 'log') for ev in ['*::running-job', '*::job-output', '*::job-complete'] # do NOT include trigger-job (causes dupes for some reason)
+  bridge(ev, 'log') for ev in ['*::running-job', '*::job-output', '*::job-status'] # do NOT include trigger-job (causes dupes for some reason)
   bridge(ev, 'cxn') for ev in ['hook::connected', '*::hook::connected', 'connection::end', '*::hook::disconnected']
   # bridge i-am responses
   hook.on 'i-am', (data) -> io.sockets.emit 'i-am', data
