@@ -19,25 +19,21 @@ You'll need at least Node.js 0.6.x (I've only tested on 0.6.12) and MongoDB.
 
 ## Worker
 
-To start up the primary worker, run:
+To start up a worker, run:
 
     coffee worker
 
-You can have multiple workers, each responsible for handling different jobs. Designate one worker as the "main" worker, and connect all others to it via the `-c` (connect) switch:
+You can have multiple workers, each responsible for handling different jobs. They can each run on the same or separate machines -- doesn't matter!
 
-To start up another worker, run:
+You will probably want to give each worker a different name, which you can do with the `-n` switch:
 
-    coffee worker -c -h IP_OF_MAIN_WORKER -n vip-worker
-
-Where `IP_OF_MAIN_WORKER` should be the first's IP address.
-
-You can name your additional worker in order to target it with different jobs.
+    coffee worker -n vip-worker
 
 ## Web UI
 
 To start up the web server, run:
 
-    coffee web -h IP_OF_WORKER
+    coffee web
 
 <a name="job-api"></a>
 ## Job API
