@@ -3,7 +3,7 @@ window.socket = io.connect()
 updateDelay = 30000
 
 socket.on 'i-am', (node) ->
-  html = "<tr><td>#{node.name}</td><td>#{node.host}</td><td>#{node.port}</td></tr>"
+  html = "<tr><td>#{node.name}</td><td>#{node.host}</td><td>#{node.port || ''}</td></tr>"
   $('#nodes tbody').append html
 
 window.showNodes = ->

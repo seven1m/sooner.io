@@ -1,50 +1,29 @@
-Hook = require('hook.io').Hook
+EventEmitter2Mongo = require __dirname + '/lib/eventemitter2mongo'
 _ = require "underscore"
 fs = require "fs"
 ifaces = require(__dirname + '/lib/ip').ifaces
 
-opts = require('optimist')
-       .usage("Start a worker process.\nUsage: $0")
-       .describe('name', 'name this worker')
-       .default('name', 'worker')
-       .alias('n', 'name')
-       .describe('host', 'host ip address to connect to')
-       .default('host', '0.0.0.0')
-       .alias('h', 'host')
-       .describe('port', 'host port')
-       .default('port', 5000)
-       .alias('p', 'port')
-       .describe('connect', 'connect to a remote host (use this option if not the server)')
-       .alias('c', 'connect')
+opts = require('optimist').usage("Start a worker process.\nUsage: $0")
+       .describe('name', 'name this worker').default('name', 'worker').alias('n', 'name')
 argv = opts.argv
 
 if argv.help
   console.log opts.help()
   process.exit()
 
-GLOBAL.hook = hook = new Hook
-  name: argv.name
-
-hook.on '*::list-nodes', ->
-  hook.emit 'i-am'
-    name: hook.name
-    host: ifaces().join(', ')
-    port: hook['hook-port']
-
-connDetails =
-  'hook-host': argv.host
-  'hook-port': argv.port
-
-if argv.connect
-  hook.connect connDetails
-else
-  hook.listen connDetails
-
 # setup db
 config = JSON.parse(fs.readFileSync(__dirname + '/config.json'))
 mongoose = require 'mongoose'
 mongoose.connect "mongodb://#{config.db.host}/#{config.db.name}"
 models = require(__dirname + '/app/models')
+
+GLOBAL.hook = hook = new EventEmitter2Mongo config.db.host, config.db.port || 27017, config.db.name, delimiter: '::'
+hook.name = argv.name
+
+hook.on 'list-nodes', ->
+  hook.emit 'i-am'
+    name: hook.name
+    host: ifaces().join(', ')
 
 # clean up
 models.run.find {status: 'busy', workerName: hook.name}, (err, runs) ->
@@ -64,7 +43,7 @@ jobCache =
   crons: []
   hooks: []
 
-hook.on 'hook::ready', ->
+hook.on 'ready', ->
   reloadJobs = ->
     console.log 'loading jobs...'
     cron.stop() for cron in jobCache.crons
@@ -83,7 +62,7 @@ hook.on 'hook::ready', ->
             for event in job.hooks.split(/\s*,\s*/)
               console.log "setting up hook #{event} for #{job.name}."
               cb = _.bind(job.hookEvent, job)
-              hook.on "*::#{event}", cb
+              hook.on event, cb
               jobCache.hooks.push [event, cb]
 
   jobTriggered = (data) ->
@@ -93,7 +72,18 @@ hook.on 'hook::ready', ->
       else
         run.run()
   hook.on 'trigger-job', (data) -> _.delay jobTriggered, 1500, data
-  hook.on '*::trigger-job', (data) -> _.delay jobTriggered, 1500, data
   hook.on 'reload-jobs', reloadJobs
-  hook.on '*::reload-jobs', reloadJobs
-  hook.emit 'reload-jobs'
+  reloadJobs()
+
+  hook.emit 'connected'
+
+  process.on 'uncaughtException', (err) ->
+    try
+      hook.emit 'disconnected'
+    catch e
+      # pass
+    throw err
+
+  process.on 'SIGINT', ->
+    hook.emit 'disconnected'
+    process.exit()

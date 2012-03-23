@@ -22,13 +22,14 @@
     , "mongoose": "latest"
     , "underscore": "latest"
     , "resource-routes": "git://github.com/seven1m/express-resource-routes.git"
-    , "hook.io": "0.8.6"
     , "cron": "git://github.com/ncb000gt/node-cron.git"
     , "socket.io": "0.9.x"
     , "optimist": "0.3.x"
     , "pg": "0.6.x"
     , "ftp": "0.1.x"
     , "markdown": "latest"
+    , "eventemitter2": "latest"
+    , "mongodb": "latest"
   }
   , "devDependencies": {
       "jasmine-node": "latest"

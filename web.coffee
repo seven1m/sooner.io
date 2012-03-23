@@ -3,24 +3,27 @@ routes = require './routes'
 helpers = require './app/helpers'
 socketio = require 'socket.io'
 require __dirname + '/assets/js/date'
-Hook = require('hook.io').Hook
+EventEmitter2Mongo = require __dirname + '/lib/eventemitter2mongo'
 fs = require "fs"
 ifaces = require(__dirname + '/lib/ip').ifaces
 
 opts = require('optimist')
        .usage("Start a web process.\nUsage: $0")
-       .describe('host', 'host ip address of main worker process')
-       .alias('h', 'host')
-       .describe('port', 'host port of main worker process, defaults to 5000')
-       .alias('p', 'port')
-       .describe('webport', 'port to run web server')
-       .default('webport', 3000)
+       .describe('port', 'port to run the web server')
+       .default('port', 3000)
 argv = opts.argv
+
+if argv.help
+  console.log opts.help()
+  process.exit()
 
 # setup db
 config = JSON.parse(fs.readFileSync(__dirname + '/config.json'))
 mongoose = require 'mongoose'
 mongoose.connect "mongodb://#{config.db.host}/#{config.db.name}"
+
+GLOBAL.hook = hook = new EventEmitter2Mongo config.db.host, config.db.port || 27017, config.db.name, delimiter: '::'
+hook.name = argv.name || 'web'
 
 app = module.exports = express.createServer()
 
@@ -52,44 +55,25 @@ require('express-resource-routes').init(app)
 
 routes(app)
 
-app.listen argv.webport
+app.listen argv.port
 console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
 
-# Hook.io bridge
-# note: I gave up on hook.js; this seems simpler
-GLOBAL.hook = hook = new Hook
-  name: 'web'
+hook.on 'list-nodes', ->
+  hook.emit 'i-am'
+    name: hook.name
+    host: ifaces().join(', ')
+    port: app.address().port
 
-if argv.help
-  console.log opts.help()
-  process.exit()
+io = socketio.listen app
+if process.env.NODE_DISABLE_WS
+  io.set 'transports', ['htmlfile', 'xhr-polling', 'jsonp-polling']
 
-if argv.host
-  hook.connect
-    'hook-host': argv.host
-    'hook-port': argv.port
+# bridge these events from hook io
+bridge = (ev, pass) -> hook.on ev, (data) -> io.sockets.emit pass, @event, data
+bridge(ev, 'log') for ev in ['running-job', 'job-output', 'job-status']
+bridge(ev, 'cxn') for ev in ['connected', 'disconnected']
+hook.on 'i-am', (data) -> io.sockets.emit 'i-am', data
 
-  iam = ->
-    hook.emit 'i-am'
-      name: hook.name
-      host: ifaces().join(', ')
-      port: app.address().port
-  hook.on 'list-nodes', iam # self
-  hook.on '*::list-nodes', iam
-
-  io = socketio.listen app
-  if process.env.NODE_DISABLE_WS
-    io.set 'transports', ['htmlfile', 'xhr-polling', 'jsonp-polling']
-
-  # bridge these events from hook io, for logging
-  bridge = (ev, pass) -> hook.on ev, (data) -> io.sockets.emit pass, @event, data
-  bridge(ev, 'log') for ev in ['*::running-job', '*::job-output', '*::job-status'] # do NOT include trigger-job (causes dupes for some reason)
-  bridge(ev, 'cxn') for ev in ['hook::connected', '*::hook::connected', 'connection::end', '*::hook::disconnected']
-  # bridge i-am responses
-  hook.on 'i-am', (data) -> io.sockets.emit 'i-am', data
-  hook.on '*::i-am', (data) -> io.sockets.emit 'i-am', data
-  # bridge list-nodes queries and generic hook messages
-  io.sockets.on 'connection', (socket) ->
-    socket.on 'list-nodes', -> hook.emit 'list-nodes'
-else
-  console.log 'WARNING: no worker connection; run with --help'
+# bridge list-nodes queries from socket io
+io.sockets.on 'connection', (socket) ->
+  socket.on 'list-nodes', -> hook.emit 'list-nodes'
