@@ -1,6 +1,6 @@
 # Sooner.io
 
-Sooner.io is the distributed job scheduling engine and web-based management app built on [Node.js](http://nodejs.org) and [Hook.io](http://hook.io), brought to you from the [Sooner State](http://en.wikipedia.org/wiki/Oklahoma).
+Sooner.io is the distributed job scheduling engine and web-based management app built on [Node.js](http://nodejs.org), brought to you from the [Sooner State](http://en.wikipedia.org/wiki/Oklahoma).
 
 Jobs are written in CoffeeScript and run on a scheduled or on-demand basis via a distributed network of "workers."
 
@@ -10,7 +10,7 @@ I created a short presentation about Sooner.io [here](https://docs.google.com/a/
 
 ## Installation and Configuration
 
-You'll need at least Node.js 0.6.x (I've only tested on 0.6.12).
+You'll need at least Node.js 0.6.x (I've only tested on 0.6.12) and MongoDB.
 
     git clone git://github.com/seven1m/sooner.io.git
     cd sooner.io
@@ -22,8 +22,6 @@ You'll need at least Node.js 0.6.x (I've only tested on 0.6.12).
 To start up the primary worker, run:
 
     coffee worker
-
-*Note: the way Sooner.io is currently configured, there must be one worker that is the 'server' to which others connect. This limitation will likely be lifted once I better understand how to get Hook.io to do auto-discovery.*
 
 You can have multiple workers, each responsible for handling different jobs. Designate one worker as the "main" worker, and connect all others to it via the `-c` (connect) switch:
 
@@ -40,12 +38,6 @@ You can name your additional worker in order to target it with different jobs.
 To start up the web server, run:
 
     coffee web -h IP_OF_WORKER
-
-## REPL (Read-Eval-Print-Loop)
-
-You can peek inside the Hook.io cloud and receive and emit messages via the REPL:
-
-    coffee repl -h IP_OF_WORKER
 
 <a name="job-api"></a>
 ## Job API
