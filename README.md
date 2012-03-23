@@ -40,7 +40,7 @@ To start up the web server, run:
 
 Each job runs in a separate Node.js process with limited context, which has the effect of sandboxing the running code from the parent worker process.
 
-The idea is to make it difficult for someone to do naughty things to your worker process, the host machine, and your network, but **I explicitly disclaim the secureness of this system -- In fact, I recommend you NOT make this system available via the public web, and that you restrict access with .htaccess or some other technique (authenticationn/authorization is not yet present).**
+The idea is to make it difficult for someone to do naughty things to your worker process, the host machine, and your network, but **I explicitly disclaim the secureness of this system -- In fact, I recommend you NOT make this system available via the public web, and that you restrict access with .htaccess or some other technique (authentication/authorization is not yet present).**
 
 The following functions are available to your running code:
 
