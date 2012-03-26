@@ -1,5 +1,5 @@
 fs = require 'fs'
-connect = require('mongoose/node_modules/mongodb').connect
+connect = require('mongodb').connect
 config = JSON.parse(fs.readFileSync(__dirname + '/../config.json'))
 
 exports.listCollections = (callback) ->
