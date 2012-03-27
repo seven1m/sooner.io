@@ -19,9 +19,6 @@ block content
           a(href="/jobs/#{run.jobId}/edit")
             i.icon-pencil
       tr
-        th Definition
-        td.formatted= run.definition
-      tr
         th Status
         td.status
           != statusIcon(run.status)
@@ -29,7 +26,11 @@ block content
           = run.status
       tr
         th Output
-        td.formatted('data-run-output'=run._id)= run.output
+        td.output.formatted('data-run-output'=run._id)= run.output
+      tr
+        th Definition
+        td.formatted= run.definition
 
   :coffeescript
+    $('.output').html(formatLinks($('.output').html()))
     watchJobChanges '#{run.jobId}'

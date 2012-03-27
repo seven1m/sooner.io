@@ -38,8 +38,7 @@ window.watchJobChanges = (jobId) ->
         row.append "<td class='status'><i class='icon-cog'></i> busy</td>"
         table.prepend row
       else if event.match(/job\-output/)
-        html = $('<div/>').text(data.output).html().replace(/https?:\/\/\S+/g, "<a href='$&'>$&</a>")
-        $("[data-run-output=#{data.runId}]").append(html)
+        $("[data-run-output=#{data.runId}]").append formatLinks(data.output)
       else if event.match(/job\-status/)
         $("[data-run-meta=#{data.runId}] td.status").html("<i class='icon-#{statusIcons[data.status]}'></i> #{data.status}")
         if data.ranAt
@@ -47,3 +46,5 @@ window.watchJobChanges = (jobId) ->
         if data.completedAt
           $("[data-run-meta=#{data.runId}] td.completed-at").html(new Date(data.completedAt).toString('M/dd/yyyy h:mm:ss tt'))
 
+window.formatLinks = (text) ->
+  $('<div/>').text(text).html().replace(/https?:\/\/\S+/g, "<a href='$&'>$&</a>")
