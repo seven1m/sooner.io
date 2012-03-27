@@ -152,6 +152,35 @@ db.run 'listDir', ['/tmp'], (code, output) ->
 
 This is a light wrapper around [node-ftp](https://github.com/mscdex/node-ftp).
 
+`callback` is passed an FTPConnection object with the following methods:
+
+* `mkdir(name, callback)`
+* `put(inSTream, filename, callback)`
+* `get(filename, callback)`
+
+Setup FTP server connection details in `config.json`:
+
+```json
+{
+  "ftpServers": {
+    "foo": {
+      "host": "ftp.example.com",
+      "username": "user",
+      "password": "secret"
+    }
+  }
+}
+```
+
+### fs.readStream
+
+*Arguments:*
+
+* path
+
+Returns an opened read stream. See the Node.js [documentation](http://nodejs.org/api/fs.html#fs_fs_createreadstream_path_options).
+
+
 ## License
 
 Copyright (c) 2012, [Tim Morgan](http://timmorgan.org)
