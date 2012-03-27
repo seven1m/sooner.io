@@ -71,7 +71,7 @@ hook.on 'ready', ->
         console.log "Could not find run with id #{data.runId}."
       else
         run.run()
-  hook.on 'trigger-job', (data) -> _.delay jobTriggered, 1500, data
+  hook.on 'trigger-job', (data) -> _.delay jobTriggered, 2500, data
   hook.on 'reload-jobs', reloadJobs
   reloadJobs()
 
