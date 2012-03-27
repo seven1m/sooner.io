@@ -12,15 +12,17 @@ exports.init = (context, options) ->
         client.put(inStream, filename, cb)
       @get = (filename, cb) ->
         client.get(filename, cb)
-      client.auth connDetails.username, connDetails.password, (err) ->
-        if err then throw err
-        callback(@)
+      client.on 'connect', =>
+        client.auth connDetails.username, connDetails.password, (err) =>
+          if err then throw err
+          callback(@)
+      client.connect()
 
   context.ftp =
 
     connect: (conn, callback) ->
       connDetails = servers[conn]
       if connDetails
-        new FTPConnection host: connDetails.host, callback
+        new FTPConnection connDetails, callback
       else
         throw "connection '#{conn}' not configured in config.json"

@@ -6,7 +6,7 @@ exports.init = (context, options) ->
   context.fs =
 
     readStream: (path) ->
-      path = fs.realpathSync(basePath + path)
+      path = fs.realpathSync("#{basePath}/#{path}")
       if path.indexOf(basePath) == 0 and path.indexOf('..') == -1
         fs.createReadStream path
       else
