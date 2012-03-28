@@ -6,16 +6,27 @@ exports.init = (context, options) ->
   class FTPConnection
     constructor: (connDetails, callback) ->
       client = new FTPClient(host: connDetails.host)
+      @list = (path, cb) ->
+        listing = []
+        client.list path (err, iter) ->
+          if err
+            cb(err)
+          else
+            iter.on 'entry', (entry) ->
+              listing.push(entry)
+            iter.on 'end', ->
+              cb(listing)
       @mkdir = (name, cb) ->
         client.mkdir(name, cb)
       @put = (inStream, filename, cb) ->
         client.put(inStream, filename, cb)
       @get = (filename, cb) ->
         client.get(filename, cb)
+      @end = ->
+        client.end()
       client.on 'connect', =>
         client.auth connDetails.username, connDetails.password, (err) =>
-          if err then throw err
-          callback(@)
+          callback(err, @)
       client.connect()
 
   context.ftp =
