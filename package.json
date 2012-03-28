@@ -35,7 +35,4 @@
   , "devDependencies": {
       "jasmine-node": "latest"
   }
-  , "scripts": {
-      "test": "jasmine-node --coffee spec"
-  }
 }
