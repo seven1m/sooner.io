@@ -1,6 +1,6 @@
 models = require __dirname + '/../models'
 dbInfo = require __dirname + '/../../lib/dbInfo'
-Paginator = require __dirname + '/../../lib/paginator'
+Paginator = require 'node-mongo-paginator'
 
 context = {}
 require(__dirname + '/../../lib/sandbox/queue').init(context)

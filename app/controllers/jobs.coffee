@@ -1,5 +1,5 @@
 models = require __dirname + '/../models'
-Paginator = require __dirname + '/../../lib/paginator'
+Paginator = require 'node-mongo-paginator'
 
 module.exports =
 

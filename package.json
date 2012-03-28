@@ -22,6 +22,7 @@
     , "mongoose": "latest"
     , "underscore": "latest"
     , "resource-routes": "git://github.com/seven1m/express-resource-routes.git"
+    , "node-mongo-paginator": "git://github.com/seven1m/node-mongo-paginator.git"
     , "cron": "git://github.com/ncb000gt/node-cron.git"
     , "socket.io": "0.9.x"
     , "optimist": "0.3.x"
