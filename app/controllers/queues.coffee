@@ -14,7 +14,9 @@ module.exports =
         queues: queues
 
   show: (req, res) ->
-    q = context.queue(req.params.id).where({})
+    q = context.queue(req.params.id).where()
+    if req.query.status
+      q = q.where('status', req.query.status)
     new Paginator perPage: 50, page: req.query.page, query: q, (paginator) ->
       q.skip(paginator.skip).limit(paginator.limit).desc('createdAt').run (err, entries) ->
         if err
