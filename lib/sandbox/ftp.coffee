@@ -8,14 +8,14 @@ exports.init = (context, options) ->
       client = new FTPClient(host: connDetails.host)
       @list = (path, cb) ->
         listing = []
-        client.list path (err, iter) ->
+        client.list path, (err, iter) ->
           if err
             cb(err)
           else
             iter.on 'entry', (entry) ->
               listing.push(entry)
             iter.on 'end', ->
-              cb(listing)
+              cb(null, listing)
       @mkdir = (name, cb) ->
         client.mkdir(name, cb)
       @put = (inStream, filename, cb) ->
