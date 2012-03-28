@@ -143,31 +143,28 @@ db.run 'listDir', ['/tmp'], (code, output) ->
   # output = stdout+stderr
 ```
 
-### ftp.connect
+### curl.upload
 
 *Arguments:*
 
-* connectionName
+* path = path of file to upload (source)
+* connectionName (named connection specified in config.json)
+* subDir (sub directory to be appended to server host name and root path specified in config.json, optional)
 * callback
 
-This is a light wrapper around [node-ftp](https://github.com/mscdex/node-ftp).
+This is a wrapper around [node-curl](https://github.com/jiangmiao/node-curl).
 
-`callback` is passed an FTPConnection object with the following methods:
+`callback` is passed two args:
 
-* `mkdir(name, callback)`
-* `put(inSTream, filename, callback)`
-* `get(filename, callback)`
+* code (return code issued by curl)
+* output
 
-Setup FTP server connection details in `config.json`:
+Setup curl server connection in `config.json`:
 
 ```json
 {
-  "ftpServers": {
-    "foo": {
-      "host": "ftp.example.com",
-      "username": "user",
-      "password": "secret"
-    }
+  "curlServers": {
+    "foo": "ftp://user:pass@host/path"
   }
 }
 ```

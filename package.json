@@ -26,12 +26,15 @@
     , "socket.io": "0.9.x"
     , "optimist": "0.3.x"
     , "pg": "0.6.x"
-    , "ftp": "0.1.x"
+    , "node-curl": "0.1.x"
     , "markdown": "latest"
     , "eventemitter2": "latest"
     , "mongodb": "latest"
   }
   , "devDependencies": {
       "jasmine-node": "latest"
+  }
+  , "scripts": {
+      "test": "jasmine-node --coffee spec"
   }
 }
