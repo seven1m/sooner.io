@@ -154,9 +154,11 @@ This is a light wrapper around [node-ftp](https://github.com/mscdex/node-ftp).
 
 `callback` is passed an FTPConnection object with the following methods:
 
+* `list(path, callback)`
 * `mkdir(name, callback)`
 * `put(inSTream, filename, callback)`
 * `get(filename, callback)`
+* `end()`
 
 Setup FTP server connection details in `config.json`:
 
