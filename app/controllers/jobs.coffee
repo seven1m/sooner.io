@@ -1,5 +1,6 @@
+_ = require 'underscore'
 models = require __dirname + '/../models'
-Paginator = require 'node-mongo-paginator'
+Paginator = require 'paginator'
 
 module.exports =
 
@@ -17,7 +18,9 @@ module.exports =
         res.send 'Not found', 404
       else
         query = models.run.where('jobId', job._id)
-        new Paginator perPage: 10, page: req.query.page, query: query, (paginator) ->
+        _.clone(query).count (err, count) ->
+          if err then throw err
+          paginator = new Paginator perPage: 10, page: req.query.page, count: count
           query.skip(paginator.skip).limit(paginator.limit).desc('ranAt').run (err, runs) ->
             if err
               runs = []

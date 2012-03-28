@@ -1,6 +1,7 @@
+_ = require 'underscore'
 models = require __dirname + '/../models'
 dbInfo = require __dirname + '/../../lib/dbInfo'
-Paginator = require 'node-mongo-paginator'
+Paginator = require 'paginator'
 
 context = {}
 require(__dirname + '/../../lib/sandbox/queue').init(context)
@@ -17,7 +18,9 @@ module.exports =
     q = context.queue(req.params.id).where()
     if req.query.status
       q = q.where('status', req.query.status)
-    new Paginator perPage: 50, page: req.query.page, query: q, (paginator) ->
+    _.clone(q).count (err, count) ->
+      if err then throw err
+      paginator = new Paginator perPage: 50, page: req.query.page, count: count
       q.skip(paginator.skip).limit(paginator.limit).desc('createdAt').run (err, entries) ->
         if err
           entries = []
