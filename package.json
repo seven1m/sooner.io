@@ -26,7 +26,7 @@
     , "socket.io": "0.9.x"
     , "optimist": "0.3.x"
     , "pg": "0.6.x"
-    , "ftp": "0.1.x"
+    , "ftp": "git://github.com/mscdex/node-ftp.git"
     , "markdown": "latest"
     , "eventemitter2": "latest"
     , "mongodb": "latest"
