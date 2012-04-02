@@ -182,6 +182,13 @@ Setup FTP server connection details in `config.json`:
 
 Returns an opened read stream. See the Node.js [documentation](http://nodejs.org/api/fs.html#fs_fs_createreadstream_path_options).
 
+### fs.writeStream
+
+*Arguments:*
+
+* path
+
+Returns an opened write stream. See the Node.js [documentation](http://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options).
 
 ## License
 

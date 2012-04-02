@@ -11,3 +11,10 @@ exports.init = (context, options) ->
         fs.createReadStream path
       else
         throw "Invalid path."
+
+    writeStream: (path) ->
+      path = fs.realpathSync("#{basePath}/#{path}")
+      if path.indexOf(basePath) == 0 and path.indexOf('..') == -1
+        fs.createWriteStream path
+      else
+        throw "Invalid path."
