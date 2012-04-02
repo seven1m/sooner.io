@@ -2,6 +2,7 @@
 
 vm = require 'vm'
 fs = require 'fs'
+_ = require 'underscore'
 CoffeeScript = require 'coffee-script'
 
 config = JSON.parse(fs.readFileSync(__dirname + '/../config.json'))
@@ -13,6 +14,7 @@ mongoose.connect config.db
 buildContext = (data) ->
   context =
     data: data
+    bind: _.bind
     console: log: console.log
     setTimeout: setTimeout
     clearTimeout: clearTimeout
