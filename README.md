@@ -191,6 +191,24 @@ Returns an opened read stream. See the Node.js [documentation](http://nodejs.org
 
 Returns an opened write stream. See the Node.js [documentation](http://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options).
 
+### xml.stringToJSON
+
+*Arguments:*
+
+* string
+* callback
+
+Converts XML in string into a JSON object and runs `callback(err, json)`.
+
+### xml.fileToJSON
+
+*Arguments:*
+
+* path
+* callback
+
+Reads file contents from path and converts XML into a JSON object and runs `callback(err, json)`.
+
 ## License
 
 Copyright (c) 2012, [Tim Morgan](http://timmorgan.org)
