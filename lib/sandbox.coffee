@@ -7,7 +7,7 @@ CoffeeScript = require 'coffee-script'
 config = JSON.parse(fs.readFileSync(__dirname + '/../config.json'))
 
 mongoose = require 'mongoose'
-mongoose.connect "mongodb://#{config.db.host}/#{config.db.name}"
+mongoose.connect config.db
 
 # objects to which we're willing to give access
 buildContext = (data) ->
