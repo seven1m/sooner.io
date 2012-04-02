@@ -158,6 +158,7 @@ This is a light wrapper around [node-ftp](https://github.com/mscdex/node-ftp).
 * `mkdir(name, callback)`
 * `put(inSTream, filename, callback)`
 * `get(filename, callback)`
+* `rename(oldFilename, newFilename, callback)`
 * `end()`
 
 Setup FTP server connection details in `config.json`:

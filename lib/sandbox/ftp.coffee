@@ -16,14 +16,11 @@ exports.init = (context, options) ->
               listing.push(entry)
             iter.on 'end', ->
               cb(null, listing)
-      @mkdir = (name, cb) ->
-        client.mkdir(name, cb)
-      @put = (inStream, filename, cb) ->
-        client.put(inStream, filename, cb)
-      @get = (filename, cb) ->
-        client.get(filename, cb)
-      @end = ->
-        client.end()
+      @mkdir = client.mkdir
+      @put = client.put
+      @get = client.get
+      @rename = client.rename
+      @end = client.end
       client.on 'connect', =>
         client.auth connDetails.username, connDetails.password, (err) =>
           callback(err, @)
