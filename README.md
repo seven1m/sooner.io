@@ -96,13 +96,14 @@ The `connectionName` is a named connection provided in `config.json` under `dbCo
 *Arguments:*
 
 * sql
+* params (optional)
 * callback
 
 *Example:*
 
 ```coffeescript
 db.connect 'foo', (conn) ->
-  conn.query 'select now() as when', (rows) ->
+  conn.query 'select * from foo where bar=$1', ['baz'], (rows) ->
     # use rows here
 ```
 

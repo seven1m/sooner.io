@@ -7,8 +7,11 @@ exports.init = (context, options) ->
   context.connection = class
     constructor: (conn) ->
       @conn = conn
-    query: (sql, cb) ->
-      @conn.query sql, (err, result) =>
+    query: (sql, params, cb) ->
+      if typeof params == 'function'
+        cb = params
+        params = []
+      @conn.query sql, params, (err, result) =>
         if err then throw err
         cb(result && result.rows)
 
