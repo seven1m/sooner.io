@@ -13,7 +13,7 @@ exports.init = (context, options) ->
         throw "Invalid path."
 
     writeStream: (path) ->
-      path = fs.realpathSync("#{basePath}/#{path}")
+      path = "#{basePath}/#{path}"
       if path.indexOf(basePath) == 0 and path.indexOf('..') == -1
         fs.createWriteStream path
       else
