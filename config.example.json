@@ -1,8 +1,5 @@
 {
-  "db": {
-    "host": "localhost",
-    "name": "boomer-sooner"
-  },
+  "db": "mongodb://localhost:27017/soonerio",
   "dbConnections": {
     "foo": "postgres://postgres@localhost/foo"
   },

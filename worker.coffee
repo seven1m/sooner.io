@@ -14,10 +14,10 @@ if argv.help
 # setup db
 config = JSON.parse(fs.readFileSync(__dirname + '/config.json'))
 mongoose = require 'mongoose'
-mongoose.connect "mongodb://#{config.db.host}/#{config.db.name}"
+mongoose.connect config.db
 models = require(__dirname + '/app/models')
 
-GLOBAL.hook = hook = new EventEmitter2Mongo config.db.host, config.db.port || 27017, config.db.name, delimiter: '::'
+GLOBAL.hook = hook = new EventEmitter2Mongo config.db, delimiter: '::'
 hook.name = argv.name
 
 hook.on 'list-nodes', ->

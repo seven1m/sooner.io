@@ -3,7 +3,7 @@ EventEmitter2 = require('eventemitter2').EventEmitter2
 
 class EventEmitter2Mongo extends EventEmitter2
 
-  constructor: (mongoHost, mongoPort, dbName, options) ->
+  constructor: (mongoURI, options) ->
     defaultOptions =
       wildcard: yes
       delimiter: '.'
@@ -23,12 +23,9 @@ class EventEmitter2Mongo extends EventEmitter2
     @originalEmit = @emit
     @emit = @remoteEmit
 
-    @server = new mongodb.Server mongoHost, mongoPort
-    @db = new mongodb.Db dbName, @server
-
     @queue = []
 
-    @db.open (err, client) =>
+    mongodb.connect mongoURI, (err, client) =>
       if err then throw err
       client.createCollection options.collectionName, capped: yes, size: options.collectionMax * options.docSize, max: options.collectionMax, (err, collection) =>
         if err then throw err
