@@ -31,6 +31,7 @@
     , "markdown": "latest"
     , "eventemitter2": "latest"
     , "mongodb": "latest"
+    , "xml2js": "latest"
   }
   , "devDependencies": {
       "jasmine-node": "latest"
