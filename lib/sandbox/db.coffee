@@ -14,15 +14,17 @@ exports.init = (context, options) ->
       @conn.query sql, params, (err, result) =>
         if err then throw err
         cb(result && result.rows)
+    end: ->
+      @conn.end()
 
   context.db =
     connect: (conn, callback) ->
       connStr = connections[conn]
       if connStr
         if connStr.match /^postgres:/
-          pg.connect connStr.replace(/^postgres:/, 'tcp:'), (err, client) ->
-            if err then throw err
-            callback(new context.connection(client))
+          client = new pg.Client connStr.replace(/^postgres:/, 'tcp:')
+          client.connect();
+          callback(new context.connection(client))
         else
           throw 'unsupported database type'
       else

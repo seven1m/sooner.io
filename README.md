@@ -76,6 +76,8 @@ You should only set the `status` and `data` fields yourself.
 
 *Example:*
 
+Connects to a named database (PostgreSQL only at the moment).
+
 ```coffeescript
 db.connect 'foo', (conn) ->
   # use conn here
@@ -106,6 +108,12 @@ db.connect 'foo', (conn) ->
   conn.query 'select * from foo where bar=$1', ['baz'], (rows) ->
     # use rows here
 ```
+
+### conn.end
+
+*No arguments*
+
+Closes the database connection.
 
 ### shell.spawn
 
