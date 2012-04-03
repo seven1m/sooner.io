@@ -12,9 +12,14 @@ exports.init = (context, options) ->
       schema = new Schema
         status: String
         data: {}
-        createdAt:
-          type: Date
-          default: -> new Date()
+        createdAt: Date
+        updatedAt: Date
+      schema.pre 'save', (next) ->
+        if !@createdAt
+          @createdAt = @updatedAt = new Date()
+        else
+          @updatedAt = new Date()
+        next()
       model = mongoose.model name, schema
       queues[name] = model
     model

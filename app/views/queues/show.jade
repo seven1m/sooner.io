@@ -25,6 +25,7 @@ block content
         th Status
         th Data
         th Created
+        th Updated
     tbody
       for entry in entries
         tr
@@ -32,6 +33,7 @@ block content
           td= entry.status
           td!= queueData(entry.data)
           td= entry.createdAt && entry.createdAt.toString('M/dd/yyyy h:mm:ss tt')
+          td= entry.updatedAt && entry.updatedAt.toString('M/dd/yyyy h:mm:ss tt')
 
   p!= paginator.pageLinks({query: query})
 
