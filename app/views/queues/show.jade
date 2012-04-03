@@ -31,7 +31,7 @@ block content
           td= entry.data && JSON.stringify(entry.data)
           td= entry.createdAt && entry.createdAt.toString('M/dd/yyyy h:mm:ss tt')
 
-  p!= paginator.pageLinks({query: req.query.query})
+  p!= paginator.pageLinks({query: query})
 
   if badQuery
     :coffeescript
