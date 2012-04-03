@@ -41,39 +41,57 @@ schema = new Schema
 schema.methods.trigger = ->
   GLOBAL.hook.emit 'trigger-job', runId: @_id, jobId: @jobId, name: @name
 
-schema.methods.run = (callback) ->
+schema.methods.run = ->
   console.log "running #{@name}..."
-  @status = 'busy'
-  @ranAt = new Date()
-  @save(callback)
-  GLOBAL.hook.emit 'job-status', runId: @_id, jobId: @jobId, name: @name, status: @status, ranAt: @ranAt
+  models.job.findById @jobId, (err, job) =>
+    if err or !job then throw err
+    # FIXME: there's a race condition here
+    models.run.where('status', 'busy').where('jobId', @jobId).count (err, runningCount) =>
+      if err then throw err
 
-  input =
-    code: @definition
-    data: @data || {}
-  sandbox = childProcess.spawn "coffee", ["#{__dirname}/../../lib/sandbox.coffee"], {}
-  sandbox.stdin.end JSON.stringify(input)
-  GLOBAL.hook.emit 'running-job', pid: sandbox.pid, runId: @_id, jobId: @jobId, name: @name, ranAt: @ranAt
-  sandbox.stdout.on 'data', (data) =>
-    @output += data.toString()
-    GLOBAL.hook.emit 'job-output', pid: sandbox.pid, runId: @_id, jobId: @jobId, name: @name, output: data.toString()
-    @save()
-  sandbox.stderr.on 'data', (data) =>
-    @output += data.toString()
-    GLOBAL.hook.emit 'job-output', pid: sandbox.pid, runId: @_id, jobId: @jobId, name: @name, output: data.toString()
-    @save()
-  sandbox.on 'exit', (code) =>
-    @completedAt = new Date()
-    if code == 0
-      @status = 'success'
-    else
-      @status = 'fail'
-      @result = code.toString()
-    GLOBAL.hook.emit 'job-status', runId: @_id, jobId: @jobId, name: @name, status: @status, completedAt: @completedAt
-    @save()
-    models.job.update {_id: @jobId}, {lastStatus: @status, lastRanAt: @ranAt}, (err, _) ->
-      if err
-        console.log("error saving job details: #{err}")
+      if runningCount > 0 and job.mutex
+        console.log 'Another run for this process already.'
+        @status = 'fail'
+        @output = 'another job is currently running'
+        @ranAt = @completedAt = new Date()
+        @save()
+        GLOBAL.hook.emit 'running-job', runId: @_id, jobId: @jobId, name: @name, ranAt: @ranAt
+        GLOBAL.hook.emit 'job-output', runId: @_id, jobId: @jobId, name: @name, output: @output
+        GLOBAL.hook.emit 'job-status', runId: @_id, jobId: @jobId, name: @name, status: @status, ranAt: @ranAt, completedAt: @completedAt
+      else
+        @status = 'busy'
+        @ranAt = new Date()
+        @save()
+        GLOBAL.hook.emit 'job-status', runId: @_id, jobId: @jobId, name: @name, status: @status, ranAt: @ranAt
+
+        input =
+          code: @definition
+          data: @data || {}
+        sandbox = childProcess.spawn "coffee", ["#{__dirname}/../../lib/sandbox.coffee"], {}
+        sandbox.stdin.end JSON.stringify(input)
+        GLOBAL.hook.emit 'running-job', pid: sandbox.pid, runId: @_id, jobId: @jobId, name: @name, ranAt: @ranAt
+        sandbox.stdout.on 'data', (data) =>
+          @output += data.toString()
+          GLOBAL.hook.emit 'job-output', pid: sandbox.pid, runId: @_id, jobId: @jobId, name: @name, output: data.toString()
+          @save()
+        sandbox.stderr.on 'data', (data) =>
+          @output += data.toString()
+          GLOBAL.hook.emit 'job-output', pid: sandbox.pid, runId: @_id, jobId: @jobId, name: @name, output: data.toString()
+          @save()
+        sandbox.on 'exit', (code) =>
+          @completedAt = new Date()
+          if code == 0
+            @status = 'success'
+          else
+            @status = 'fail'
+            @result = code.toString()
+          GLOBAL.hook.emit 'job-status', runId: @_id, jobId: @jobId, name: @name, status: @status, completedAt: @completedAt
+          @save()
+          job.lastStatus = @status
+          job.lastRanAt = @ranAt
+          job.save (err) ->
+            if err
+              console.log("error saving job details: #{err}")
 
 schema.methods.log = ->
   for arg in arguments

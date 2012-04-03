@@ -42,11 +42,15 @@ schema = new Schema
     type: String
   definition:
     type: String
+  mutex:
+    type: Boolean
+    default: true
 
 schema.methods.updateAttributes = (attrs) ->
   @name       = attrs.name
   @schedule   = attrs.schedule
   @enabled    = attrs.enabled == '1'
+  @mutex      = attrs.mutex == '1'
   @hooks      = attrs.hooks
   @workerName = attrs.workerName
   @definition = attrs.definition
