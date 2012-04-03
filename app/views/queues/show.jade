@@ -28,7 +28,7 @@ block content
         tr
           td= entry._id
           td= entry.status
-          td= entry.data && JSON.stringify(entry.data)
+          td!= queueData(entry.data)
           td= entry.createdAt && entry.createdAt.toString('M/dd/yyyy h:mm:ss tt')
 
   p!= paginator.pageLinks({query: query})
