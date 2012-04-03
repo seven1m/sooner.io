@@ -26,7 +26,7 @@ hook.on 'list-nodes', ->
     host: ifaces().join(', ')
 
 # clean up
-models.run.find {status: 'busy', workerName: hook.name}, (err, runs) ->
+models.run.find {status: {$in: ['busy', 'idle']}, workerName: hook.name}, (err, runs) ->
   console.log "Searching for runs in limbo..."
   if err then throw err
   for run in runs
