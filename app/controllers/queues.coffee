@@ -15,9 +15,13 @@ module.exports =
         queues: queues
 
   show: (req, res) ->
-    q = context.queue(req.params.id).where()
-    if req.query.status
-      q = q.where('status', req.query.status)
+    try
+      query = JSON.parse(req.query.query || '{}')
+      badQuery = false
+    catch e
+      query = {}
+      badQuery = true
+    q = context.queue(req.params.id).find(query)
     _.clone(q).count (err, count) ->
       if err then throw err
       paginator = new Paginator perPage: 50, page: req.query.page, count: count
@@ -25,6 +29,8 @@ module.exports =
         if err
           entries = []
         res.render 'queues/show.jade',
+          query: req.query.query || '{}'
+          badQuery: badQuery
           queue: req.params.id
           entries: entries
           paginator: paginator

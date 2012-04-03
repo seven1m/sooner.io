@@ -48,3 +48,7 @@ window.watchJobChanges = (jobId) ->
 
 window.formatLinks = (text) ->
   $('<div/>').text(text).html().replace(/https?:\/\/\S+/g, "<a href='$&'>$&</a>")
+
+$ ->
+  $('#show-queue-query').click ->
+    $('#queue-query').toggle()

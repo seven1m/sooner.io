@@ -1,7 +1,20 @@
 extends ../layout
 
 block content
+  .right
+    a#show-queue-query
+      i.icon-eye-open
   h2= queue
+
+  #queue-query
+    .alert.alert-error
+      a.close(data-dismiss='alert') ×
+      strong Oh snap!
+      |  You should enter a valid JSON string, e.g.
+      code {"status": "pending"}
+    form(action="/queues/#{queue}", method='get')
+      textarea.formatted(name='query')= query
+      input(type='submit', value='Update Screen')
 
   table.table.table-bordered.table-striped
     thead
@@ -18,4 +31,9 @@ block content
           td= entry.data && JSON.stringify(entry.data)
           td= entry.createdAt && entry.createdAt.toString('M/dd/yyyy h:mm:ss tt')
 
-  p!= paginator.pageLinks()
+  p!= paginator.pageLinks({query: req.query.query})
+
+  if badQuery
+    :coffeescript
+      $('#queue-query').show()
+      $('#queue-query .alert').show()
