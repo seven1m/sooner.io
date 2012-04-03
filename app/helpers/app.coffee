@@ -1,9 +1,9 @@
 module.exports =
 
-  pluralize: (count, word) ->
+  pluralize: (count, word, plword) ->
     # a bit naiive I suppose
-    plural = if word.match(/s$/) then word else "#{word}s"
+    plword ||= if word.match(/s$/) then word else "#{word}s"
     if count == 1
       "#{count} #{word}"
     else
-      "#{count} #{plural}"
+      "#{count} #{plword}"

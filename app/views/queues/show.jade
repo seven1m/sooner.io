@@ -4,7 +4,9 @@ block content
   .right
     a#show-queue-query
       i.icon-eye-open
-  h2= queue
+  h2
+    = queue
+    = ' (' + pluralize(count, 'entry', 'entries') + ')'
 
   #queue-query
     .alert.alert-error

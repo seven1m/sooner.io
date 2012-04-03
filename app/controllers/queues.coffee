@@ -31,6 +31,7 @@ module.exports =
         res.render 'queues/show.jade',
           query: req.query.query || '{}'
           badQuery: badQuery
+          count: count
           queue: req.params.id
           entries: entries
           paginator: paginator
