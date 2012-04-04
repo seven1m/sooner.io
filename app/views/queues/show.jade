@@ -15,27 +15,35 @@ block content
       |  You should enter a valid JSON string, e.g.
       code {"status": "pending"}
     form(action="/queues/#{queue}", method='get')
-      textarea.formatted(name='query')= query
-      input(type='submit', value='Update Screen')
+      table
+        tr
+          td
+            | Query:
+            textarea#query.formatted(name='query')= query
+          td
+            | Sort:
+            textarea#sort.formatted(name='sort')= sort
+      input(type='submit', value='Update View')
 
   table.table.table-bordered.table-striped
     thead
       tr
-        th ID
-        th Status
-        th Data
-        th Created
-        th Updated
+        - console.log(req.query.query)
+        th!= sortCol('ID',      '["_id",1]',        {query: query})
+        th!= sortCol('Status',  '["status",1]',     {query: query})
+        th!= sortCol('Data',    '["data",1]',       {query: query})
+        th!= sortCol('Created', '["createdAt",-1]', {query: query})
+        th!= sortCol('Updated', '["updatedAt",-1]', {query: query})
     tbody
       for entry in entries
         tr
           td= entry._id
           td= entry.status
-          td!= queueData(entry.data)
+          td!= queueData(entry.data, query)
           td= entry.createdAt && entry.createdAt.toString('M/dd/yyyy h:mm:ss tt')
           td= entry.updatedAt && entry.updatedAt.toString('M/dd/yyyy h:mm:ss tt')
 
-  p!= paginator.pageLinks({query: query})
+  p!= paginator.pageLinks({query: query, sort: sort})
 
   if badQuery
     :coffeescript

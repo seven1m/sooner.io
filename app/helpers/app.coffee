@@ -7,3 +7,9 @@ module.exports =
       "#{count} #{word}"
     else
       "#{count} #{plword}"
+
+  sortCol: (label, sort, params) ->
+    console.log params
+    params = ("#{k}=#{v}" for k, v of params).join('&')
+    console.log params
+    "<a href='?sort=#{sort}&#{params}'>#{label}</a>"
