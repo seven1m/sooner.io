@@ -8,6 +8,8 @@ mongoose = require 'mongoose'
 Schema = mongoose.Schema
 ObjectId = Schema.ObjectId
 
+model = null
+
 schema = new Schema
   jobId:
     type: ObjectId
@@ -87,7 +89,6 @@ schema.methods.run = ->
           @completedAt = new Date()
           if code == 0
             @status = 'success'
-            @markModified 'progress'
           else
             @status = 'fail'
             @result = code.toString()
@@ -107,14 +108,14 @@ schema.methods.log = ->
       @output += util.inspect(arg) + "\n"
   @save()
 
-schema.methods.setProgress = (current, max) ->
+schema.methods.setProgress = (current, max, callback) ->
   if current == 'max'
     @progress[0] = @progress[1]
   else
     @progress[0] = current
     @progress[1] = max unless typeof max == 'undefined'
   @markModified 'progress'
-  @save()
+  @save callback
   GLOBAL.hook.emit 'job-progress', runId: @_id, jobId: @jobId, name: @name, progress: @progress, progressPercent: @progressPercent()
 
 schema.methods.progressPercent = ->
@@ -123,4 +124,4 @@ schema.methods.progressPercent = ->
   catch e
     0
 
-module.exports = mongoose.model 'Run', schema
+module.exports = model = mongoose.model 'Run', schema

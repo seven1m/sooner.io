@@ -33,11 +33,11 @@ buildContext = (input, callback) ->
       emit: _.bind(hook.emit, hook)
       progress: _.bind(run.setProgress, run)
       done: ->
-        run.setProgress 'max'
-        setTimeout ->
-          hook.disconnect()
-          mongoose.disconnect()
-        , 50
+        run.setProgress 'max', null, (err) ->
+          setTimeout ->
+            hook.disconnect()
+            mongoose.disconnect()
+          , 50
     # load in the other libs
     for file in fs.readdirSync(__dirname + '/sandbox')
       if file.match(/\.coffee$/)
