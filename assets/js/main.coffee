@@ -36,7 +36,7 @@ window.watchJobChanges = (jobId) ->
         table = $("#job-history-table tbody")
         table.prepend "<tr class='output' data-run-id='#{data.runId}' style='display:none;'><td class='formatted' colspan='5' data-run-output='#{data.runId}'></td></tr>"
         row = $("<tr data-run-meta='#{data.runId}'/>")
-        row.append "<td><a class='show-output' href='#' data-run-id=run._id><i class='icon-plus'/></a> <a href='/runs/#{data.runId}'>#{data.runId}</a></td>"
+        row.append "<td><a class='show-output' href='#' data-run-id='#{data.runId}'><i class='icon-plus'/></a> <a href='/runs/#{data.runId}'>#{data.runId}</a></td>"
         row.append "<td class='ran-at'>#{new Date(data.ranAt).toString('M/dd/yyyy h:mm:ss tt')}</td>"
         row.append "<td class='completed-at'></td>"
         row.append "<td class='progress-cell'>#{progressBar 0}</td>"
@@ -66,7 +66,9 @@ window.formatLinks = (text) ->
 $ ->
   $('#show-queue-query').click ->
     $('#queue-query').toggle()
-  $('a.show-output').click (e) ->
+  $(document).on 'click', 'a.show-output', (e) ->
     e.preventDefault()
-    id = $(this).data('run-id')
+    elm = $(this)
+    id = elm.data('run-id')
     $(".output[data-run-id=#{id}]").toggle()
+    elm.find('i').toggleClass('icon-plus').toggleClass('icon-minus')
