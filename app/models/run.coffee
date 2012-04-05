@@ -21,6 +21,9 @@ schema = new Schema
     type: Array
   data:
     type: {}
+  progress:
+    type: [Number, Number]
+    default: [0, 100]
   status:
     type: String
     enum: ['busy', 'idle', 'fail', 'success']
@@ -62,14 +65,16 @@ schema.methods.run = ->
         @status = 'busy'
         @ranAt = new Date()
         @save()
-        GLOBAL.hook.emit 'job-status', runId: @_id, jobId: @jobId, name: @name, status: @status, ranAt: @ranAt
 
         input =
+          jobId: @jobId
+          runId: @_id
           code: @definition
           data: @data || {}
         sandbox = childProcess.spawn "coffee", ["#{__dirname}/../../lib/sandbox.coffee"], {}
         sandbox.stdin.end JSON.stringify(input)
         GLOBAL.hook.emit 'running-job', pid: sandbox.pid, runId: @_id, jobId: @jobId, name: @name, ranAt: @ranAt
+        GLOBAL.hook.emit 'job-status', runId: @_id, jobId: @jobId, name: @name, status: @status, ranAt: @ranAt
         sandbox.stdout.on 'data', (data) =>
           @output += data.toString()
           GLOBAL.hook.emit 'job-output', pid: sandbox.pid, runId: @_id, jobId: @jobId, name: @name, output: data.toString()
@@ -82,9 +87,12 @@ schema.methods.run = ->
           @completedAt = new Date()
           if code == 0
             @status = 'success'
+            @progress[0] = @progress[1]
+            @markModified 'progress'
           else
             @status = 'fail'
             @result = code.toString()
+          GLOBAL.hook.emit 'job-progress', runId: @_id, jobId: @jobId, name: @name, progress: @progress, progressPercent: Math.min(100, @progress[0] / @progress[1] * 100)
           GLOBAL.hook.emit 'job-status', runId: @_id, jobId: @jobId, name: @name, status: @status, completedAt: @completedAt
           @save()
           job.lastStatus = @status
@@ -100,5 +108,18 @@ schema.methods.log = ->
     else
       @output += util.inspect(arg) + "\n"
   @save()
+
+schema.methods.setProgress = (current, max) ->
+  @progress[0] = current
+  @progress[1] = max unless typeof max == 'undefined'
+  @markModified 'progress'
+  @save()
+  GLOBAL.hook.emit 'job-progress', runId: @_id, jobId: @jobId, name: @name, progress: @progress, progressPercent: Math.min(100, @progress[0] / @progress[1] * 100)
+
+schema.methods.progressPercent = ->
+  try
+    Math.min(100, @progress[0] / @progress[1] * 100)
+  catch e
+    0
 
 module.exports = mongoose.model 'Run', schema

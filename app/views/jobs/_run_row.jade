@@ -1,0 +1,18 @@
+tr('data-run-meta'=run._id)
+  td
+    a.show-output(href='#', 'data-run-id'=run._id)
+      i.icon-plus
+    |  
+    a(href="/runs/#{run._id}")= run._id
+  td.ran-at= run.ranAt && run.ranAt.toString('M/dd/yyyy h:mm:ss tt')
+  td.completed-at= run.completedAt && run.completedAt.toString('M/dd/yyyy h:mm:ss tt')
+  td.progress-cell
+    .progress.progress-striped(class=run.status == 'busy' ? 'active' : '')
+      .bar(style="width:#{run.progressPercent()}%")
+  td.status
+    != statusIcon(run.status)
+    | 
+    = run.status
+tr.output('data-run-id'=run._id, style='display:none;')
+  td.formatted(colspan=5, 'data-run-output'=run._id)
+    != escapeAndLink(run.output)

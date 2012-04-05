@@ -70,7 +70,7 @@ if process.env.NODE_DISABLE_WS
 
 # bridge these events from hook io
 bridge = (ev, pass) -> hook.on ev, (data) -> io.sockets.emit pass, @event, data
-bridge(ev, 'log') for ev in ['running-job', 'job-output', 'job-status']
+bridge(ev, 'log') for ev in ['running-job', 'job-output', 'job-status', 'job-progress']
 bridge(ev, 'cxn') for ev in ['connected', 'disconnected']
 hook.on 'i-am', (data) -> io.sockets.emit 'i-am', data
 

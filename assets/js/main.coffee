@@ -25,16 +25,21 @@ statusIcons =
   busy:    'cog'
   idle:    'time'
 
+progressBar = (percent) ->
+  "<div class='progress progress-striped'><div class='bar' style='width: #{percent}%;'></div></div>"
+
+# FIXME Use Backbone.js to clean this up!
 window.watchJobChanges = (jobId) ->
   socket.on 'log', (event, data) ->
     if !jobId || data.jobId == jobId
       if event.match(/running\-job/) and $("tr[data-run-meta=#{data.runId}]").length == 0
         table = $("#job-history-table tbody")
-        table.prepend "<tr><td class='formatted' colspan='4' data-run-output='#{data.runId}'></td></tr>"
+        table.prepend "<tr class='output' data-run-id='#{data.runId}' style='display:none;'><td class='formatted' colspan='5' data-run-output='#{data.runId}'></td></tr>"
         row = $("<tr data-run-meta='#{data.runId}'/>")
-        row.append "<td><a href='/runs/#{data.runId}'>#{data.runId}</a></td>"
+        row.append "<td><a class='show-output' href='#' data-run-id=run._id><i class='icon-plus'/></a> <a href='/runs/#{data.runId}'>#{data.runId}</a></td>"
         row.append "<td class='ran-at'>#{new Date(data.ranAt).toString('M/dd/yyyy h:mm:ss tt')}</td>"
         row.append "<td class='completed-at'></td>"
+        row.append "<td class='progress-cell'>#{progressBar 0}</td>"
         row.append "<td class='status'><i class='icon-cog'></i> busy</td>"
         table.prepend row
       else if event.match(/job\-output/)
@@ -45,6 +50,13 @@ window.watchJobChanges = (jobId) ->
           $("[data-run-meta=#{data.runId}] td.ran-at").html(new Date(data.ranAt).toString('M/dd/yyyy h:mm:ss tt'))
         if data.completedAt
           $("[data-run-meta=#{data.runId}] td.completed-at").html(new Date(data.completedAt).toString('M/dd/yyyy h:mm:ss tt'))
+        progress = $("[data-run-meta=#{data.runId}] td.progress-cell .progress")
+        if data.status == 'busy'
+          progress.addClass('active')
+        else
+          progress.removeClass('active')
+      else if event.match(/job\-progress/)
+        $("[data-run-meta=#{data.runId}] td.progress-cell .progress .bar").css('width', Math.min(100, data.progressPercent) + '%')
 
 window.formatLinks = (text) ->
   $('<div/>').text(text).html().replace(/https?:\/\/\S+/g, "<a href='$&'>$&</a>")
@@ -52,3 +64,7 @@ window.formatLinks = (text) ->
 $ ->
   $('#show-queue-query').click ->
     $('#queue-query').toggle()
+  $('a.show-output').click (e) ->
+    e.preventDefault()
+    id = $(this).data('run-id')
+    $(".output[data-run-id=#{id}]").toggle()
