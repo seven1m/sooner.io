@@ -10,6 +10,9 @@ config = JSON.parse(fs.readFileSync(__dirname + '/../config.json'))
 mongoose = require 'mongoose'
 mongoose.connect config.db
 
+EventEmitter2Mongo = require __dirname + '/eventemitter2mongo'
+hook = new EventEmitter2Mongo config.db, delimiter: '::'
+
 # objects to which we're willing to give access
 buildContext = (data) ->
   context =
@@ -20,7 +23,12 @@ buildContext = (data) ->
     clearTimeout: clearTimeout
     setInterval: setInterval
     clearInterval: clearInterval
-    done: -> mongoose.disconnect()
+    emit: _.bind(hook.emit, hook)
+    done: ->
+      setTimeout ->
+        hook.disconnect()
+        mongoose.disconnect()
+      , 50
   # load in the other libs
   for file in fs.readdirSync(__dirname + '/sandbox')
     if file.match(/\.coffee$/)

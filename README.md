@@ -48,6 +48,15 @@ The following functions are available to your running code:
 
 Call `done()` at the end of every job so the db connections can be cleaned up, otherwise your job may be marked as failed.
 
+### emit
+
+*Arguments:*
+
+* event
+* data
+
+Emits an event that other jobs can watch, consequently allowing one job to trigger another job. Data passed as the second argument is available to any triggered jobs as the `data` variable.
+
 ### queue
 
 *Arguments:*

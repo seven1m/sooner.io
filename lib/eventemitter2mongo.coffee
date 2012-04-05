@@ -27,7 +27,8 @@ class EventEmitter2Mongo extends EventEmitter2
 
     mongodb.connect mongoURI, (err, client) =>
       if err then throw err
-      client.createCollection options.collectionName, capped: yes, size: options.collectionMax * options.docSize, max: options.collectionMax, (err, collection) =>
+      @client = client
+      @client.createCollection options.collectionName, capped: yes, size: options.collectionMax * options.docSize, max: options.collectionMax, (err, collection) =>
         if err then throw err
         @collection = collection
 
@@ -80,6 +81,15 @@ class EventEmitter2Mongo extends EventEmitter2
     else
       # queue locally until our mongo connection is ready
       @queue.push data
+
+  disconnect: ->
+    if @queue.length > 0
+      setTimeout (=> @disconnect()), 100
+    else if @cursor
+      clearTimeout @checkCursorTimeout
+      @cursor.close()
+      if @client and @client._state == 'connected'
+        @client.close()
 
 module.exports = EventEmitter2Mongo
 

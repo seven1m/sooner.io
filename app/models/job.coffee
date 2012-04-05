@@ -3,8 +3,6 @@ Schema = mongoose.Schema
 models = require __dirname
 CronJob = require('cron').CronJob
 
-VALID_EVENTS = /^fs::/
-
 schema = new Schema
   name:
     type: String
@@ -20,11 +18,6 @@ schema = new Schema
   hooks:
     type: String
     trim: yes
-    validate: (v) ->
-      all = new String(v).split(/\s*,\s*/)
-      for hook in all
-        return false unless hook == '' or hook.match(VALID_EVENTS)
-      true
   workerName:
     type: String
     default: 'worker'
