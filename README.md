@@ -57,6 +57,15 @@ Call `done()` at the end of every job so the db connections can be cleaned up, o
 
 Emits an event that other jobs can watch, consequently allowing one job to trigger another job. Data passed as the second argument is available to any triggered jobs as the `data` variable.
 
+### progress
+
+*Arguments:*
+
+* current
+* max (optional, defaults to 100)
+
+If you wish to track incremental progress of your job, you may call, e.g. `progress(5, 10)` (this will show a progress bar at half-way). The first argument is the current number of units of work complete, while the second is the total number of units of work. The second argument is optional and can be used to change the maximum on the fly.
+
 ### queue
 
 *Arguments:*

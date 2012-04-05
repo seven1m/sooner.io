@@ -55,8 +55,10 @@ window.watchJobChanges = (jobId) ->
           progress.addClass('active')
         else
           progress.removeClass('active')
+          if data.status == 'fail'
+            progress.addClass('progress-danger')
       else if event.match(/job\-progress/)
-        $("[data-run-meta=#{data.runId}] td.progress-cell .progress .bar").css('width', Math.min(100, data.progressPercent) + '%')
+        $("[data-run-meta=#{data.runId}] td.progress-cell .progress .bar").css('width', data.progressPercent + '%')
 
 window.formatLinks = (text) ->
   $('<div/>').text(text).html().replace(/https?:\/\/\S+/g, "<a href='$&'>$&</a>")

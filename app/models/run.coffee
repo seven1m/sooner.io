@@ -87,12 +87,10 @@ schema.methods.run = ->
           @completedAt = new Date()
           if code == 0
             @status = 'success'
-            @progress[0] = @progress[1]
             @markModified 'progress'
           else
             @status = 'fail'
             @result = code.toString()
-          GLOBAL.hook.emit 'job-progress', runId: @_id, jobId: @jobId, name: @name, progress: @progress, progressPercent: Math.min(100, @progress[0] / @progress[1] * 100)
           GLOBAL.hook.emit 'job-status', runId: @_id, jobId: @jobId, name: @name, status: @status, completedAt: @completedAt
           @save()
           job.lastStatus = @status
@@ -110,11 +108,14 @@ schema.methods.log = ->
   @save()
 
 schema.methods.setProgress = (current, max) ->
-  @progress[0] = current
-  @progress[1] = max unless typeof max == 'undefined'
+  if current == 'max'
+    @progress[0] = @progress[1]
+  else
+    @progress[0] = current
+    @progress[1] = max unless typeof max == 'undefined'
   @markModified 'progress'
   @save()
-  GLOBAL.hook.emit 'job-progress', runId: @_id, jobId: @jobId, name: @name, progress: @progress, progressPercent: Math.min(100, @progress[0] / @progress[1] * 100)
+  GLOBAL.hook.emit 'job-progress', runId: @_id, jobId: @jobId, name: @name, progress: @progress, progressPercent: @progressPercent()
 
 schema.methods.progressPercent = ->
   try

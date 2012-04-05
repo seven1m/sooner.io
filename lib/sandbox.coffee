@@ -23,7 +23,6 @@ buildContext = (input, callback) ->
     context =
       jobId: input.jobId
       runId: input.runId
-      run: run
       data: input.data
       bind: _.bind
       console: log: console.log
@@ -34,6 +33,7 @@ buildContext = (input, callback) ->
       emit: _.bind(hook.emit, hook)
       progress: _.bind(run.setProgress, run)
       done: ->
+        run.setProgress 'max'
         setTimeout ->
           hook.disconnect()
           mongoose.disconnect()

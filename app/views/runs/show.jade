@@ -21,7 +21,7 @@ block content
       tr
         th Progress
         td.progress-cell
-          .progress.progress-striped(class=run.status == 'busy' ? 'active' : '')
+          .progress.progress-striped(class=runStatusClass(run))
             .bar(style="width:#{run.progressPercent()}%")
       tr
         th Status
