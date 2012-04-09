@@ -30,8 +30,8 @@ buildContext = (input, callback) ->
       clearTimeout: clearTimeout
       setInterval: setInterval
       clearInterval: clearInterval
-      emit: _.bind(hook.emit, hook)
-      progress: _.bind(run.setProgress, run)
+      emit: _.throttle(_.bind(hook.emit, hook), 500)
+      progress: _.throttle(_.bind(run.setProgress, run), 500)
       done: ->
         run.setProgress 'max', null, (err) ->
           setTimeout ->
