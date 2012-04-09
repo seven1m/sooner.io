@@ -37,6 +37,7 @@ buildContext = (input, callback) ->
           setTimeout ->
             hook.disconnect()
             mongoose.disconnect()
+            process.exit()
           , 50
     # load in the other libs
     for file in fs.readdirSync(__dirname + '/sandbox')
