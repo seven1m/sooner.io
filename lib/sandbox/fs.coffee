@@ -1,4 +1,5 @@
 fs = require 'fs'
+carrier = require 'carrier'
 basePath = fs.realpathSync(__dirname + '/../../output/')
 
 exports.init = (context, options) ->
@@ -18,3 +19,14 @@ exports.init = (context, options) ->
         fs.createWriteStream path
       else
         throw "Invalid path."
+        
+    readStreamByLine: (path, callback) ->
+      stream = fs.createReadStream("#{basePath}/#{path}")
+      stream.on 'open', ->
+        line_reader = carrier.carry(stream)
+        line_reader.on 'line', (line) ->
+          callback(null, 'line', line)
+      stream.on 'end', ->
+        callback(null, 'end', null)
+      stream.on 'error', (err) ->
+        callback(err, 'error')
