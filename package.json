@@ -32,6 +32,8 @@
     , "eventemitter2": "latest"
     , "mongodb": "latest"
     , "xml2js": "latest"
+    , "carrier": "latest"
+    , "xml" : "latest"
   }
   , "devDependencies": {
       "jasmine-node": "latest"
