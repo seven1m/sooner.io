@@ -46,8 +46,7 @@ schema = new Schema
 schema.methods.trigger = ->
   GLOBAL.hook.emit 'trigger-job', runId: @_id, jobId: @jobId, name: @name
 
-schema.methods.run = ->
-  console.log "running #{@name}..."
+schema.methods.run = (callback) ->
   models.job.findById @jobId, (err, job) =>
     if err or !job then throw err
     # FIXME: there's a race condition here
@@ -63,6 +62,7 @@ schema.methods.run = ->
         GLOBAL.hook.emit 'running-job', runId: @_id, jobId: @jobId, name: @name, ranAt: @ranAt
         GLOBAL.hook.emit 'job-output', runId: @_id, jobId: @jobId, name: @name, output: @output
         GLOBAL.hook.emit 'job-status', runId: @_id, jobId: @jobId, name: @name, status: @status, ranAt: @ranAt, completedAt: @completedAt
+        callback('another job already running')
       else
         @status = 'busy'
         @ranAt = new Date()
@@ -96,9 +96,8 @@ schema.methods.run = ->
           @save()
           job.lastStatus = @status
           job.lastRanAt = @ranAt
-          job.save (err) ->
-            if err
-              console.log("error saving job details: #{err}")
+          job.save ->
+            callback()
 
 schema.methods.log = ->
   for arg in arguments
@@ -107,6 +106,12 @@ schema.methods.log = ->
     else
       @output += util.inspect(arg) + "\n"
   @save()
+
+schema.methods.markFailed = ->
+  @status = 'fail'
+  @completedAt = new Date()
+  @save (err) =>
+    GLOBAL.hook.emit 'job-status', runId: @_id, jobId: @jobId, name: @name, status: @status
 
 schema.methods.setProgress = (current, max, callback) ->
   if current == 'max'

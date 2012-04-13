@@ -1,4 +1,4 @@
-controllers = require './app/controllers'
+controllers = require __dirname + '/controllers'
 
 module.exports = (app) ->
   app.get '/', (_, res) -> res.redirect('/jobs')
