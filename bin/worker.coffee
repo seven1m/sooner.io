@@ -1,6 +1,7 @@
 opts = require('optimist').usage("Start a worker process.\nUsage: $0")
        .describe('name', 'name this worker').default('name', 'worker').alias('n', 'name')
        .describe('config', 'path to config file').default('config', 'config.json').alias('c', 'config')
+       .describe('debug', 'enable additional debugging messages').default('debug', false)
 argv = opts.argv
 
 if argv.help

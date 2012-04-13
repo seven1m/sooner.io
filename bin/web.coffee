@@ -2,6 +2,7 @@ opts = require('optimist')
        .usage("Start a web process.\nUsage: $0")
        .describe('port', 'port to run the web server').default('port', 3000)
        .describe('config', 'path to config file').default('config', 'config.json').alias('c', 'config')
+       .describe('debug', 'enable additional debugging messages').default('debug', false)
 argv = opts.argv
 
 if argv.help

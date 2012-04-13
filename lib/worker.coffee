@@ -31,6 +31,7 @@ class Worker
       _.delay(@triggerJob, @startDelay, data)
     @hook.on 'reload-jobs', @loadJobs
     iam.setup(@hook)
+    if @opts.debug then @hook.on '*', (data) => console.log @hook.event, data || ''
     @hook.emit 'connected'
 
   cleanUp: =>
