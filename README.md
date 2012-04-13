@@ -21,19 +21,19 @@ You'll need at least Node.js 0.6.x and MongoDB.
 
 To start up a worker, run:
 
-    coffee worker
+    coffee bin/worker
 
 You can have multiple workers, each responsible for handling different jobs. They can each run on the same or separate machines -- doesn't matter!
 
 You will probably want to give each worker a different name, which you can do with the `-n` switch:
 
-    coffee worker -n vip-worker
+    coffee bin/worker -n vip-worker
 
 ## Web UI
 
 To start up the web server, run:
 
-    coffee web
+    coffee bin/web
 
 <a name="job-api"></a>
 ## Job API
