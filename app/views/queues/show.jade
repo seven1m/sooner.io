@@ -28,7 +28,6 @@ block content
   table.table.table-bordered.table-striped
     thead
       tr
-        - console.log(req.query.query)
         th!= sortCol('ID',      '["_id",1]',        {query: query})
         th!= sortCol('Status',  '["status",1]',     {query: query})
         th!= sortCol('Data',    '["data",1]',       {query: query})
