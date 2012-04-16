@@ -16,6 +16,24 @@ You'll need at least Node.js 0.6.x and MongoDB.
     cd sooner.io
     npm install
     cp config{.example,}.json
+    mkdir scripts.git
+    cd scripts.git
+    git init --bare
+    rm -rf hooks
+    ln -sr ../lib/git-hooks hooks
+    cd ..
+    git clone scripts.git scripts-working-copy
+
+The `scripts.git` directory is a bare repo to which you should push, e.g. on your local machine:
+
+    git clone you@server:/path/to/sooner.io/scripts.git
+    cd scripts
+    echo -e "#!/bin/bash\n\necho 'hello world'" > hello.sh
+    git add hello.sh
+    git commit -m "First commit."
+    git push
+
+Every time you push to `scripts.git`, changes will be pulled automatically into the `scripts-working-copy` (don't make changes in there yourself -- they'll get overwritten!) and script details will be loaded into the database.
 
 ## Worker
 

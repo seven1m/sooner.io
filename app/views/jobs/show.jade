@@ -6,6 +6,12 @@ block content
   table.table.table-bordered
     tbody
       tr
+        th Created
+        td= job.createdAt.toString('M/dd/yyyy h:mm:ss tt')
+      tr
+        th Updated
+        td= job.updatedAt.toString('M/dd/yyyy h:mm:ss tt')
+      tr
         th Schedule
         td.formatted(class=!job.enabled && 'disabled')= job.schedule
       tr

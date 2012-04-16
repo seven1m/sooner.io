@@ -2,6 +2,7 @@ node_modules
 config.json
 genXML
 output
-scripts
+scripts.git
+scripts-working-copy
 tmp
 deploy

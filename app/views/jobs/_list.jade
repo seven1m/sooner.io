@@ -12,10 +12,10 @@ if jobs.length > 0
         th
     tbody
       each job in jobs
-        tr('data-job'=job.id)
+        tr('data-job'=job.id, class=!job.enabled && 'disabled')
           td
             a(href="/jobs/#{job._id}")= job.name
-          td.formatted(class=!job.enabled && 'disabled')= job.schedule
+          td.formatted= job.schedule
           td= job.hooks
           td= job.lastRanAt && job.lastRanAt.toString('M/dd/yyyy h:mm:ss tt')
           td
@@ -29,8 +29,3 @@ if jobs.length > 0
               i(class='icon-remove')
 else
   p: em no jobs defined
-
-.form-actions
-  a.btn(href='/jobs/new')
-    i.icon-asterisk
-    |  New Job

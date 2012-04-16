@@ -50,6 +50,8 @@ window.watchJobChanges = (jobId) ->
           $("[data-run-meta=#{data.runId}] td.ran-at").html(new Date(data.ranAt).toString('M/dd/yyyy h:mm:ss tt'))
         if data.completedAt
           $("[data-run-meta=#{data.runId}] td.completed-at").html(new Date(data.completedAt).toString('M/dd/yyyy h:mm:ss tt'))
+        if data.result
+          $("[data-run-meta=#{data.runId}] td.result").html(data.result)
         progress = $("[data-run-meta=#{data.runId}] td.progress-cell .progress")
         if data.status == 'busy'
           progress.addClass('active')

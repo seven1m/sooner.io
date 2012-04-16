@@ -42,14 +42,14 @@ class Worker
   loadJobs: =>
     console.log 'loading jobs...'
     @tearDownJobs()
-    models.job.find workerName: @hook.name, (err, jobs) =>
+    models.job.find workerName: @hook.name, enabled: true, (err, jobs) =>
       console.log "jobs found: #{JSON.stringify(j.name for j in jobs)}"
       for job in jobs
-        if job.enabled
+        if job.schedule and job.schedule.trim() != ''
           console.log "setting up cron '#{job.schedule}' for #{job.name}."
           @cache.crons.push [job.newCron(), job]
-        if job.hooks and job.hooks != ''
-          for event in job.hooks.split(/\s*,\s*/)
+        if job.hooks and job.hooks.trim() != ''
+          for event in job.hooks.trim().split(/\s*,\s*/)
             @setupJobHook event, job
 
   setupJobHook: (event, job) =>

@@ -11,7 +11,7 @@ schema = new Schema
     type: String
     validate: (v) ->
       try
-        new String(v).length > 0 && new CronJob(v)
+        new String(v).length == 0 || new CronJob(v)
       catch err
         console.log(err)
         false
@@ -29,15 +29,28 @@ schema = new Schema
   createdAt:
     type: Date
     default: -> new Date()
+  updatedAt:
+    type: Date
   lastRanAt:
     type: Date
   lastStatus:
     type: String
-  definition:
+  path:
     type: String
+    required: true
   mutex:
     type: Boolean
     default: true
+  deleted:
+    type: Boolean
+    default: false
+
+schema.pre 'save', (next) ->
+  if !@createdAt
+    @createdAt = @updatedAt = new Date()
+  else
+    @updatedAt = new Date()
+  next()
 
 schema.methods.updateAttributes = (attrs) ->
   @name       = attrs.name
@@ -46,26 +59,29 @@ schema.methods.updateAttributes = (attrs) ->
   @mutex      = attrs.mutex == '1'
   @hooks      = attrs.hooks
   @workerName = attrs.workerName
-  @definition = attrs.definition
 
 schema.methods.newRun = ->
   new models.run
     jobId:      @_id
     name:       @name
-    definition: @definition
+    path:       @path
     workerName: @workerName
 
 schema.methods.newCron = ->
   new CronJob @schedule, =>
     run = @newRun()
     run.save (err, run) ->
-      GLOBAL.hook.emit 'trigger-job', runId: run._id, name: run.name
+      if err
+        console.log err
+      else
+        GLOBAL.hook.emit 'trigger-job', runId: run._id, name: run.name
 
 schema.methods.hookEvent = (hook, data) ->
   console.log "#{@name} triggered by event '#{hook}' with data #{JSON.stringify data}"
   run = @newRun()
   run.data = data
   run.save (err, run) ->
+    if err then throw err
     GLOBAL.hook.emit 'trigger-job', runId: run._id, name: run.name
 
 module.exports = mongoose.model 'Job', schema

@@ -5,7 +5,7 @@ Paginator = require 'paginator'
 module.exports =
 
   index: (req, res) ->
-    models.job.find {}, (err, jobs) ->
+    models.job.where('deleted', false).run (err, jobs) ->
       if(err)
         res.send 'error retreiving jobs', 500
       else
@@ -70,8 +70,13 @@ module.exports =
             res.redirect("/jobs/#{job._id}")
 
   delete: (req, res) ->
-    models.job.remove {_id: req.params.id}, (err) ->
+    models.job.findById req.params.id, (err, job) ->
       if err
-        res.send err, 404
+        res.send 'Not found', 404
       else
-        res.redirect("/jobs")
+        job.deleted = true
+        job.save (err) ->
+          if err
+            res.send err, 500
+          else
+            res.redirect("/jobs")

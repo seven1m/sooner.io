@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+unset GIT_DIR
+cd ../scripts-working-copy
+git fetch origin
+git reset --hard origin/master
+cd ..
+coffee bin/deployer update
