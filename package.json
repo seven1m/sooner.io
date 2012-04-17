@@ -29,7 +29,7 @@
     , "pg": "0.6.x"
     , "ftp": "git://github.com/mscdex/node-ftp.git"
     , "markdown": "latest"
-    , "eventemitter2": "latest"
+    , "eventemitter2": "0.4.x"
     , "mongodb": "latest"
     , "xml2js": "latest"
     , "carrier": "latest"

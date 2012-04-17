@@ -43,14 +43,13 @@ class Worker
     console.log 'loading jobs...'
     cron.stop() for cron in @cache.crons
     @hook.off.apply(this, h) for h in @cache.hooks
-
     models.job.find workerName: @hook.name, (err, jobs) =>
       console.log "jobs found: #{JSON.stringify(j.name for j in jobs)}"
       for job in jobs
         if job.enabled
           console.log "setting up cron for #{job.name}."
           @cache.crons.push job.newCron()
-        if job.hooks and job.hooks != ''
+        if false and job.hooks and job.hooks != ''
           for event in job.hooks.split(/\s*,\s*/)
             console.log "setting up hook #{event} for #{job.name}."
             cb = _.bind(job.hookEvent, job)
