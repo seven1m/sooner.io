@@ -41,20 +41,27 @@ class Worker
 
   loadJobs: =>
     console.log 'loading jobs...'
-    cron.stop() for cron in @cache.crons
-    @hook.off.apply(this, h) for h in @cache.hooks
+    @tearDownJobs()
     models.job.find workerName: @hook.name, (err, jobs) =>
       console.log "jobs found: #{JSON.stringify(j.name for j in jobs)}"
       for job in jobs
         if job.enabled
-          console.log "setting up cron for #{job.name}."
-          @cache.crons.push job.newCron()
-        if false and job.hooks and job.hooks != ''
+          console.log "setting up cron '#{job.schedule}' for #{job.name}."
+          @cache.crons.push [job.newCron(), job]
+        if job.hooks and job.hooks != ''
           for event in job.hooks.split(/\s*,\s*/)
-            console.log "setting up hook #{event} for #{job.name}."
-            cb = _.bind(job.hookEvent, job)
+            console.log "setting up hook '#{event}' for #{job.name}."
+            cb = (data) -> job.hookEvent(this.event, data)
             @hook.on event, cb
-            @cache.hooks.push [event, cb]
+            @cache.hooks.push [event, cb, job]
+
+  tearDownJobs: =>
+    for [cron, job] in @cache.crons
+      console.log "tearing down cron '#{job.schedule}' for #{job.name}."
+      cron.stop()
+    for [ev, cb, job] in @cache.hooks
+      console.log "tearing down hook '#{ev}' for #{job.name}."
+      @hook.off(ev, cb)
 
   triggerJob: (data) =>
     models.run.findOne _id: data.runId, workerName: @hook.name, (err, run) =>
