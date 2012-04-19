@@ -62,6 +62,9 @@ class Worker
     for [ev, cb, job] in @cache.hooks
       console.log "tearing down hook '#{ev}' for #{job.name}."
       @hook.off(ev, cb)
+    @cache =
+      crons: []
+      hooks: []
 
   triggerJob: (data) =>
     models.run.findOne _id: data.runId, workerName: @hook.name, (err, run) =>
