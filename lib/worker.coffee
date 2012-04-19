@@ -50,10 +50,13 @@ class Worker
           @cache.crons.push [job.newCron(), job]
         if job.hooks and job.hooks != ''
           for event in job.hooks.split(/\s*,\s*/)
-            console.log "setting up hook '#{event}' for #{job.name}."
-            cb = (data) -> job.hookEvent(this.event, data)
-            @hook.on event, cb
-            @cache.hooks.push [event, cb, job]
+            @setupJobHook event, job
+
+  setupJobHook: (event, job) =>
+    console.log "setting up hook '#{event}' for #{job.name}."
+    cb = (data) -> job.hookEvent(this.event, data)
+    @hook.on event, cb
+    @cache.hooks.push [event, cb, job]
 
   tearDownJobs: =>
     for [cron, job] in @cache.crons
