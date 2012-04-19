@@ -61,7 +61,8 @@ schema.methods.newCron = ->
     run.save (err, run) ->
       GLOBAL.hook.emit 'trigger-job', runId: run._id, name: run.name
 
-schema.methods.hookEvent = (data) ->
+schema.methods.hookEvent = (hook, data) ->
+  console.log "#{@name} triggered by event '#{hook}' with data #{JSON.stringify data}"
   run = @newRun()
   run.data = data
   run.save (err, run) ->
