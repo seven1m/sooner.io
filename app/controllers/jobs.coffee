@@ -5,7 +5,7 @@ Paginator = require 'paginator'
 module.exports =
 
   index: (req, res) ->
-    models.job.where('deleted', false).run (err, jobs) ->
+    models.job.where('deleted', false).sort('name', 1).run (err, jobs) ->
       if(err)
         res.send 'error retreiving jobs', 500
       else
