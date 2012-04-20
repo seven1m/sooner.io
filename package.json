@@ -29,6 +29,8 @@
     , "markdown": "latest"
     , "eventemitter2": "0.4.x"
     , "mongodb": "latest"
+    , "dnode": "0.9.x"
+    , "temp": "0.4.x"
   }
   , "devDependencies": {
       "jasmine-node": "latest"

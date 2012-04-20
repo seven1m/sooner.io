@@ -25,7 +25,5 @@ if jobs.length > 0
           td.actions
             a(href="/jobs/#{job._id}/edit")
               i(class='icon-pencil')
-            a(href="/jobs/#{job._id}", 'data-method'='delete', 'data-confirm'='Are you sure?')
-              i(class='icon-remove')
 else
   p: em no jobs defined

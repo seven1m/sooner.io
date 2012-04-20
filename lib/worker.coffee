@@ -37,7 +37,7 @@ class Worker
   cleanUp: =>
     models.run.find {status: {$in: ['busy', 'idle']}, workerName: @hook.name}, (err, runs) =>
       console.log "Found #{runs.length} run(s) in limbo."
-      run.markFailed() for run in runs
+      run.fail('stuck running during restart') for run in runs
 
   loadJobs: =>
     console.log 'loading jobs...'
@@ -81,7 +81,7 @@ class Worker
   watchExit: =>
     process.on 'uncaughtException', (err) =>
       try
-        @hook.emit 'disconnected'
+        @hook.emit 'disconnected', name: @hook.name
       catch e
         # pass
       throw err

@@ -58,7 +58,6 @@ class Deployer
           job.deleted = false
           job.save (err) =>
             if err then throw err
-            @ops--
             callback job
         else
           # TODO track renames
@@ -70,8 +69,10 @@ class Deployer
             path: path
           job.save (err) =>
             if err then throw err
-            @ops--
             callback job
+      else
+        callback()
+
 
   isScript: (path, stats) =>
     stats.isFile() and not path.match(/^\./) and stats.mode & 64 # executable by user
