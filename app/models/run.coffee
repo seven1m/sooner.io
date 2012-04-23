@@ -94,7 +94,10 @@ schema.methods.run = (callback) ->
     if err or !job then throw ['error getting job:', err]
 
     script = new Script @fullPath(),
-      progress: console.log
+      emit: (event, data) =>
+        console.log "job #{@name} emitted '#{event}' with data", data
+        _.debounce(GLOBAL.hook.emit, 50, true)(event, data)
+      progress: _.debounce(_.bind(@setProgress, @), 50, true)
 
     # FIXME: race condition
     models.run.where('status', 'busy').where('jobId', @jobId).count (err, runningCount) =>

@@ -31,6 +31,7 @@
     , "mongodb": "latest"
     , "dnode": "0.9.x"
     , "temp": "0.4.x"
+    , "carrier": "0.1.7"
   }
   , "devDependencies": {
       "jasmine-node": "latest"
