@@ -22,3 +22,14 @@ module.exports =
           else
             run.trigger()
             res.redirect("/runs/#{run._id}")
+
+  delete: (req, res) ->
+    models.run.findById req.params.id, (err, run) ->
+      if err
+        res.send 'Not found', 404
+      else
+        GLOBAL.hook.emit 'stop-job'
+          runId: run._id
+          jobId: run.jobId
+          name: run.name
+        res.redirect("/runs/#{run._id}")

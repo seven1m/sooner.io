@@ -30,6 +30,7 @@ class Worker
     @hook.on 'trigger-job', (data) =>
       _.delay(@triggerJob, @startDelay, data)
     @hook.on 'reload-jobs', @loadJobs
+    @hook.on 'stop-job', @stopJob
     iam.setup(@hook)
     if @opts.debug then @hook.on '*', (data) => console.log @hook.event, data || ''
     @hook.emit 'connected'
@@ -77,6 +78,12 @@ class Worker
         console.log "running: #{run.name}"
         run.run =>
           console.log "complete: #{run.name}"
+
+  stopJob: (data) =>
+    models.run.findOne _id: data.runId, workerName: @hook.name, (err, run) =>
+      if !err and run
+        console.log "stopping: #{run.name} run #{run._id}"
+        run.stop()
 
   watchExit: =>
     process.on 'uncaughtException', (err) =>

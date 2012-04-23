@@ -39,6 +39,8 @@ schema = new Schema
     default: -> new Date()
   path:
     type: String
+  pid:
+    type: String
   ranAt:
     type: Date
   completedAt:
@@ -114,6 +116,7 @@ schema.methods.run = (callback) ->
         script.on 'start', (pid) =>
           @pid = pid
           @hookEmit 'running-job', pid: @pid
+          @save()
 
         script.on 'data', (data) =>
           @output += data.toString()
@@ -132,6 +135,12 @@ schema.methods.run = (callback) ->
           @fail err, callback
 
         script.execute @data
+
+schema.methods.stoppable = ->
+  @status in ['idle', 'busy']
+
+schema.methods.stop = ->
+  process.kill @pid, 'SIGINT'
 
 schema.methods.setProgress = (current, max, callback) ->
   if current == 'max'
