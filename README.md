@@ -48,7 +48,7 @@ To start up the web server, run:
 
 A job is simply a script on the file system plus some metadata including schedule (cron), hooks, target worker, etc, which can be updated via the web UI.
 
-A script can be written in any language, e.g. bash, ruby, python, etc., though CoffeeScript is recommended in order to utilize the existing Mongoose Queue model.
+A script can be written in any language, e.g. bash, ruby, python, etc., though JavaScript/CoffeeScript is recommended in order to utilize the existing Mongoose Queue model.
 
 Here's perhaps the simplest possible script:
 
