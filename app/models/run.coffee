@@ -140,7 +140,8 @@ schema.methods.stoppable = ->
   @status in ['idle', 'busy']
 
 schema.methods.stop = ->
-  process.kill @pid, 'SIGINT'
+  if @pid
+    process.kill @pid, 'SIGINT'
 
 schema.methods.setProgress = (current, max, callback) ->
   if current == 'max'
