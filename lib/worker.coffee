@@ -86,13 +86,6 @@ class Worker
         run.stop()
 
   watchExit: =>
-    process.on 'uncaughtException', (err) =>
-      try
-        @hook.emit 'disconnected', name: @hook.name
-      catch e
-        # pass
-      throw err
-
     process.on 'SIGINT', =>
       @hook.emit 'disconnected'
       process.exit()
