@@ -3,9 +3,6 @@ models = require __dirname + '/../models'
 dbInfo = require __dirname + '/../../lib/dbInfo'
 Paginator = require 'paginator'
 
-context = {}
-require(__dirname + '/../../lib/sandbox/queue').init(context)
-
 module.exports =
 
   index: (req, res) ->
@@ -16,9 +13,8 @@ module.exports =
 
   show: (req, res) ->
     @setQueryAndSort(req)
-    q = context.queue(req.params.id).find(@dataQuery)
+    q = models.queue(req.params.id).find(@dataQuery)
     q = q.sort.apply(q, @dataSort)
-    console.log q
     _.clone(q).count (err, count) =>
       if err then throw err
       paginator = new Paginator perPage: 5, page: req.query.page, count: count

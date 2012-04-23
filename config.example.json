@@ -1,12 +1,4 @@
 {
   "db": "mongodb://localhost:27017/soonerio",
-  "dbConnections": {
-    "foo": "postgres://postgres@localhost/foo"
-  },
-  "shellCommands": {
-    "bar": "/path/to/command"
-  },
-  "ftpServers": {
-    "baz": "ftphost-or-ip"
-  }
+  "gitBinary": "git"
 }

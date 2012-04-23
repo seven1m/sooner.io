@@ -1,6 +1,6 @@
 {
     "name": "sooner.io"
-  , "version": "0.1.0"
+  , "version": "0.2.0"
   , "author": "Tim Morgan <tim@timmorgan.org>"
   , "description": "a distributed job scheduling engine and web-based management app, brought to you from the Sooner State"
   , "repository": {
@@ -26,14 +26,12 @@
     , "cron": "git://github.com/ncb000gt/node-cron.git#1cef12d7"
     , "socket.io": "0.9.x"
     , "optimist": "0.3.x"
-    , "pg": "0.6.x"
-    , "ftp": "git://github.com/mscdex/node-ftp.git"
     , "markdown": "latest"
     , "eventemitter2": "0.4.x"
     , "mongodb": "latest"
-    , "xml2js": "latest"
-    , "carrier": "latest"
-    , "xml" : "latest"
+    , "dnode": "0.9.x"
+    , "temp": "0.4.x"
+    , "carrier": "0.1.7"
   }
   , "devDependencies": {
       "jasmine-node": "latest"

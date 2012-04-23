@@ -30,6 +30,9 @@ block content
           | 
           = run.status
       tr
+        th Exit Code
+        td.result= run.result
+      tr
         th Output
         td.output.formatted('data-run-output'=run._id)= run.output
       tr

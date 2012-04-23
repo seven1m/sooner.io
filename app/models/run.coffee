@@ -1,14 +1,15 @@
-childProcess = require 'child_process'
-
 util = require 'util'
 _ = require 'underscore'
+fs = require 'fs'
+
+Script = require __dirname + '/../../lib/script'
 
 models = require __dirname
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
 ObjectId = Schema.ObjectId
 
-model = null
+scriptsDir = __dirname + '/../../scripts-working-copy'
 
 schema = new Schema
   jobId:
@@ -16,8 +17,6 @@ schema = new Schema
     required: true
     index: true
   name:
-    type: String
-  definition:
     type: String
   hooks:
     type: Array
@@ -34,84 +33,105 @@ schema = new Schema
     type: String
     default: ''
   result:
-    type: String
+    type: Number
   createdAt:
     type: Date
     default: -> new Date()
+  path:
+    type: String
   ranAt:
     type: Date
   completedAt:
     type: Date
 
+schema.methods.fullPath = ->
+  scriptsDir + '/' + @path
+
 schema.methods.trigger = ->
-  GLOBAL.hook.emit 'trigger-job', runId: @_id, jobId: @jobId, name: @name
+  @hookEmit 'trigger-job'
+
+schema.methods.hookEmit = (event, data) ->
+  defData =
+    runId: @_id
+    jobId: @jobId
+    name: @name
+    status: @status
+    result: if @result then @result.toString()
+    ranAt: @ranAt
+    completedAt: @completedAt
+  GLOBAL.hook.emit event, _.extend(defData, data)
+
+schema.methods.succeed = (callback) ->
+  @status = 'success'
+  @setProgress 'max'
+  @hookEmit 'job-status'
+  @updateJob callback
+
+schema.methods.fail = (message, callback) ->
+  console.log 'job', @name, 'fail:', message
+  @status = 'fail'
+  @output += message
+  @ranAt = @completedAt = new Date()
+  @hookEmit 'job-output', output: message
+  @hookEmit 'job-status'
+  @save (err) =>
+    if err then throw err
+    @updateJob =>
+      if callback
+        callback message
+
+schema.methods.updateJob = (callback) ->
+  models.job.findById @jobId, (err, job) =>
+    if err then throw err
+    job.lastStatus = @status
+    job.lastRanAt = @ranAt
+    job.save (err) =>
+      if err then throw err
+      callback()
 
 schema.methods.run = (callback) ->
   models.job.findById @jobId, (err, job) =>
-    if err or !job then throw err
-    # FIXME: there's a race condition here
+    if err or !job then throw ['error getting job:', err]
+
+    script = new Script @fullPath(),
+      emit: (event, data) =>
+        console.log "job #{@name} emitted '#{event}' with data", data
+        _.debounce(GLOBAL.hook.emit, 50, true)(event, data)
+      progress: _.debounce(_.bind(@setProgress, @), 50, true)
+
+    # FIXME: race condition
     models.run.where('status', 'busy').where('jobId', @jobId).count (err, runningCount) =>
       if err then throw err
 
       if runningCount > 0 and job.mutex
-        console.log 'Another run for this process already.'
-        @status = 'fail'
-        @output = 'another job is currently running'
-        @ranAt = @completedAt = new Date()
-        @save()
-        GLOBAL.hook.emit 'running-job', runId: @_id, jobId: @jobId, name: @name, ranAt: @ranAt
-        GLOBAL.hook.emit 'job-output', runId: @_id, jobId: @jobId, name: @name, output: @output
-        GLOBAL.hook.emit 'job-status', runId: @_id, jobId: @jobId, name: @name, status: @status, ranAt: @ranAt, completedAt: @completedAt
-        callback('another job already running')
+        @fail 'this job is already running', callback
       else
         @status = 'busy'
         @ranAt = new Date()
         @save()
+        @hookEmit 'job-status'
 
-        input =
-          jobId: @jobId
-          runId: @_id
-          code: @definition
-          data: @data || {}
-        sandbox = childProcess.spawn "coffee", ["#{__dirname}/../../lib/sandbox.coffee"], {}
-        sandbox.stdin.end JSON.stringify(input)
-        GLOBAL.hook.emit 'running-job', pid: sandbox.pid, runId: @_id, jobId: @jobId, name: @name, ranAt: @ranAt
-        GLOBAL.hook.emit 'job-status', runId: @_id, jobId: @jobId, name: @name, status: @status, ranAt: @ranAt
-        sandbox.stdout.on 'data', (data) =>
+        script.on 'start', (pid) =>
+          @pid = pid
+          @hookEmit 'running-job', pid: @pid
+
+        script.on 'data', (data) =>
           @output += data.toString()
-          GLOBAL.hook.emit 'job-output', pid: sandbox.pid, runId: @_id, jobId: @jobId, name: @name, output: data.toString()
+          @hookEmit 'job-output', pid: @pid, output: data.toString()
           @save()
-        sandbox.stderr.on 'data', (data) =>
-          @output += data.toString()
-          GLOBAL.hook.emit 'job-output', pid: sandbox.pid, runId: @_id, jobId: @jobId, name: @name, output: data.toString()
-          @save()
-        sandbox.on 'exit', (code) =>
+
+        script.on 'end', (code) =>
           @completedAt = new Date()
+          @result = code
           if code == 0
-            @status = 'success'
+            @succeed callback
           else
-            @status = 'fail'
-            @result = code.toString()
-          GLOBAL.hook.emit 'job-status', runId: @_id, jobId: @jobId, name: @name, status: @status, completedAt: @completedAt
-          @save()
-          job.lastStatus = @status
-          job.lastRanAt = @ranAt
-          job.save ->
-            callback()
+            @fail 'script exited with non-zero status code', callback
 
-schema.methods.log = ->
-  for arg in arguments
-    if typeof arg in ['string', 'number']
-      @output += new String(arg) + "\n"
-    else
-      @output += util.inspect(arg) + "\n"
-  @save()
+        script.on 'error', (err) =>
+          @fail err, callback
 
-schema.methods.markFailed = ->
-  @status = 'fail'
-  @completedAt = new Date()
-  @save (err) =>
-    GLOBAL.hook.emit 'job-status', runId: @_id, jobId: @jobId, name: @name, status: @status
+        script.execute @data
 
 schema.methods.setProgress = (current, max, callback) ->
   if current == 'max'
@@ -120,8 +140,8 @@ schema.methods.setProgress = (current, max, callback) ->
     @progress[0] = current
     @progress[1] = max unless typeof max == 'undefined'
   @markModified 'progress'
+  @hookEmit 'job-progress', progress: @progress, progressPercent: @progressPercent()
   @save callback
-  GLOBAL.hook.emit 'job-progress', runId: @_id, jobId: @jobId, name: @name, progress: @progress, progressPercent: @progressPercent()
 
 schema.methods.progressPercent = ->
   try
@@ -129,4 +149,4 @@ schema.methods.progressPercent = ->
   catch e
     0
 
-module.exports = model = mongoose.model 'Run', schema
+module.exports = mongoose.model 'Run', schema
