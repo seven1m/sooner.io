@@ -16,6 +16,7 @@ module.exports =
         res.send 'Not found', 404
       else
         run = job.newRun()
+        run.data = req.body.data
         run.save (err, run) ->
           if err
             res.send 'Error creating run', 500

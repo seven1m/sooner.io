@@ -69,9 +69,17 @@ window.formatLinks = (text) ->
 $ ->
   $('#show-queue-query').click ->
     $('#queue-query').toggle()
+
   $(document).on 'click', 'a.show-output', (e) ->
     e.preventDefault()
     elm = $(this)
     id = elm.data('run-id')
     $(".output[data-run-id=#{id}]").toggle()
     elm.find('i').toggleClass('icon-plus').toggleClass('icon-minus')
+
+  $('#run-button').mouseenter ->
+    $('#run-data').fadeIn()
+  .mouseleave ->
+    $('#run-data').fadeOut()
+  .find('.btn').click ->
+    $('#run-form').submit()

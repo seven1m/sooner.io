@@ -34,10 +34,12 @@ block content
     a.btn(href="/jobs/#{job._id}/edit")
       i.icon-pencil
       |  Edit
-    .right
-      a.btn(href="/jobs/#{job._id}/runs", 'data-method'='post')
-        i.icon-cog
-        |  Run Now
+    .right#run-button
+      form#run-form(action="/jobs/#{job._id}/runs", method='post')
+        input#run-data(name='data', placeholder='data (optional)')
+        a.btn(href='#')
+          i.icon-cog
+          |  Run Now
 
   h3 History
 
