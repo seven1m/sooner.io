@@ -40,9 +40,6 @@ block content
       tr
         th Output
         td.output.formatted('data-run-output'=run._id)= run.output
-      tr
-        th Definition
-        td.formatted= run.definition
 
   :coffeescript
     $('.output').html(formatLinks($('.output').html()))
