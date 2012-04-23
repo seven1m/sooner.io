@@ -32,7 +32,7 @@ progressBar = (percent) ->
 window.watchJobChanges = (jobId) ->
   socket.on 'log', (event, data) ->
     if !jobId || data.jobId == jobId
-      if event.match(/running\-job/) and $("tr[data-run-meta=#{data.runId}]").length == 0
+      if event.match(/running\-job/) and $("tr[data-run-meta=#{data.runId}]").length == 0 and !location.href.match(/page=/)
         table = $("#job-history-table tbody")
         table.prepend "<tr class='output' data-run-id='#{data.runId}' style='display:none;'><td class='formatted' colspan='5' data-run-output='#{data.runId}'></td></tr>"
         row = $("<tr data-run-meta='#{data.runId}'/>")
