@@ -49,7 +49,7 @@ window.watchJobChanges = (jobId) ->
         if data.ranAt
           $("[data-run-meta=#{data.runId}] td.ran-at").html(new Date(data.ranAt).toString('M/dd/yyyy h:mm:ss tt'))
         if data.completedAt
-          $('.form-actions.stoppable').hide()
+          $('.stop-button').hide()
           $("[data-run-meta=#{data.runId}] td.completed-at").html(new Date(data.completedAt).toString('M/dd/yyyy h:mm:ss tt'))
         if data.result
           $("[data-run-meta=#{data.runId}] td.result").html(data.result)

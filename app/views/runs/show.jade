@@ -21,6 +21,11 @@ block content
       tr
         th Progress
         td.progress-cell
+          if run.stoppable()
+            .right.margin-left.stop-button
+              a.btn(href="/runs/#{run._id}", 'data-method'='delete')
+                i.icon-exclamation-sign
+                |  Stop
           .progress.progress-striped(class=runStatusClass(run))
             .bar(style="width:#{run.progressPercent()}%")
       tr
@@ -38,12 +43,6 @@ block content
       tr
         th Definition
         td.formatted= run.definition
-
-  if run.stoppable()
-    .form-actions.right.stoppable
-      a.btn(href="/runs/#{run._id}", 'data-method'='delete')
-        i.icon-exclamation-sign
-        |  Stop
 
   :coffeescript
     $('.output').html(formatLinks($('.output').html()))
