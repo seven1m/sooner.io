@@ -1,13 +1,12 @@
 express = require('express')
-routes = require(__dirname + '/../app/routes')
+jadeBrowser = require('jade-browser')
 helpers = require(__dirname + '/../app/helpers')
 socketio = require('socket.io')
-require(__dirname + '/../assets/js/date')
 EventEmitter2Mongo = require(__dirname + '/eventemitter2mongo')
-resourceRoutes = require('express-resource-routes')
 mongoose = require('mongoose')
 fs = require('fs')
 iam = require(__dirname + '/iam')
+models = require(__dirname + '/../app/models')
 
 class WebServer
   constructor: (@opts) ->
@@ -51,13 +50,14 @@ class WebServer
       @app.use express.cookieParser()
       @app.use express.session
         secret: 'your secret here'
-      @app.use require('connect-assets')(src: "#{__dirname}/../assets")
-      @app.use @app.router
+      @app.use require('connect-assets')(src: "#{__dirname}/../app")
       @app.use express.static(__dirname + '/../public')
+      @app.use jadeBrowser('/js/templates.js', '**', root: __dirname + '/../app/views')
       @app.helpers helpers
       @app.dynamicHelpers
         req: (req, _) => req
         params: (req, _) => req.params
+      @app.use @layoutMiddleware
 
     @app.configure 'development', =>
       @app.use express.errorHandler({ dumpExceptions: true, showStack: true })
@@ -65,15 +65,15 @@ class WebServer
     @app.configure 'production', =>
       @app.use express.errorHandler()
 
-    resourceRoutes.init(@app)
-
-    routes(@app)
-
     @app.listen @opts.port
     console.log "Express server listening on port %d in %s mode", @app.address().port, @app.settings.env
 
-    @io = socketio.listen @app
+    @io = GLOBAL.io = socketio.listen @app
+    models.connect @io
     if process.env.NODE_DISABLE_WS
       @io.set 'transports', ['htmlfile', 'xhr-polling', 'jsonp-polling']
+
+  layoutMiddleware: (req, res, next) ->
+    res.render 'layout.jade'
 
 module.exports = WebServer

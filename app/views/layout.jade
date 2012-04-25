@@ -4,14 +4,13 @@ html
     title
       block title
         | Sooner.io
-    != css('bootstrap.min')
-    != css('main')
-    != js('jquery.min')
-    != js('bootstrap.min')
-    != js('date')
-    != js('rails')
+
     script(src='/socket.io/socket.io.js')
-    != js('main')
+    != js('/app')
+    script(src='/js/templates.js')
+
+    != css('/vendor/stylesheets/bootstrap')
+    != css('/stylesheets/main')
     link(href='http://fonts.googleapis.com/css?family=Inconsolata', rel='stylesheet', type='text/css')
 
   body
@@ -20,15 +19,14 @@ html
         .container
           .brand Sooner.io
           ul.nav
-            li(class=req.path.match(/^\/jobs/) && 'active')
+            li
               a(href='/jobs') Jobs
-            li(class=req.path.match(/^\/queues/) && 'active')
+            li
               a(href='/queues') Queues
-            li(class=req.path.match(/^\/status/) && 'active')
+            li
               a(href='/status') Status
 
     #main
       .container
         .row
-          .span12
-            block content
+          .span12.root

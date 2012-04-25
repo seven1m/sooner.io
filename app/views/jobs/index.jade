@@ -1,24 +1,21 @@
-extends ../layout
-
-block content
-  p
-    :markdown
-      Welcome to [Sooner.io](http://github.com/seven1m/sooner.io), the distributed job scheduling engine
-      and web-based management app, brought to you from the
-      ![Oklahoma](/img/ok.png) [Sooner State](http://en.wikipedia.org/wiki/Oklahoma).
-
-  include _list
-
-  h3 Help
-
+p
   :markdown
-    Jobs can be added/updated via Git:
+    Welcome to [Sooner.io](http://github.com/seven1m/sooner.io), the distributed job scheduling engine
+    and web-based management app, brought to you from the
+    ![Oklahoma](/img/ok.png) [Sooner State](http://en.wikipedia.org/wiki/Oklahoma).
 
-        git clone username@workerHost:/path/to/sooner.io/scripts.git
-        vim myScript.coffee
-        chmod +x myScript.coffee
-        git add myScript.coffee
-        git commit -m "Add my script"
-        git push
+include _list
 
-    See the [README](https://github.com/seven1m/sooner.io/blob/master/README.md) for more information.
+h3 Help
+
+:markdown
+  Jobs can be added/updated via Git:
+
+      git clone username@workerHost:/path/to/sooner.io/scripts.git
+      vim myScript.coffee
+      chmod +x myScript.coffee
+      git add myScript.coffee
+      git commit -m "Add my script"
+      git push
+
+  See the [README](https://github.com/seven1m/sooner.io/blob/master/README.md) for more information.
