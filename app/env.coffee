@@ -9,6 +9,7 @@
 #= require router
 #= require_tree models
 #= require_tree collections
+#= require_tree controllers
 #= require_tree views
 
 window.jade = {} # hack to fix broken jade-browser
