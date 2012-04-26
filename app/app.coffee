@@ -7,7 +7,7 @@
 
   start: ->
     console.log 'starting app'
-    @socket = io.connect()
+    @socket = Backbone.socket = io.connect()
 
     @workspace = new app.router
     Backbone.history.start pushState: yes
