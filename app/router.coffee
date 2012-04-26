@@ -1,6 +1,4 @@
-this.app ?= {}
-
-class this.app.router extends Backbone.Router
+class app.router extends Backbone.Router
 
   routes:
     '': 'default'
@@ -10,5 +8,5 @@ class this.app.router extends Backbone.Router
     @navigate 'jobs'
 
   jobsIndex: ->
-    jobs = new app.collections.jobs
-    jobs.fetch()
+    jobIndexView = new app.views.jobIndex().render()
+    $('#main .root').html jobIndexView.$el

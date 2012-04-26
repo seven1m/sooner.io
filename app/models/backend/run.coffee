@@ -2,14 +2,16 @@ util = require 'util'
 _ = require 'underscore'
 fs = require 'fs'
 
-Script = require __dirname + '/../../lib/script'
+BASE_PATH = __dirname + '/../../..'
+
+Script = require "#{BASE_PATH}/lib/script"
 
 models = require __dirname
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
 ObjectId = Schema.ObjectId
 
-scriptsDir = __dirname + '/../../scripts-working-copy'
+scriptsDir = "#{BASE_PATH}/scripts-working-copy"
 
 schema = new Schema
   jobId:

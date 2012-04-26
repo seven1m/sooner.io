@@ -6,7 +6,7 @@ EventEmitter2Mongo = require(__dirname + '/eventemitter2mongo')
 mongoose = require('mongoose')
 fs = require('fs')
 iam = require(__dirname + '/iam')
-models = require(__dirname + '/../app/models')
+models = require(__dirname + '/../app/models/backend')
 
 class WebServer
   constructor: (@opts) ->
@@ -41,7 +41,7 @@ class WebServer
     @app = express.createServer()
 
     @app.configure =>
-      @app.set 'views', __dirname + '/../app/views'
+      @app.set 'views', __dirname + '/../app/templates'
       @app.set 'view engine', 'jade'
       @app.set 'view options',
         layout: false
@@ -52,7 +52,7 @@ class WebServer
         secret: 'your secret here'
       @app.use require('connect-assets')(src: "#{__dirname}/../app")
       @app.use express.static(__dirname + '/../public')
-      @app.use jadeBrowser('/js/templates.js', '**', root: __dirname + '/../app/views')
+      @app.use jadeBrowser('/js/templates.js', '**/*.jade', root: __dirname + '/../app/templates')
       @app.helpers helpers
       @app.dynamicHelpers
         req: (req, _) => req

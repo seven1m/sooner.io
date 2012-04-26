@@ -1,7 +1,7 @@
 childProcess = require('child_process')
 fs = require('fs')
 mongoose = require('mongoose')
-models = require(__dirname + '/../app/models')
+models = require(__dirname + '/../app/models/backend')
 
 class Deployer
 
