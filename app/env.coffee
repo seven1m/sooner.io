@@ -8,10 +8,9 @@
 
 #= require app
 #= require router
-#= require models/job
-#= require collections/jobsCollection
-#= require views/jobIndexView
-#= require views/jobListView
+#= require_tree models
+#= require_tree collections
+#= require_tree views
 
 window.jade = {} # hack to fix broken jade-browser
 
