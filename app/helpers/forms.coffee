@@ -1,3 +1,5 @@
+app.helpers ?= {}
+
 escape = (text) ->
   new String(text || '').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
@@ -7,7 +9,7 @@ escapeAttr = (text) ->
 escapeAndLink = (text) ->
   escape(text).replace(/https?:\/\/\S+/g, "<a href='$&'>$&</a>")
 
-inputTag = exports.inputTag = (obj, field, options) ->
+inputTag = app.helpers.inputTag = (obj, field, options) ->
   options ||= {}
   if options.tag == 'input' || !options.tag
     if options.tagType == 'checkbox'
@@ -20,7 +22,7 @@ inputTag = exports.inputTag = (obj, field, options) ->
   else
     "unsupported"
 
-exports.field = (obj, field, options) ->
+app.helpers.field = (obj, field, options) ->
   "<div class='control-group #{obj.errors && obj.errors[field] && 'error' || ''}'>
     <label class='control-label' for='#{field}'>#{options.label || field[0].toUpperCase() + field.slice(1)}</label>
     <div class='controls'>
@@ -29,4 +31,4 @@ exports.field = (obj, field, options) ->
     </div>
   </div>"
 
-exports.escapeAndLink = escapeAndLink
+app.helpers.escapeAndLink = escapeAndLink

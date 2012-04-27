@@ -1,61 +1,45 @@
-extends ../layout
+h2.name
 
-block content
-  h2= job.name
+table.table.table-bordered
+  tbody
+    tr
+      th Created
+      td.createdAt
+    tr
+      th Updated
+      td.updatedAt
+    tr
+      th Schedule
+      td.formatted.schedule
+    tr
+      th Hooks
+      td.hooks
+    tr
+      th Worker Name
+      td.workerName
+    tr
+      th Last Run
+      td.lastRanAt
+    tr
+      th Last Status
+      td.lastStatus
 
-  table.table.table-bordered
-    tbody
-      tr
-        th Created
-        td= job.createdAt.toString('M/dd/yyyy h:mm:ss tt')
-      tr
-        th Updated
-        td= job.updatedAt.toString('M/dd/yyyy h:mm:ss tt')
-      tr
-        th Schedule
-        td.formatted(class=!job.enabled && 'disabled')= job.schedule
-      tr
-        th Hooks
-        td= job.hooks
-      tr
-        th Worker Name
-        td= job.workerName
-      tr
-        th Last Run
-        td= job.lastRanAt && job.lastRanAt.toString('M/dd/yyyy h:mm:ss tt')
-      tr
-        th Last Status
-        td
-          != 'statusIcon' + job.lastStatus
-          | 
-          = job.lastStatus
+.form-actions
+  a.btn.edit-button(href='/jobs/:id/edit')
+    i.icon-pencil
+    |  Edit
+  .right#run-button
+    form#run-form(action='/jobs/:id/runs', method='post')
+      input#run-data(name='data', placeholder='data (optional)')
+      a.btn(href='#')
+        i.icon-cog
+        |  Run Now
 
-  .form-actions
-    a.btn(href="/jobs/#{job._id}/edit")
-      i.icon-pencil
-      |  Edit
-    .right#run-button
-      form#run-form(action="/jobs/#{job._id}/runs", method='post')
-        input#run-data(name='data', placeholder='data (optional)')
-        a.btn(href='#')
-          i.icon-cog
-          |  Run Now
+h3 History
 
-  h3 History
+#job-history
 
-  table.table.table-bordered.table-striped#job-history-table
-    thead
-      tr
-        th ID
-        th Started
-        th Completed
-        th Progress
-        th Status
-    tbody
-      for run in runs
-        include _run_row
+//-p!= paginator.pageLinks()
 
-  p!= paginator.pageLinks()
-
-  :coffeescript
-    watchJobChanges '#{job._id}'
+//-:coffeescript
+  //-watchJobChanges '#{job._id}'

@@ -3,8 +3,8 @@
 @app =
   models: {}
   collections: {}
-  controllers: {}
   views: {}
+  data: {}
 
   start: ->
     console.log 'starting app'
@@ -14,9 +14,8 @@
 
     @workspace = new app.router
 
-    for name, controller of @controllers
-      for action, func of controller
-        @workspace.on "route:#{name}.#{action}", func
+    @data.jobs = new app.collections.jobs
+    @data.jobs.fetch()
 
     Backbone.history.start pushState: yes
 

@@ -1,6 +1,5 @@
 express = require('express')
 jadeBrowser = require('jade-browser')
-helpers = require(__dirname + '/../app/helpers')
 socketio = require('socket.io')
 EventEmitter2Mongo = require(__dirname + '/eventemitter2mongo')
 mongoose = require('mongoose')
@@ -53,7 +52,6 @@ class WebServer
       @app.use require('connect-assets')(src: "#{__dirname}/../app")
       @app.use express.static(__dirname + '/../public')
       @app.use jadeBrowser('/js/templates.js', '**/*.jade', root: __dirname + '/../app/templates')
-      @app.helpers helpers
       @app.dynamicHelpers
         req: (req, _) => req
         params: (req, _) => req.params

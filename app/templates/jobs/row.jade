@@ -1,13 +1,10 @@
 tr
   td
-    a(href="/jobs/#{job._id}")= job.name
-  td.formatted= job.schedule
-  td= job.hooks
-  td= job.lastRanAt && job.lastRanAt.toString('M/dd/yyyy h:mm:ss tt')
-  td
-    != 'statusIcon' + job.lastStatus
-    | 
-    = job.lastStatus
+    a.name(href='/jobs/:id')
+  td.formatted.schedule
+  td.hooks
+  td.lastRanAt
+  td.lastStatus
   td.actions
-    a(href="/jobs/#{job._id}/edit")
+    a.edit-button(href='/jobs/:id/edit')
       i(class='icon-pencil')

@@ -90,5 +90,7 @@ module.exports = model = mongoose.model 'Job', schema
 model.sync = (socket) ->
   name = @modelName.toLowerCase()
   socket.on "#{name}:read", (data, callback) =>
-    @find (err, records) ->
-      callback null, (_.extend(r.toObject(), id: r._id) for r in records)
+    if data.id
+      @findOne _id: data.id, callback
+    else
+      @find callback

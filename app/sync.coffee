@@ -4,8 +4,9 @@ Backbone.sync = (method, model, options) ->
     namespace = namespace() if 'function' == typeof namespace
 
     data = options.data || model.toJSON() || {}
+    data.id ?= (model && model.get && model.get('id'))
 
-    Backbone.socket.emit namespace + ':' + method, data, (err, data) ->
+    Backbone.socket.emit "#{namespace}:#{method}", data, (err, data) ->
       if err
         options.error err
       else

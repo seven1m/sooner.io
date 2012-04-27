@@ -161,4 +161,12 @@ schema.methods.progressPercent = ->
   catch e
     0
 
-module.exports = mongoose.model 'Run', schema
+module.exports = model = mongoose.model 'Run', schema
+
+model.sync = (socket) ->
+  name = @modelName.toLowerCase()
+  socket.on "#{name}:read", (data, callback) =>
+    if data.id
+      @findOne _id: data.id, callback
+    else
+      @find callback

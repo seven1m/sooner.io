@@ -1,4 +1,6 @@
-exports.statusIcon = (status) ->
+app.helpers ?= {}
+
+app.helpers.statusIcon = (status) ->
   if status == 'success'
     "<i class='icon-ok'></i>"
   else if status == 'fail'
