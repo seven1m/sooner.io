@@ -22,4 +22,7 @@
   bindLinks: ->
     $(document).on 'click', 'a:not([href^="http"])', (e) ->
       e.preventDefault()
-      app.workspace.navigate $(@).attr('href'), trigger: yes
+      href = $(@).attr('href')
+      if href.match(/^\?/)
+        href = "#{location.pathname}#{href}"
+      app.workspace.navigate href, trigger: yes

@@ -2,9 +2,11 @@
 #= require vendor/javascripts/underscore
 #= require vendor/javascripts/backbone
 #= require vendor/javascripts/modelbinder
+#= require vendor/javascripts/backbone.queryparams
 #= require vendor/javascripts/bootstrap
 #= require vendor/javascripts/date
 
+#= require lib/paginator
 #= require ext
 #= require app
 #= require router

@@ -17,10 +17,10 @@ class app.views.runs.row extends Backbone.BoundView
     ]
     ranAt:
       selector: '.ranAt'
-      converter: app.converters.date_time.short
+      converter: app.converters.date_time.long
     completedAt:
       selector: '.completedAt'
-      converter: app.converters.date_time.short
+      converter: app.converters.date_time.long
     status:
       selector: '.status'
       elAttribute: 'html'

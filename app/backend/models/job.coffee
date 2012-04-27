@@ -90,7 +90,7 @@ module.exports = model = mongoose.model 'Job', schema
 model.sync = (socket) ->
   name = @modelName.toLowerCase()
   socket.on "#{name}:read", (data, callback) =>
-    if data.id
-      @findOne _id: data.id, callback
+    if data._id || data.id
+      @findOne _id: data._id || data.id, callback
     else
       @find callback

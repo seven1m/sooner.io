@@ -13,6 +13,7 @@ class app.views.runs.list extends Backbone.View
   reset: (runs) =>
     @$el.find('tbody').empty()
     @collection.each @add
+    @$el.find('.page-links').html @collection.paginator.pageLinks()
 
   render: ->
     @$el.html jade.render('runs/list')

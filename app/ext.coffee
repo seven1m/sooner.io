@@ -32,10 +32,16 @@ class Backbone.BoundView extends Backbone.View
     @binder.bind @model, @el, @bindings
     @
 
-class Backbone.Controller
-  constructor: (opts) ->
-    opts ?= {}
-    @collection = opts.collection if opts.collection
-    @model = opts.model if opts.model
-    if 'function' == typeof @initialize
-      @initialize(opts)
+class Backbone.PaginatedCollection extends Backbone.Collection
+  initialize: (models, options) ->
+    options ?= {}
+    @paginator = new Paginator perPage: 10
+    @setPage(options.page)
+  setPage: (page) ->
+    @paginator.setPage(page)
+  fetch: (options) ->
+    data =
+      skip: @paginator.skip
+      limit: @paginator.limit
+    _.extend(data, options.data) if options && options.data
+    super(data: data)

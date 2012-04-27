@@ -166,7 +166,21 @@ module.exports = model = mongoose.model 'Run', schema
 model.sync = (socket) ->
   name = @modelName.toLowerCase()
   socket.on "#{name}:read", (data, callback) =>
-    if data.id
-      @findOne _id: data.id, callback
+    if data.id || data._id
+      @findOne _id: data.id || data._id, callback
     else
-      @find callback
+      q = @where('jobId', data.jobId)
+      q = q.sort.apply(q, data.sort || ['ranAt', -1])
+      _.clone(q).count (err, count) ->
+        if err
+          console.log err
+          callback(err)
+        else
+          q.skip(data.skip).limit(Math.min(data.limit, 100)).run (err, runs) ->
+            if err
+              console.log err
+              callback(err.toString())
+            else
+              callback null,
+                count: count
+                models: runs

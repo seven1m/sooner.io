@@ -2,11 +2,17 @@ app.views.jobs ?= {}
 
 class app.views.jobs.show extends Backbone.BoundView
 
-  initialize: ->
-    super()
-    @model.history = new app.collections.runs
+  initialize: (options) ->
+    super(options)
+    # TODO put this in the job model?
+    @model.history = new app.collections.runs([], job: @model, page: options.historyPage)
+    @model.history.on 'error', console.log # FIXME
     @model.history.fetch()
     @list = new app.views.runs.list(collection: @model.history)
+
+  setHistoryPage: (page) ->
+    @model.history.setPage(page)
+    @model.history.fetch()
 
   template: ->
     jade.render 'jobs/show'
