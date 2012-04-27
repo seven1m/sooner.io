@@ -5,7 +5,7 @@ EventEmitter2Mongo = require(__dirname + '/eventemitter2mongo')
 mongoose = require('mongoose')
 fs = require('fs')
 iam = require(__dirname + '/iam')
-models = require(__dirname + '/../app/backend/models')
+models = require(__dirname + '/../models')
 
 class WebServer
   constructor: (@opts) ->

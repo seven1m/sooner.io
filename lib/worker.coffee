@@ -3,7 +3,7 @@ _ = require('underscore')
 fs = require('fs')
 iam = require(__dirname + '/iam')
 mongoose = require('mongoose')
-models = require(__dirname + '/../app/backend/models')
+models = require(__dirname + '/../models')
 
 class Worker
   startDelay: 2500

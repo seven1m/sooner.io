@@ -152,12 +152,12 @@ If you wish to track incremental progress of your job, you may call, e.g. `progr
 
 ### Queue Access
 
-The Queue model (available in `app/backend/models/queue.coffee`) is something you can use to store and retrieve work to be done. Queues are browsable, filterable, and sortable via the web interface, so they are great for keeping track of work done and/or to-be-done.
+The Queue model (available in `models/queue.coffee`) is something you can use to store and retrieve work to be done. Queues are browsable, filterable, and sortable via the web interface, so they are great for keeping track of work done and/or to-be-done.
 
 Here's how you would access a Queue from a CoffeeScript script:
 
 ```coffeescript
-queue = require __dirname + '/../app/backend/models/queue'
+queue = require __dirname + '/../models/queue'
 
 q = queue('profiles')
 

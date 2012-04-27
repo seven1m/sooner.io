@@ -2,7 +2,7 @@ util = require 'util'
 _ = require 'underscore'
 fs = require 'fs'
 
-BASE_PATH = __dirname + '/../../..'
+BASE_PATH = __dirname + '/..'
 
 Script = require "#{BASE_PATH}/lib/script"
 
