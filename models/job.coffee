@@ -91,6 +91,10 @@ model.sync = (socket) ->
   name = @modelName.toLowerCase()
   socket.on "#{name}:read", (data, callback) =>
     if data._id || data.id
-      @findOne _id: data._id || data.id, callback
+      @findOne _id: data._id || data.id, (err, obj) ->
+        if err or not obj
+          callback(err || 'not found')
+        else
+          callback(null, obj)
     else
       @find callback

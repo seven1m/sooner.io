@@ -10,4 +10,4 @@ class app.collections.jobs extends Backbone.Collection
       obj = new @model(_id: id)
       obj.fetch
         success: -> callback(null, obj)
-        error: -> callback('error')
+        error: (_, r) -> callback(r)

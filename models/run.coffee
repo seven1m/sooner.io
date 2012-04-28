@@ -163,13 +163,18 @@ schema.methods.progressPercent = ->
 
 module.exports = model = mongoose.model 'Run', schema
 
+# attributes that should be synced via a list, i.e. not findOne
+# (this excludes the 'output' attribute)
+LISTABLE_ATTRS = ['jobId', 'name', 'hooks', 'data', 'progress', 'status', 'result',
+                  'createdAt', 'path', 'pid', 'ranAt', 'completedAt']
+
 model.sync = (socket) ->
   name = @modelName.toLowerCase()
   socket.on "#{name}:read", (data, callback) =>
     if data.id || data._id
       @findOne _id: data.id || data._id, callback
     else
-      q = @where('jobId', data.jobId)
+      q = @where('jobId', data.jobId).select(LISTABLE_ATTRS)
       q = q.sort.apply(q, data.sort || ['ranAt', -1])
       _.clone(q).count (err, count) ->
         if err

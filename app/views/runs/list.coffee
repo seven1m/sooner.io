@@ -7,7 +7,7 @@ class app.views.runs.list extends Backbone.View
     @collection.on 'reset', @reset
 
   add: (run) =>
-    view = new app.views.runs.row(model: run).render()
+    view = new app.views.runs.detailRow(model: run).render()
     @$el.find('tbody').append view.$el
 
   reset: (runs) =>

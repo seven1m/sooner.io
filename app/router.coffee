@@ -16,7 +16,7 @@ class app.router extends Backbone.Router
   jobsShow: (id, params) ->
     app.data.jobs.getOrFetch id, (err, job) ->
       if err
-        $('#main .root').html 'error'
+        $('#main .root').html err
       else
         if (v = app.view) and (v instanceof app.views.jobs.show) and (v.model.id == job.id)
           v.setHistoryPage(params.page) if params

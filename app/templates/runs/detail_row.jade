@@ -1,6 +1,6 @@
 tr
   td
-    a.show-output(href='#')
+    a.show-output.noop(href='#')
       i.icon-plus
     |  
     a.show-run(href='#')
@@ -10,6 +10,3 @@ tr
     .progress.progress-striped(class='runStatusClass(run)')
       .bar(style='width:0%')
   td.status
-//-tr.output(style='display:none;')
-  //-td.formatted(colspan=5)
-    //-!= 'escapeAndLink(run.output)'
