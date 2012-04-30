@@ -27,11 +27,13 @@ class app.views.runs.detailRow extends Backbone.BoundView
       converter: (_, v) -> app.helpers.statusIcon(v) + ' ' + v
 
   showOutput: (e) =>
+    @$el.find('.show-output i').removeClass('icon-plus').addClass('icon-minus')
     @outputView ?= new app.views.runs.outputRow(model: @model).render()
     @$el.after @outputView.$el
     @model.fetch() # sync the 'output' attribute
 
   hideOutput: (e) =>
+    @$el.find('.show-output i').addClass('icon-plus').removeClass('icon-minus')
     @outputView.remove()
 
   render: ->
