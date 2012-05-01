@@ -18,15 +18,10 @@ class app.views.jobs.show extends Backbone.BoundView
     jade.render 'jobs/show'
 
   bindings:
-    _id: [
+    _id:
       selector: '.edit-button'
       elAttribute: 'href'
       converter: (_, v) -> "/jobs/#{v}/edit"
-    ,
-      selector: '#run-form'
-      elAttribute: 'action'
-      converter: (_, v) -> "/jobs/#{v}/runs"
-    ]
     name: '.name'
     schedule: '.schedule'
     hooks: '.hooks'
@@ -45,13 +40,31 @@ class app.views.jobs.show extends Backbone.BoundView
       selector: '.updatedAt'
       converter: app.converters.date_time.long
 
+  showDataField: =>
+    $('#run-data').fadeIn()
+
+  hideDataField: =>
+    $('#run-data').fadeOut()
+
+  runCreatedCallback: (run) =>
+    app.workspace.navigate "/runs/#{run.get('_id')}", trigger: yes
+
+  bindRun: =>
+    @$el.find('#run-data-area')
+    .mouseenter(_.debounce(@showDataField, 500, yes))
+    .mouseleave(_.debounce(@hideDataField, 500, yes))
+    .find('.btn').click (e) =>
+      e.preventDefault()
+      data =
+        jobId: @model.id
+        data: @$el.find('#run-data').val()
+      run = new app.models.run(data)
+      run.save {},
+        success: @runCreatedCallback
+        error: => @$el.html 'error creating run'
+
   render: ->
     super()
     @list.render().$el.appendTo @$el.find('#job-history')
-    @$el.find('#run-button').mouseenter ->
-      $('#run-data').fadeIn()
-    .mouseleave ->
-      $('#run-data').fadeOut()
-    .find('.btn').click ->
-      $('#run-form').submit()
+    @bindRun()
     @

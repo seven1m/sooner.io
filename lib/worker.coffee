@@ -87,7 +87,7 @@ class Worker
 
   watchExit: =>
     process.on 'SIGINT', =>
-      @hook.emit 'disconnected'
+      @hook.emit 'node::disconnected'
       process.exit()
 
 module.exports = Worker

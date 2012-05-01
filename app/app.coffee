@@ -9,6 +9,7 @@
   start: ->
     console.log 'starting app'
     @socket = Backbone.socket = io.connect()
+    @socket.on 'sync', Backbone.rsync
 
     @bindLinks()
 

@@ -88,7 +88,7 @@ class EventEmitter2Mongo extends EventEmitter2
     else if @cursor
       clearTimeout @checkCursorTimeout
       @cursor.close()
-      if @client and @client._state == 'connected'
+      if @client and @client._state == 'node::connected'
         @client.close()
 
 module.exports = EventEmitter2Mongo

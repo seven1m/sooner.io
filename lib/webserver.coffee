@@ -24,8 +24,9 @@ class WebServer
     iam.setup @hook, port: @opts.port
     if @opts.debug then @hook.on '*', (data) => console.log @hook.event, data || ''
 
-    @bridgeEvent(ev, 'log') for ev in ['running-job', 'job-output', 'job-status', 'job-progress']
-    @bridgeEvent(ev, 'cxn') for ev in ['connected', 'disconnected']
+    #@bridgeEvent(ev, 'sync') for ev in ['running-job', 'job-output', 'job-status', 'job-progress']
+    @bridgeEvent(ev, 'sync') for ev in ['sync::**']
+    @bridgeEvent(ev, 'cxn') for ev in ['node::connected', 'node::disconnected']
     @hook.on 'i-am', (data) =>
       @io.sockets.emit 'i-am', data
 

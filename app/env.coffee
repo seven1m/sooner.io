@@ -6,9 +6,9 @@
 #= require vendor/bootstrap
 #= require vendor/date
 
+#= require lib/sync
 #= require app
 #= require config/formats
-#= require lib/sync
 #= require lib/paginator
 #= require lib/bound_view
 #= require lib/paginated_collection

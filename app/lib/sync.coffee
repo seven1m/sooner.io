@@ -6,7 +6,7 @@ Backbone.sync = (method, model, options) ->
     data = options.data || model.toJSON() || {}
     data.id ?= (model && model.get && model.get('id'))
 
-    Backbone.socket.emit "#{namespace}:#{method}", data, (err, data) ->
+    Backbone.socket.emit "sync::#{method}::#{namespace}", data, (err, data) ->
       if err
         options.error err
       else
@@ -14,3 +14,6 @@ Backbone.sync = (method, model, options) ->
 
   else
     console.log 'no namespace specified:', arguments
+
+Backbone.rsync = (event, data) ->
+  console.log 'sync', event, data

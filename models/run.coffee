@@ -170,22 +170,39 @@ LISTABLE_ATTRS = ['jobId', 'name', 'hooks', 'data', 'progress', 'status', 'resul
 
 model.sync = (socket) ->
   name = @modelName.toLowerCase()
-  socket.on "#{name}:read", (data, callback) =>
-    if data.id || data._id
-      @findOne _id: data.id || data._id, callback
+
+  socket.on 'sync::read::run', (data, callback) =>
+    if id = (data.id || data._id)
+      @findOne _id: id, callback
     else
       q = @where('jobId', data.jobId).select(LISTABLE_ATTRS)
-      q = q.sort.apply(q, data.sort || ['ranAt', -1])
+      q = q.sort.apply(q, data.sort || ['createdAt', -1])
       _.clone(q).count (err, count) ->
         if err
           console.log err
-          callback(err)
+          callback(err.toString())
         else
-          q.skip(data.skip).limit(Math.min(data.limit, 100)).run (err, runs) ->
+          q.skip(data.skip).limit(Math.min(data.limit, 100)).run (err, models) ->
             if err
               console.log err
               callback(err.toString())
             else
               callback null,
                 count: count
-                models: runs
+                models: models
+
+  socket.on 'sync::create::run', (data, callback) =>
+    models.job.findById data.jobId, (err, job) =>
+      if err
+        console.log err
+        callback err.toString()
+      else
+        run = job.newRun()
+        run.data = data.data
+        run.save (err, run) ->
+          if err
+            console.log err
+            callback err.toString()
+          else
+            run.hookEmit 'sync::create::run'
+            callback null, run

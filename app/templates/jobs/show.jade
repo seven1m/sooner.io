@@ -28,12 +28,11 @@ table.table.table-bordered
   a.btn.edit-button(href='/jobs/:id/edit')
     i.icon-pencil
     |  Edit
-  .right#run-button
-    form#run-form(action='/jobs/:id/runs', method='post')
-      input#run-data(name='data', placeholder='data (optional)')
-      a.btn(href='#')
-        i.icon-cog
-        |  Run Now
+  .right#run-data-area
+    input#run-data(name='data', placeholder='data (optional)')
+    a.btn.noop(href='#')
+      i.icon-cog
+      |  Run Now
 
 h3 History
 
