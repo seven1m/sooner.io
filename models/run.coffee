@@ -52,23 +52,12 @@ schema.methods.fullPath = ->
   scriptsDir + '/' + @path
 
 schema.methods.trigger = ->
-  @hookEmit 'trigger-job'
-
-schema.methods.hookEmit = (event, data) ->
-  defData =
-    runId: @_id
-    jobId: @jobId
-    name: @name
-    status: @status
-    result: if @result then @result.toString()
-    ranAt: @ranAt
-    completedAt: @completedAt
-  GLOBAL.hook.emit event, _.extend(defData, data)
+  GLOBAL.hook.emit 'sync::trigger::run', _id: @_id
 
 schema.methods.succeed = (callback) ->
   @status = 'success'
   @setProgress 'max'
-  @hookEmit 'job-status'
+  @refresh()
   @updateJob callback
 
 schema.methods.fail = (message, callback) ->
@@ -76,8 +65,7 @@ schema.methods.fail = (message, callback) ->
   @status = 'fail'
   @output += message
   @ranAt = @completedAt = new Date()
-  @hookEmit 'job-output', output: message
-  @hookEmit 'job-status'
+  @refresh message
   @save (err) =>
     if err then throw err
     @updateJob =>
@@ -92,6 +80,13 @@ schema.methods.updateJob = (callback) ->
     job.save (err) =>
       if err then throw err
       callback()
+
+schema.methods.refresh = (appendOutput) ->
+  data = @toObject()
+  delete data.output
+  if appendOutput
+    data.appendOutput = appendOutput
+  GLOBAL.hook.emit 'sync::refresh::run', data
 
 schema.methods.run = (callback) ->
   models.job.findById @jobId, (err, job) =>
@@ -113,16 +108,16 @@ schema.methods.run = (callback) ->
         @status = 'busy'
         @ranAt = new Date()
         @save()
-        @hookEmit 'job-status'
+        @refresh()
 
         script.on 'start', (pid) =>
           @pid = pid
-          @hookEmit 'running-job', pid: @pid
+          @refresh()
           @save()
 
         script.on 'data', (data) =>
           @output += data.toString()
-          @hookEmit 'job-output', pid: @pid, output: data.toString()
+          @refresh data.toString()
           @save()
 
         script.on 'end', (code) =>
@@ -152,7 +147,7 @@ schema.methods.setProgress = (current, max, callback) ->
     @progress[0] = current
     @progress[1] = max unless typeof max == 'undefined'
   @markModified 'progress'
-  @hookEmit 'job-progress', progress: @progress, progressPercent: @progressPercent()
+  @refresh()
   @save callback
 
 schema.methods.progressPercent = ->
@@ -204,5 +199,5 @@ model.sync = (socket) ->
             console.log err
             callback err.toString()
           else
-            run.hookEmit 'sync::create::run'
+            GLOBAL.hook.emit 'sync::refresh::job', _id: run.jobId
             callback null, run

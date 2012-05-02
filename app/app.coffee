@@ -9,7 +9,6 @@
   start: ->
     console.log 'starting app'
     @socket = Backbone.socket = io.connect()
-    @socket.on 'sync', Backbone.rsync
 
     @bindLinks()
 
@@ -21,7 +20,7 @@
     Backbone.history.start pushState: yes
 
   bindLinks: ->
-    $(document).on 'click', 'a:not([href^="http"]):not(.noop)', (e) ->
+    $(document).on 'click', 'a:not([href^="http"]):not([href="#"]):not(.noop)', (e) ->
       e.preventDefault()
       href = $(@).attr('href')
       if href.match(/^\?/)

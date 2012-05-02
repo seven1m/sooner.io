@@ -1,6 +1,7 @@
 express = require('express')
 jadeBrowser = require('jade-browser')
 socketio = require('socket.io')
+_ = require('underscore')
 EventEmitter2Mongo = require(__dirname + '/eventemitter2mongo')
 mongoose = require('mongoose')
 fs = require('fs')
@@ -27,15 +28,18 @@ class WebServer
     #@bridgeEvent(ev, 'sync') for ev in ['running-job', 'job-output', 'job-status', 'job-progress']
     @bridgeEvent(ev, 'sync') for ev in ['sync::**']
     @bridgeEvent(ev, 'cxn') for ev in ['node::connected', 'node::disconnected']
-    @hook.on 'i-am', (data) =>
-      @io.sockets.emit 'i-am', data
+    #@hook.on 'i-am', (data) =>
+      #@io.sockets.emit 'i-am', data
 
     @io.sockets.on 'connection', (socket) =>
-      socket.on 'list-nodes', => @hook.emit 'list-nodes'
+      #socket.on 'list-nodes', => @hook.emit 'list-nodes'
+      socket.on 'sync::refresh::job', _.bind(@hook.emit, @hook, 'sync::refresh::job')
+      socket.on 'sync::refresh::run', _.bind(@hook.emit, @hook, 'sync::refresh::run')
+      socket.on 'sync::trigger::run', _.bind(@hook.emit, @hook, 'sync::trigger::run')
 
-  bridgeEvent: (ev, pass) =>
+  bridgeEvent: (ev) =>
     @hook.on ev, (data) =>
-      @io.sockets.emit pass, @hook.event, data
+      @io.sockets.emit @hook.event, data
 
   setupServer: =>
     @app = express.createServer()

@@ -73,7 +73,7 @@ class EventEmitter2Mongo extends EventEmitter2
       console.log 'cursor died, requerying...'
       @tail()
 
-  remoteEmit: ->
+  remoteEmit: =>
     data = Array.prototype.slice.call(arguments, 0)
     if @collection
       # insert into mongo

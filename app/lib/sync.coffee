@@ -14,6 +14,3 @@ Backbone.sync = (method, model, options) ->
 
   else
     console.log 'no namespace specified:', arguments
-
-Backbone.rsync = (event, data) ->
-  console.log 'sync', event, data

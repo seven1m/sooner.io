@@ -4,6 +4,9 @@ class app.collections.runs extends Backbone.PaginatedCollection
 
   initialize: (models, options) ->
     @job = options.job if options.job
+    Backbone.socket.on 'sync::refresh::job', (data) =>
+      if data._id == @jobId
+        @fetch()
     super(models, options)
 
   parse: (resp) ->

@@ -1,46 +1,35 @@
-extends ../layout
+h2.name
 
-block content
-  h2= run.name
-
-  table.table.table-bordered
-    tbody('data-run-meta'=run._id)
-      tr
-        th Started
-        td.ran-at= run.ranAt && run.ranAt.toString('M/dd/yyyy h:mm:ss tt')
-      tr
-        th Completed
-        td.completed-at= run.completedAt && run.completedAt.toString('M/dd/yyyy h:mm:ss tt')
-      tr
-        th Job
-        td
-          a(href="/jobs/#{run.jobId}")= run.jobId
-          |  
-          a(href="/jobs/#{run.jobId}/edit")
-            i.icon-pencil
-      tr
-        th Progress
-        td.progress-cell
-          if run.stoppable()
-            .right.margin-left.stop-button
-              a.btn(href="/runs/#{run._id}", 'data-method'='delete')
-                i.icon-exclamation-sign
-                |  Stop
-          .progress.progress-striped(class=runStatusClass(run))
-            .bar(style="width:#{run.progressPercent()}%")
-      tr
-        th Status
-        td.status
-          != statusIcon(run.status)
-          | 
-          = run.status
-      tr
-        th Exit Code
-        td.result= run.result
-      tr
-        th Output
-        td.output.formatted('data-run-output'=run._id)= run.output
-
-  :coffeescript
-    $('.output').html(formatLinks($('.output').html()))
-    watchJobChanges '#{run.jobId}'
+table.table.table-bordered
+  tbody
+    tr
+      th Started
+      td.ranAt
+    tr
+      th Completed
+      td.completedAt
+    tr
+      th Job
+      td
+        a.showJob(href='#')
+        |  
+        a.editJob(href='#')
+          i.icon-pencil
+    tr
+      th Progress
+      td.progress-cell
+        .right.margin-left.stop-button
+          a.btn.stopRun(href='#')
+            i.icon-exclamation-sign
+            |  Stop
+        .progress.progress-striped
+          .bar(style='width:0%')
+    tr
+      th Status
+      td.status
+    tr
+      th Exit Code
+      td.result
+    tr
+      th Output
+      td.output.formatted

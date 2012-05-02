@@ -27,8 +27,7 @@ class Worker
     GLOBAL.hook ||= @hook
     @hook.name = @opts.name
     @hook.on 'ready', @loadJobs
-    @hook.on 'trigger-job', (data) =>
-      _.delay(@triggerJob, @startDelay, data)
+    @hook.on 'sync::trigger::run', @triggerJob
     @hook.on 'reload-jobs', @loadJobs
     @hook.on 'stop-job', @stopJob
     iam.setup(@hook)
@@ -71,7 +70,7 @@ class Worker
       hooks: []
 
   triggerJob: (data) =>
-    models.run.findOne _id: data.runId, workerName: @hook.name, (err, run) =>
+    models.run.findOne _id: data._id, workerName: @hook.name, (err, run) =>
       if err or !run
         console.log "Could not find run with id #{data.runId}."
       else
