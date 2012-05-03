@@ -40,11 +40,17 @@ class app.views.runs.show extends Backbone.BoundView
     super()
     @pos = 0
     @updateOutput()
+    @$el.find('.btn.stopRun').click =>
+      Backbone.socket.emit 'sync::stop::run', _id: @model.id
     @
+
+  updateStopButton: =>
+    @$el.find('.stop-control').toggle @model.get('status') == 'busy'
 
   refresh: =>
     if @model.get('status') == 'idle' # kick off
       Backbone.socket.emit 'sync::trigger::run', _id: @model.id
+    @updateStopButton()
 
   updateOutput: =>
     # append output only

@@ -168,7 +168,7 @@ model.sync = (socket) ->
 
   socket.on 'sync::read::run', (data, callback) =>
     if id = (data.id || data._id)
-      @findOne _id: id, callback
+      @findById id, callback
     else
       q = @where('jobId', data.jobId).select(LISTABLE_ATTRS)
       q = q.sort.apply(q, data.sort || ['createdAt', -1])

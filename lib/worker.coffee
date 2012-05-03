@@ -29,7 +29,7 @@ class Worker
     @hook.on 'ready', @loadJobs
     @hook.on 'sync::trigger::run', @triggerJob
     @hook.on 'reload-jobs', @loadJobs
-    @hook.on 'stop-job', @stopJob
+    @hook.on 'sync::stop::run', @stopRun
     iam.setup(@hook)
     if @opts.debug then @hook.on '*', (data) => console.log @hook.event, data || ''
     @hook.emit 'connected'
@@ -78,8 +78,8 @@ class Worker
         run.run =>
           console.log "complete: #{run.name}"
 
-  stopJob: (data) =>
-    models.run.findOne _id: data.runId, workerName: @hook.name, (err, run) =>
+  stopRun: (data) =>
+    models.run.findOne _id: data.id || data._id, workerName: @hook.name, (err, run) =>
       if !err and run
         console.log "stopping: #{run.name} run #{run._id}"
         run.stop()
