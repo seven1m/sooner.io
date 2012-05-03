@@ -5,7 +5,7 @@ class app.collections.runs extends Backbone.PaginatedCollection
   initialize: (models, options) ->
     @job = options.job if options.job
     Backbone.socket.on 'sync::refresh::job', (data) =>
-      if data._id == @jobId
+      if data._id == @job.id
         @fetch()
     super(models, options)
 

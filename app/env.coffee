@@ -13,7 +13,6 @@
 #= require lib/bound_view
 #= require lib/paginated_collection
 #= require lib/computed_attributes
-#= require lib/monkey_patches/modelbinder.escaped
 #= require lib/converters
 #= require router
 #= require_tree models

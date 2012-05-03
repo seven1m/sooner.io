@@ -23,10 +23,9 @@ class WebServer
     GLOBAL.hook ||= @hook
     @hook.name = @opts.name || 'web'
     iam.setup @hook, port: @opts.port
-    if @opts.debug then @hook.on '*', (data) => console.log @hook.event, data || ''
+    if @opts.debug then @hook.on '**', (data) => console.log 'DEBUG>>>', @hook.event, data || ''
 
-    @bridgeEvent(ev) for ev in ['sync::**']
-    @bridgeEvent(ev) for ev in ['node::connected', 'node::disconnected']
+    @bridgeEvent(ev) for ev in ['sync::**', 'node::connected', 'node::disconnected']
     #@hook.on 'i-am', (data) =>
       #@io.sockets.emit 'i-am', data
 

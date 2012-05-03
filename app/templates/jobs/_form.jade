@@ -1,12 +1,30 @@
-form#job(action="/jobs/#{params.id || ''}", method='post')
-  if params.id
-    input(type='hidden', name='_method', value='put')
-  fieldset(class=job.errors && 'errors')
-    != field(job, 'name', {inputClass: 'input-xlarge'})
-    != field(job, 'enabled', {label: 'Enabled', tagType: 'checkbox'})
-    != field(job, 'schedule', {inputClass: 'input-large', help: 'in the form: "sec min hour dayofmonth month dayofweek" (<a href="http://help.sap.com/saphelp_xmii120/helpdata/en/44/89a17188cc6fb5e10000000a155369/content.htm">help</a>)'})
-    != field(job, 'hooks', {inputClass: 'input-large', help: 'comma separated'})
-    != field(job, 'workerName', {label: 'Worker Name', help: 'which worker will process this job'})
-    != field(job, 'mutex', {tagType: 'checkbox'})
-    .form-actions
-      button.btn.btn-primary(type='submit') Save
+fieldset
+  //(class=job.errors && 'errors')
+  .control-group
+    // .error
+    label.control-label(for='name') Name
+    input.input-xlarge#name(name='name')
+    span.help-inline
+      | filename:
+      span#path
+  .control-group
+    label.control-label(for='enabled') Enabled
+    input#enabled(type='checkbox', name='enabled', value='enabled')
+  .control-group
+    label.control-label(for='schedule') Schedule
+    input.input-large#schedule(name='schedule')
+    span.help-inline
+      | in the form: "sec min hour dayofmonth month dayofweek" (<a href="http://help.sap.com/saphelp_xmii120/helpdata/en/44/89a17188cc6fb5e10000000a155369/content.htm">help</a>)
+  .control-group
+    label.control-label(for='hooks') Hooks
+    input.input-large#hooks(name='hooks')
+    span.help-inline comma separated
+  .control-group
+    label.control-label(for='workerName') Worker Name
+    input.input-large#workerName(name='workerName')
+    span.help-inline which worker will process this job
+  .control-group
+    label.control-label(for='mutex') Mutex
+    input#mutex(type='checkbox', name='mutex', value='on')
+  .form-actions
+    button.btn.btn-primary#save Save

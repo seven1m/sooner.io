@@ -1,10 +1,11 @@
 class app.router extends Backbone.Router
 
   routes:
-    '':         'default'
-    'jobs':     'jobsIndex'
-    'jobs/:id': 'jobsShow'
-    'runs/:id': 'runsShow'
+    '':              'default'
+    'jobs':          'jobsIndex'
+    'jobs/:id':      'jobsShow'
+    'jobs/:id/edit': 'jobsEdit'
+    'runs/:id':      'runsShow'
 
   default: ->
     @navigate 'jobs', trigger: yes
@@ -26,6 +27,15 @@ class app.router extends Backbone.Router
           historyPage = (params && params.page) || 1
           v = app.view = new app.views.jobs.show(model: job, historyPage: historyPage).render()
           $('#main .root').html v.$el
+
+  jobsEdit: (id) ->
+    app.data.jobs.getOrFetch id, (err, job) ->
+      if err
+        $('#main .root').html err
+      else
+        app.view.remove() if app.view
+        v = app.view = new app.views.jobs.edit(model: job).render()
+        $('#main .root').html v.$el
 
   runsShow: (id, params) ->
     run = new app.models.run _id: id

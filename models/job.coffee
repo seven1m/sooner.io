@@ -75,7 +75,8 @@ schema.methods.newCron = ->
       if err
         console.log err
       else
-        GLOBAL.hook.emit 'trigger-job', runId: run._id, name: run.name
+        GLOBAL.hook.emit 'sync::refresh::job', _id: run.jobId
+        GLOBAL.hook.emit 'sync::trigger::run', _id: run._id, name: run.name
 
 schema.methods.hookEvent = (hook, data) ->
   console.log "#{@name} triggered by event '#{hook}' with data #{JSON.stringify data}"
@@ -83,7 +84,8 @@ schema.methods.hookEvent = (hook, data) ->
   run.data = data
   run.save (err, run) ->
     if err then throw err
-    GLOBAL.hook.emit 'trigger-job', runId: run._id, name: run.name
+    GLOBAL.hook.emit 'sync::refresh::job', _id: run.jobId
+    GLOBAL.hook.emit 'sync::trigger::run', _id: run._id, name: run.name
 
 module.exports = model = mongoose.model 'Job', schema
 
@@ -92,6 +94,22 @@ model.sync = (socket) ->
 
   socket.on 'sync::read::job', (data, callback) =>
     if id = (data._id || data.id)
-      @findOne _id: id, callback
+      @findOne _id: id, deleted: false, callback
     else
-      @find callback
+      @find deleted: false, callback
+
+  socket.on 'sync::update::job', (data, callback) =>
+    console.log data
+    @findById data._id || data.id, (err, job) =>
+      if err or not job
+        callback err || 'job not found'
+      else
+        for attr in ['name', 'enabled', 'schedule', 'hooks', 'workerName', 'mutex']
+          job[attr] = data[attr] if data[attr]?
+        console.log job.schedule
+        job.save (err) =>
+          if err
+            callback err
+          else
+            GLOBAL.hook.emit 'worker::reload::jobs'
+            callback null, job
