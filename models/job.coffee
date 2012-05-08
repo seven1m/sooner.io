@@ -93,23 +93,23 @@ model.sync = (socket) ->
   name = @modelName.toLowerCase()
 
   socket.on 'sync::read::job', (data, callback) =>
+    console.log 'sync::read::job', data
     if id = (data._id || data.id)
       @findOne _id: id, deleted: false, callback
     else
       @find deleted: false, callback
 
   socket.on 'sync::update::job', (data, callback) =>
-    console.log data
     @findById data._id || data.id, (err, job) =>
       if err or not job
         callback err || 'job not found'
       else
         for attr in ['name', 'enabled', 'schedule', 'hooks', 'workerName', 'mutex']
           job[attr] = data[attr] if data[attr]?
-        console.log job.schedule
         job.save (err) =>
           if err
             callback err
           else
+            GLOBAL.hook.emit 'sync::refresh::job', _id: job.id
             GLOBAL.hook.emit 'worker::reload::jobs'
             callback null, job

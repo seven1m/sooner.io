@@ -23,10 +23,22 @@ class app.views.runs.show extends Backbone.BoundView
       converter: (_, v) -> "/jobs/#{v}/edit"
     ]
     name: '.name'
-    status:
+    progressPercent:
+      selector: '.progress .bar'
+      elAttribute: 'css'
+      cssAttribute: 'width'
+      converter: (_, v) -> v + '%'
+    status: [
       selector: '.status'
       elAttribute: 'html'
       converter: (_, v) -> app.helpers.statusIcon(v) + ' ' + v
+    ,
+      selector: '.progress'
+      elAttribute: 'class'
+      converter: (_, v) ->
+        $(@boundEls).attr('class', '')
+        app.helpers.progressClass(v)
+    ]
     result:
       selector: '.result'
     ranAt:
@@ -40,7 +52,8 @@ class app.views.runs.show extends Backbone.BoundView
     super()
     @pos = 0
     @updateOutput()
-    @$el.find('.btn.stopRun').click =>
+    @$el.find('.btn.stopRun').click (e) =>
+      e.preventDefault()
       Backbone.socket.emit 'sync::stop::run', _id: @model.id
     @
 

@@ -21,10 +21,22 @@ class app.views.runs.detailRow extends Backbone.BoundView
     completedAt:
       selector: '.completedAt'
       converter: app.converters.date_time.long
-    status:
+    progressPercent:
+      selector: '.progress .bar'
+      elAttribute: 'css'
+      cssAttribute: 'width'
+      converter: (_, v) -> v + '%'
+    status: [
       selector: '.status'
       elAttribute: 'html'
       converter: (_, v) -> app.helpers.statusIcon(v) + ' ' + v
+    ,
+      selector: '.progress'
+      elAttribute: 'class'
+      converter: (_, v) ->
+        $(@boundEls).attr('class', '')
+        app.helpers.progressClass(v)
+    ]
 
   showOutput: (e) =>
     @$el.find('.show-output i').removeClass('icon-plus').addClass('icon-minus')

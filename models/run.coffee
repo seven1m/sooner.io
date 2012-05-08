@@ -79,6 +79,7 @@ schema.methods.updateJob = (callback) ->
     job.lastRanAt = @ranAt
     job.save (err) =>
       if err then throw err
+      GLOBAL.hook.emit 'sync::refresh::job', _id: job.id
       callback()
 
 schema.methods.refresh = (appendOutput) ->
@@ -150,12 +151,6 @@ schema.methods.setProgress = (current, max, callback) ->
   @refresh()
   @save callback
 
-schema.methods.progressPercent = ->
-  try
-    Math.min(100, @progress[0] / @progress[1] * 100)
-  catch e
-    0
-
 module.exports = model = mongoose.model 'Run', schema
 
 # attributes that should be synced via a list, i.e. not findOne
@@ -199,5 +194,5 @@ model.sync = (socket) ->
             console.log err
             callback err.toString()
           else
-            GLOBAL.hook.emit 'sync::refresh::job', _id: run.jobId
+            GLOBAL.hook.emit 'sync::refresh::job', _id: job.id
             callback null, run

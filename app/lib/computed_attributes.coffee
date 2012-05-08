@@ -7,7 +7,10 @@ Backbone.Model.prototype.get = (attr) ->
 Backbone.Model.prototype.computed = (attrs) ->
   for name, sources of attrs
     sources = [sources] unless _.isArray(sources)
-    for attr in sources
-      @on "change:#{attr}", =>
-        @changed[name] = @[name]()
-        @change()
+    @linkAttrChange(attr, name) for attr in sources
+
+Backbone.Model.prototype.linkAttrChange = (src, dest) ->
+  @on "change:#{src}", =>
+    changes = {}
+    @changed[dest] = changes[dest] = ''
+    @change changes: changes

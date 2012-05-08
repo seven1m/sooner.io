@@ -1,7 +1,12 @@
 app.helpers ?= {}
 
-app.helpers.runStatusClass = (run) ->
-  if run.status == 'busy'
-    'active'
-  else if run.status == 'fail'
-    'progress-danger'
+app.helpers.progressClass = (status) ->
+  classes = ['progress', 'progress-striped']
+  classes.push 'active' if status == 'busy'
+  if status == 'fail'
+    classes.push 'progress-danger'
+  else if status == 'success'
+    classes.push 'progress-info'
+  else
+    classes.push 'progress-success'
+  classes.join ' '
