@@ -80,7 +80,7 @@ schema.methods.updateJob = (callback) ->
     job.save (err) =>
       if err then throw err
       GLOBAL.hook.emit 'sync::refresh::job', _id: job.id
-      callback()
+      callback() if callback
 
 schema.methods.refresh = (appendOutput) ->
   data = @toObject()
@@ -109,6 +109,7 @@ schema.methods.run = (callback) ->
         @status = 'busy'
         @ranAt = new Date()
         @save()
+        @updateJob()
         @refresh()
 
         script.on 'start', (pid) =>
