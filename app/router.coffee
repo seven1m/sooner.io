@@ -6,6 +6,7 @@ class app.router extends Backbone.Router
     'jobs/:id':      'jobsShow'
     'jobs/:id/edit': 'jobsEdit'
     'runs/:id':      'runsShow'
+    'status':        'statusShow'
 
   default: ->
     @navigate 'jobs', trigger: yes
@@ -43,3 +44,8 @@ class app.router extends Backbone.Router
     v = app.view = new app.views.runs.show(model: run).render()
     $('#main .root').html v.$el
     run.fetch()
+
+  statusShow: (id) ->
+    app.view.remove() if app.view
+    v = app.view = new app.views.status.show().render()
+    $('#main .root').html v.$el

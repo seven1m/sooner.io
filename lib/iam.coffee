@@ -12,5 +12,5 @@ exports.setup = (hook, base) ->
   info = base || {}
   info.name = hook.name
   info.host = ifaces().join(', ')
-  hook.on 'list-nodes', ->
-    hook.emit 'i-am', info
+  hook.on 'cxn::list-nodes', ->
+    hook.emit 'cxn::i-am', info

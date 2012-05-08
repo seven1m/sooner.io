@@ -13,6 +13,7 @@ class WebServer
     @setupDB()
     @setupServer()
     @setupHook()
+    @watchExit()
 
   setupDB: =>
     @config = JSON.parse(fs.readFileSync(@opts.config))
@@ -25,13 +26,12 @@ class WebServer
     iam.setup @hook, port: @opts.port
     if @opts.debug then @hook.on '**', (data) => console.log 'DEBUG>>>', @hook.event, data || ''
 
-    @bridgeEvent(ev) for ev in ['sync::**', 'node::connected', 'node::disconnected']
-    #@hook.on 'i-am', (data) =>
-      #@io.sockets.emit 'i-am', data
+    @bridgeEvent(ev) for ev in ['sync::**', 'cxn::**']
 
     @io.sockets.on 'connection', (socket) =>
-      #socket.on 'list-nodes', => @hook.emit 'list-nodes'
-      @bridgeEvent(ev, socket) for ev in ['sync::refresh::job', 'sync::refresh::run', 'sync::trigger::run', 'sync::stop::run']
+      @bridgeEvent(ev, socket) for ev in ['sync::refresh::job', 'sync::refresh::run', 'sync::trigger::run', 'sync::stop::run', 'cxn::list-nodes']
+
+    @hook.emit 'cxn::connected'
 
   # pass socket to bridge from browser to network
   # otherwise bridge from network to browser
@@ -79,5 +79,10 @@ class WebServer
 
   layoutMiddleware: (req, res, next) ->
     res.render 'layout.jade'
+
+  watchExit: =>
+    process.on 'SIGINT', =>
+      @hook.emit 'cxn::disconnected'
+      process.exit()
 
 module.exports = WebServer

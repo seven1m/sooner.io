@@ -1,15 +1,8 @@
-extends ../layout
-
-block content
-  h3 Connected Nodes
-  table#nodes.table.table-bordered.table-striped
-    thead
-      tr
-        th Name
-        th IP
-        th Port
-    tbody
-
-  :coffeescript
-    showNodes()
-    socket.on 'cxn', showNodes
+h3 Connected Nodes
+table#nodes.table.table-bordered.table-striped
+  thead
+    tr
+      th Name
+      th IP
+      th Port
+  tbody

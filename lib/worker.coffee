@@ -32,7 +32,7 @@ class Worker
     @hook.on 'sync::stop::run', @stopRun
     iam.setup(@hook)
     if @opts.debug then @hook.on '**', (data) => console.log 'DEBUG>>>', @hook.event, data || ''
-    @hook.emit 'connected'
+    @hook.emit 'cxn::connected'
 
   cleanUp: =>
     models.run.find {status: {$in: ['busy', 'idle']}, workerName: @hook.name}, (err, runs) =>
@@ -86,7 +86,7 @@ class Worker
 
   watchExit: =>
     process.on 'SIGINT', =>
-      @hook.emit 'node::disconnected'
+      @hook.emit 'cxn::disconnected'
       process.exit()
 
 module.exports = Worker
