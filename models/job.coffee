@@ -93,7 +93,6 @@ model.sync = (socket) ->
   name = @modelName.toLowerCase()
 
   socket.on 'sync::read::job', (data, callback) =>
-    console.log 'sync::read::job', data
     if id = (data._id || data.id)
       @findOne _id: id, deleted: false, callback
     else

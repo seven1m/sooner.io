@@ -2,8 +2,6 @@ app.views.status ?= {}
 
 class app.views.status.show extends Backbone.View
 
-  tagName: 'div'
-
   initialize: ->
     Backbone.socket.on 'cxn::i-am', @addRow
     Backbone.socket.on 'cxn::connected', @refresh
