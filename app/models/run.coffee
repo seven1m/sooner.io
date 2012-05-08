@@ -18,6 +18,6 @@ class app.models.run extends Backbone.Model
   progressPercent: =>
     p = @get('progress')
     try
-      Math.min(100, p[0] / p[1] * 100)
+      Math.min(100, Math.round(p[0] / p[1] * 100))
     catch e
       0
