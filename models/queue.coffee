@@ -1,5 +1,6 @@
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
+dbInfo = require __dirname + '/../lib/dbInfo'
 
 queues = {}
 
@@ -23,3 +24,13 @@ queue = (name) ->
   model
 
 module.exports = queue
+
+queue.sync = (socket) ->
+  socket.on 'sync::read::queue', (data, callback) =>
+    if id = data.id
+      callback null, queue(id)
+    else
+      dbInfo.listCollections (collections) ->
+        queues = ({name: q.replace(/^queue_/, '')} for q in collections when q.match(/queue_/))
+        console.log queues
+        callback null, queues

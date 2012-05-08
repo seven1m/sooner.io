@@ -6,6 +6,7 @@ class app.router extends Backbone.Router
     'jobs/:id':      'jobsShow'
     'jobs/:id/edit': 'jobsEdit'
     'runs/:id':      'runsShow'
+    'queues':        'queuesIndex'
     'status':        'statusShow'
 
   default: ->
@@ -44,6 +45,11 @@ class app.router extends Backbone.Router
     v = app.view = new app.views.runs.show(model: run).render()
     $('#main .root').html v.$el
     run.fetch()
+
+  queuesIndex: ->
+    app.view.remove() if app.view
+    v = app.view = new app.views.queues.index(collection: app.data.queues).render()
+    $('#main .root').html v.$el
 
   statusShow: (id) ->
     app.view.remove() if app.view

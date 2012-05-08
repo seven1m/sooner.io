@@ -17,6 +17,9 @@
     @data.jobs = new app.collections.jobs
     @data.jobs.fetch()
 
+    @data.queues = new app.collections.queues
+    @data.queues.fetch()
+
     Backbone.history.start pushState: yes
 
   bindLinks: ->

@@ -1,10 +1,21 @@
-extends ../layout
+h2 Queues
 
-block content
-  include _list
+if queues.length > 0
+  table.table.table-bordered.table-striped
+    thead
+      tr
+        th Name
+    tbody
+      for _, i in queues
+        - queue = queues.at(i) // needed for Backbone collection
+        tr
+          td
+            a(href="/queues/#{queue.get('name')}")= queue.get('name')
+else
+  p: em no queues defined
 
-  h3 Help
+h3 Help
 
-  :markdown
-    A queue is simply a [Mongoose](http://mongoosejs.com/) model.
-    See the [README](https://github.com/seven1m/sooner.io/blob/master/README.md) for more information.
+:markdown
+  A queue is simply a [Mongoose](http://mongoosejs.com/) model.
+  See the [README](https://github.com/seven1m/sooner.io/blob/master/README.md) for more information.
