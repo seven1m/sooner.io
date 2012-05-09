@@ -10,7 +10,7 @@ class app.views.queueEntries.list extends Backbone.View
     @collection.each (entry) =>
       view = new app.views.queueEntries.row(model: entry).render()
       @$el.find('#entry-list>tbody').append view.$el
-    @$el.find('.page-links').html @collection.paginator.pageLinks()
+    @$el.find('.pagination').html @collection.paginator.pageLinks()
     @$el.find('#entry-list>thead').html jade.render('queue_entries/list_heading')
 
   render: ->

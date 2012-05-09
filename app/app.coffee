@@ -23,7 +23,7 @@
     Backbone.history.start pushState: yes
 
   bindLinks: ->
-    $(document).on 'click', 'a:not([href^="http"]):not([href="#"]):not(.noop)', (e) ->
+    $(document).on 'click', 'a:not([href^="http"]):not([href="#"])', (e) ->
       e.preventDefault()
       href = $(@).attr('href')
       if href.match(/^\?/)
