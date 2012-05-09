@@ -84,7 +84,7 @@ An alternative means of updating scripts is to work directly on the server (not 
     vim myScript.coffee
     coffee ../bin/deployer.coffee update
 
-Just be sure to and and commit your change once finished and `git push`.
+Just be sure to commit your change once finished and `git push`.
 
 ### API
 
