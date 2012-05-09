@@ -2,7 +2,7 @@
 
 Sooner.io is the distributed job scheduling engine and web-based management app built on [Node.js](http://nodejs.org), brought to you from the [Sooner State](http://en.wikipedia.org/wiki/Oklahoma).
 
-Jobs are written in CoffeeScript and run on a scheduled or on-demand basis via a distributed network of "workers."
+Jobs can be written in any language and run on a scheduled or on-demand basis via a distributed network of "workers."
 
 Some screenshots can be seen at [sooner.io](http://sooner.io).
 
@@ -154,6 +154,8 @@ If you wish to track incremental progress of your job, you may call, e.g. `progr
 
 The Queue model (available in `models/queue.coffee`) is something you can use to store and retrieve work to be done. Queues are browsable, filterable, and sortable via the web interface, so they are great for keeping track of work done and/or to-be-done.
 
+#### Using the Queue from CoffeeScript
+
 Here's how you would access a Queue from a CoffeeScript script:
 
 ```coffeescript
@@ -171,7 +173,15 @@ Essentially, the `queue` function returns a [Mongoose](http://mongoosejs.com/) m
 
 See the [Querying](http://mongoosejs.com/docs/query.html) and [Updating](http://mongoosejs.com/docs/updating-documents.html) Mongoose docs for help.
 
-Each entry in the queue has the following fields defined:
+#### Using the Queue from Another Language
+
+A "Queue" is simply a MongoDB collection with a name starting with `queue_`, e.g. `queue_images` will be displayed as the "images" queue in the web interface.
+
+There is no ceremony to adding new queues -- simply create a collection with the above naming convention, and it will show up in the web interface. What you store in the queue is up to you, though you are advised to conform to the schema specified in the next section...
+
+#### Queue "Schema"
+
+The following fields are specifically recognized by the system and displayed nicely in the web interface.
 
 * `_id`
 * `status`
@@ -179,7 +189,24 @@ Each entry in the queue has the following fields defined:
 * `createdAt`
 * `updatedAt`
 
-You should only set the `status` and `data` fields yourself. Store an object in the `data` attribute with as much information as you need to track your work. If you manage to keep the data object flat (only a single-layer JS object), all the attributes will be easily visible via the web interface in table form (though it is indeed possible to store nested objects as well)
+The `status` property should be a string of your choice, usually something like "pending", "active", "complete", etc.
+
+The `data` property is there for you to store arbitrary data. Here is a real-world example from one of our queues:
+
+```json
+{
+  status: "pending",
+  data: {
+    url: "http://www.vitals.com/doctors/Dr_Aaron_Gindea",
+    name: "Aaron Gindea",
+    video: "videos/Dr_Aaron_Gindea.mp4"
+  }
+}
+```
+
+If you manage to keep the data object flat (only a single-layer JS object), all the attributes will be easily visible via the web interface in table form (though it is indeed possible to store nested objects as well). URLs appearing in the data property will be auto-linked.
+
+If you're using the Mongoose Queue model, the `createdAt` and `updatedAt` fields will be updated automatically for you; if not, you will need to update them yourself.
 
 ## License
 
