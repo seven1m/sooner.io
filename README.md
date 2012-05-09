@@ -158,11 +158,13 @@ Here's how you would access a Queue from a CoffeeScript script:
 
 ```coffeescript
 queue = require __dirname + '/../models/queue'
+queue.connect()
 
 q = queue('profiles')
 
 q.where('status', 'pending').run (err, profiles) ->
   # do work here
+  queue.disconnect() # need this to close the MongoDB connection
 ```
 
 Essentially, the `queue` function returns a [Mongoose](http://mongoosejs.com/) model attached to a similarly-named MongoDB collection (prepended with `queue_`) to which you are free to query, insert, update, and delete.
@@ -177,7 +179,7 @@ Each entry in the queue has the following fields defined:
 * `createdAt`
 * `updatedAt`
 
-You should only set the `status` and `data` fields yourself. You should store an object in the `data` attribute with as much information as you need to track your work. If you manage to keep the data object flat (only a single-layer JS object), all the attributes will be easily visible via the web interface in table form (though it is indeed possible to store nested objects as well)
+You should only set the `status` and `data` fields yourself. Store an object in the `data` attribute with as much information as you need to track your work. If you manage to keep the data object flat (only a single-layer JS object), all the attributes will be easily visible via the web interface in table form (though it is indeed possible to store nested objects as well)
 
 ## License
 

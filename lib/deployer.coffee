@@ -73,7 +73,6 @@ class Deployer
       else
         callback()
 
-
   isScript: (path, stats) =>
     stats.isFile() and not path.match(/^\./) and stats.mode & 64 # executable by user
 
@@ -83,9 +82,5 @@ class Deployer
     job.save (err) =>
       if err then throw err
       callback()
-
-
-
-
 
 module.exports = Deployer

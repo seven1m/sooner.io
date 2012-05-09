@@ -16,6 +16,7 @@ deployer = new Deployer(argv)
 if argv._[0] == 'update'
   deployer.update ->
     deployer.end()
+    process.exit()
 else
   console.log 'must specify a command, such as "update"'
   process.exit(1)

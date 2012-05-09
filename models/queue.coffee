@@ -1,3 +1,4 @@
+fs = require 'fs'
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
 dbInfo = require __dirname + '/../lib/dbInfo'
@@ -25,6 +26,15 @@ queue = (name) ->
   model
 
 module.exports = queue
+
+queue.connect = ->
+  if !mongoose.connection or mongoose.connection.readyState != 1
+    # FIXME config path should be configurable
+    @config = JSON.parse(fs.readFileSync(__dirname + '/../config.json'))
+    mongoose.connect @config.db
+
+queue.disconnect = ->
+  mongoose.disconnect()
 
 queue.sync = (socket) ->
   socket.on 'sync::read::queue', (data, callback) =>
