@@ -1,0 +1,11 @@
+tr
+  //-td= entry._id
+  //-td= entry.status
+  //-td!= queueData(entry.data, query)
+  //-td= entry.createdAt && entry.createdAt.toString('M/dd/yyyy h:mm:ss tt')
+  //-td= entry.updatedAt && entry.updatedAt.toString('M/dd/yyyy h:mm:ss tt')
+  td.id
+  td.status
+  td.data
+  td.createdAt
+  td.updatedAt

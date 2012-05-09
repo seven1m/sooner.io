@@ -1,50 +1,30 @@
-extends ../layout
+.right
+  a#show-queue-query(href='#')
+    i.icon-eye-open
+h2
+  span.name
+  |  
+  span.count.secondary
 
-block content
-  .right
-    a#show-queue-query
-      i.icon-eye-open
-  h2
-    = queue
-    = ' (' + pluralize(count, 'entry', 'entries') + ')'
+#queue-query
+  .alert.alert-error
+    a.close(data-dismiss='alert') ×
+    strong Oh snap!
+    |  You should enter a valid JSON string, e.g.
+    code {"status": "pending"}
+  table
+    tr
+      td
+        | Query:
+        textarea#query.formatted(name='query')
+      td
+        | Sort:
+        textarea#sort.formatted(name='sort')
+  input(type='submit', value='Update View')
 
-  #queue-query
-    .alert.alert-error
-      a.close(data-dismiss='alert') ×
-      strong Oh snap!
-      |  You should enter a valid JSON string, e.g.
-      code {"status": "pending"}
-    form(action="/queues/#{queue}", method='get')
-      table
-        tr
-          td
-            | Query:
-            textarea#query.formatted(name='query')= query
-          td
-            | Sort:
-            textarea#sort.formatted(name='sort')= sort
-      input(type='submit', value='Update View')
+#entries
 
-  table.table.table-bordered.table-striped
-    thead
-      tr
-        th!= sortCol('ID',      '["_id",1]',        {query: query})
-        th!= sortCol('Status',  '["status",1]',     {query: query})
-        th!= sortCol('Data',    '["data",1]',       {query: query})
-        th!= sortCol('Created', '["createdAt",-1]', {query: query})
-        th!= sortCol('Updated', '["updatedAt",-1]', {query: query})
-    tbody
-      for entry in entries
-        tr
-          td= entry._id
-          td= entry.status
-          td!= queueData(entry.data, query)
-          td= entry.createdAt && entry.createdAt.toString('M/dd/yyyy h:mm:ss tt')
-          td= entry.updatedAt && entry.updatedAt.toString('M/dd/yyyy h:mm:ss tt')
-
-  p!= paginator.pageLinks({query: query, sort: sort})
-
-  if badQuery
-    :coffeescript
-      $('#queue-query').show()
-      $('#queue-query .alert').show()
+//-if badQuery
+  //-:coffeescript
+    //-$('#queue-query').show()
+    //-$('#queue-query .alert').show()

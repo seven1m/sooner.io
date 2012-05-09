@@ -1,0 +1,16 @@
+table.table.table-bordered.table-striped
+  thead
+    tr
+      th ID
+      th Status
+      th Data
+      th Created
+      th Updated
+      //-th!= app.helpers.sortCol('ID',      '["_id",1]',        {query: query})
+      //-th!= app.helpers.sortCol('Status',  '["status",1]',     {query: query})
+      //-th!= app.helpers.sortCol('Data',    '["data",1]',       {query: query})
+      //-th!= app.helpers.sortCol('Created', '["createdAt",-1]', {query: query})
+      //-th!= app.helpers.sortCol('Updated', '["updatedAt",-1]', {query: query})
+  tbody
+
+p.page-links
