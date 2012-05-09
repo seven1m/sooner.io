@@ -53,13 +53,11 @@ class app.router extends Backbone.Router
     $('#main .root').html v.$el
 
   queuesShow: (id, params) ->
-    params ?= {}
     queue = new app.models.queue(name: id)
     unless (v = app.view) and (v instanceof app.views.queues.show) and (v.model.get('name') == queue.get('name'))
       app.view.remove() if app.view
       v = app.view = new app.views.queues.show(model: queue).render()
-    v.setQueryAndSort query: params.query, sort: params.sort
-    v.setPage(params.page || 1)
+    v.setParams params
     $('#main .root').html v.$el
 
   statusShow: (id) ->

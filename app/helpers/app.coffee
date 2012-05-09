@@ -24,6 +24,21 @@ app.helpers.friendlyNumber = (num) ->
     groups.push(str)
   groups.join(',')
 
-app.helpers.sortCol = (label, sort, params) ->
-  params = ("#{k}=#{v}" for k, v of params).join('&')
-  "<a href='?sort=#{sort}&#{params}'>#{label}</a>"
+app.helpers.params = ->
+  str = location.search.replace(/^\?/, '')
+  obj = {}
+  if str.length > 0
+    for pair in str.split(/&|&amp;/)
+      parts = pair.split('=')
+      obj[parts[0]] = parts[1]
+  obj
+
+app.helpers.paramsString = (params) ->
+  ("#{k}=#{encodeURIComponent v}" for k, v of params).join '&'
+
+app.helpers.sortCol = (label, sort) ->
+  params = app.helpers.params()
+  params.sort = sort
+  delete params.page
+  pairs = app.helpers.paramsString(params)
+  "<a href='?#{pairs}'>#{label}</a>"

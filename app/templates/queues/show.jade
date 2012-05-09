@@ -1,10 +1,10 @@
 .right
-  a#show-queue-query(href='#')
+  a#show-queue-query(href='#', 'data-toggle'='#queue-query')
     i.icon-eye-open
 h2
-  span.name
+  span#name
   |  
-  span.count.secondary
+  span#count.secondary
 
 #queue-query
   .alert.alert-error
@@ -16,11 +16,12 @@ h2
     tr
       td
         | Query:
-        textarea#query.formatted(name='query')
+        textarea#query.formatted
       td
         | Sort:
-        textarea#sort.formatted(name='sort')
-  input(type='submit', value='Update View')
+        textarea#sort.formatted
+  p
+    a.btn.update-view(href='#') Update View
 
 #entries
 

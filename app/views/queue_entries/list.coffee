@@ -6,10 +6,10 @@ class app.views.queueEntries.list extends Backbone.View
     @collection.on 'reset', @reset
 
   reset: (entries) =>
-    @$el.find('tbody').empty()
+    @$el.find('#entry-list>tbody').empty()
     @collection.each (entry) =>
       view = new app.views.queueEntries.row(model: entry).render()
-      @$el.find('tbody').eq(0).append view.$el
+      @$el.find('#entry-list>tbody').append view.$el
     @$el.find('.page-links').html @collection.paginator.pageLinks()
 
   render: ->

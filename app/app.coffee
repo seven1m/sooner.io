@@ -29,3 +29,8 @@
       if href.match(/^\?/)
         href = "#{location.pathname}#{href}"
       app.workspace.navigate href, trigger: yes
+
+    $(document).on 'click', 'a[href="#"][data-toggle]', (e) ->
+      e.preventDefault()
+      sel = $(this).data('toggle')
+      $(sel).toggle()

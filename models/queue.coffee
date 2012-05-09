@@ -33,14 +33,13 @@ queue.sync = (socket) ->
     else
       dbInfo.listCollections (collections) ->
         queues = ({name: q.replace(/^queue_/, '')} for q in collections when q.match(/queue_/))
-        console.log queues
         callback null, queues
 
   socket.on 'sync::read::queue_entry', (data, callback) =>
     if id = (data.id || data._id)
       queue(data.queue).findById id, callback
     else
-      q = queue(data.queue).where()
+      q = queue(data.queue).find(data.query)
       q = q.sort.apply(q, data.sort || ['createdAt', -1])
       _.clone(q).count (err, count) ->
         if err

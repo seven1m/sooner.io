@@ -16,23 +16,24 @@ class @Paginator
     @pageCount = Math.floor(@count / @perPage)
     @pageCount++ unless @count % @perPage == 0
 
-  pageLinks: (args) ->
+  pageLinks: ->
     if @pageCount > 0
       start = Math.max(1, @page - @window/2)
       stop = Math.min(@pageCount, start + @window)
-      links = (@pageLink(page, args) for page in [start..stop])
+      links = (@pageLink(page) for page in [start..stop])
       if start > 1
         links.unshift '...' if start > 2
-        links.unshift @pageLink(1, args)
+        links.unshift @pageLink(1)
       if stop < @pageCount
         links.push '...' if stop < @pageCount - 1
-        links.push @pageLink(@pageCount, args)
+        links.push @pageLink(@pageCount)
       "<span class='paginator-intro'>page:</span> #{links.join(' ')}"
 
-  pageLink: (page, args) ->
-    args ||= {}
+  pageLink: (page) ->
     if @page == page
       "<strong class='page-link'>#{page}</strong>"
     else
-      url = "?page=#{page}&" + ("#{arg}=#{val}" for arg, val of args).join('&')
-      "<a class='page-link' href='#{url}'>#{page}</a>"
+      params = app.helpers.params()
+      params.page = page
+      pairs = ("#{k}=#{v}" for k, v of params)
+      "<a class='page-link' href='?#{pairs.join '&'}'>#{page}</a>"
