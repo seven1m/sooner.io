@@ -114,7 +114,7 @@ dnode.connect process.argv[2], (remote, conn) ->
 
 A few things to note:
 
-* The first argument passed to your script is the unix socket that dnode can use to communicate with the parent process. This socket is automatically cleaned up once your script is finished executing.
+* The first argument passed to your script (`process.argv[2]` above) is the unix socket that dnode can use to communicate with the parent process. This socket is automatically cleaned up once your script is finished executing.
 * Speaking of "finished", you will need to call `conn.end()` once you are finished working in order to close the dnode socket connection.
 
 #### API calls via stderr
