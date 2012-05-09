@@ -6,14 +6,14 @@ escape = (text) ->
 escapeAndLink = (text) ->
   escape(text).replace(/https?:\/\/\S+/g, "<a href='$&'>$&</a>")
 
-row = (k, v, query) ->
-  key = app.helpers.sortCol(escape(k), '["data.' + escape(k) + '",1]', {query: query})
+row = (k, v) ->
+  key = app.helpers.sortCol(escape(k), '["data.' + escape(k) + '",1]')
   "<tr><td>#{key}</td><td>#{escapeAndLink v}</td></tr>"
 
-app.helpers.queueData = (data, query) ->
+app.helpers.queueData = (data) ->
   if data && typeof data == 'object'
     "<table>\n" +
-    (row(k, v, query) for k, v of data).join("\n") +
+    (row(k, v) for k, v of data).join("\n") +
     "\n</table>"
   else
     JSON.stringify data

@@ -13,7 +13,7 @@ class app.views.queueEntries.row extends Backbone.BoundView
     data:
       selector: '.data'
       elAttribute: 'html'
-      converter: (_, v, __, m) -> app.helpers.queueData(v, m.collection.params.query)
+      converter: (_, v, __, m) -> app.helpers.queueData v
     createdAt:
       selector: '.createdAt'
       converter: app.converters.date_time.long

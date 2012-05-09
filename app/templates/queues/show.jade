@@ -1,31 +1,32 @@
-.right
-  a#show-queue-query(href='#', 'data-toggle'='#queue-query')
-    i.icon-eye-open
 h2
   span#name
   |  
   span#count.secondary
 
-#queue-query
-  .alert.alert-error
-    a.close(data-dismiss='alert') ×
-    strong Oh snap!
-    |  You should enter a valid JSON string, e.g.
-    code {"status": "pending"}
-  table
-    tr
-      td
-        | Query:
-        textarea#query.formatted
-      td
-        | Sort:
-        textarea#sort.formatted
-  p
-    a.btn.update-view(href='#') Update View
+.control-bar
+  .right
+    a#refresh(href='#')
+      i.icon-refresh
+    |  
+    a#show-queue-query(href='#', 'data-toggle'='#queue-query')
+      i.icon-eye-open
+  .clear
+
+  #queue-query
+    .alert.alert-error
+      a.close(data-dismiss='alert') ×
+      strong Oh snap!
+      |  You should enter a valid JSON string, e.g.
+      code {"status": "pending"}
+    table
+      tr
+        td
+          | Query:
+          textarea#query.formatted
+        td
+          | Sort:
+          textarea#sort.formatted
+    p
+      a.btn.update-view(href='#') Update View
 
 #entries
-
-//-if badQuery
-  //-:coffeescript
-    //-$('#queue-query').show()
-    //-$('#queue-query .alert').show()

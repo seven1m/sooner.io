@@ -57,8 +57,8 @@ class app.router extends Backbone.Router
     unless (v = app.view) and (v instanceof app.views.queues.show) and (v.model.get('name') == queue.get('name'))
       app.view.remove() if app.view
       v = app.view = new app.views.queues.show(model: queue).render()
+      $('#main .root').html v.$el
     v.setParams params
-    $('#main .root').html v.$el
 
   statusShow: (id) ->
     app.view.remove() if app.view

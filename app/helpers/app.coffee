@@ -30,7 +30,7 @@ app.helpers.params = ->
   if str.length > 0
     for pair in str.split(/&|&amp;/)
       parts = pair.split('=')
-      obj[parts[0]] = parts[1]
+      obj[parts[0]] = decodeURIComponent(parts[1])
   obj
 
 app.helpers.paramsString = (params) ->

@@ -12,10 +12,14 @@ class app.views.queues.show extends Backbone.BoundView
   setParams: (opts) =>
     opts ?= {}
     @model.entries.setPage(opts.page || 1)
-    @model.entries.setQueryAndSort(opts)
-    @model.set 'query', @model.entries.params.query
-    @model.set 'sort', @model.entries.params.sort
+    @model.set 'query', if opts.query then JSON.parse(opts.query) else {}
+    @model.set 'sort', if opts.sort then JSON.parse(opts.sort) else ["data.created", 1]
     @model.entries.fetch()
+
+  queryAndSortAsParams: =>
+    app.helpers.paramsString
+      query: JSON.stringify(@model.get 'query')
+      sort: JSON.stringify(@model.get 'sort')
 
   template: ->
     jade.render 'queues/show'
@@ -25,26 +29,35 @@ class app.views.queues.show extends Backbone.BoundView
       selector: '#name'
     query:
       selector: '#query'
+      converter: app.converters.json
     sort:
       selector: '#sort'
+      converter: app.converters.json
 
   updateCount: =>
     html = app.helpers.pluralize @model.entries.count || 0, 'entry', 'entries', 'friendly'
     @$el.find('#count').html html
 
-  bindForm: =>
-    unless app.queueFormBound
-      $(document).on 'click', '.btn.update-view', (e) =>
-        e.preventDefault()
-        params = app.helpers.paramsString
-          query: $('#query').val()
-          sort: $('#sort').val()
-        app.workspace.navigate "#{location.pathname.substring(1)}?#{params}", true
-      app.queueFormBound = yes
+  bindFormSubmit: =>
+    @$el.find('.btn.update-view').click (e) =>
+      e.preventDefault()
+      @model.entries.fetch()
+      app.workspace.navigate "#{location.pathname.substring(1)}?#{@queryAndSortAsParams()}"
+      @$el.find('.alert-error').hide()
+
+  bindRefresh: =>
+    @$el.find('#refresh').click (e) =>
+      e.preventDefault()
+      @model.entries.fetch()
+
+  showError: =>
+    @$el.find('.alert-error').show()
 
   render: ->
     super()
-    @bindForm()
+    @model.on 'error', @showError
+    @bindFormSubmit()
+    @bindRefresh()
     @updateCount()
     @model.entries.on 'change:count', @updateCount
     @list.render().$el.appendTo @$el.find('#entries')

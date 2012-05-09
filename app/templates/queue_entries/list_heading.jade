@@ -1,0 +1,6 @@
+tr
+  th!= app.helpers.sortCol('ID',      '["_id",1]'       )
+  th!= app.helpers.sortCol('Status',  '["status",1]'    )
+  th!= app.helpers.sortCol('Data',    '["data",1]'      )
+  th!= app.helpers.sortCol('Created', '["createdAt",-1]')
+  th!= app.helpers.sortCol('Updated', '["updatedAt",-1]')
