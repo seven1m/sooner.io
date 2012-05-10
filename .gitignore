@@ -6,3 +6,4 @@ scripts.git
 scripts-working-copy
 tmp
 deploy
+builtAssets
