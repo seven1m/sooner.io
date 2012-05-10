@@ -41,6 +41,7 @@ class app.views.queues.show extends Backbone.BoundView
   bindFormSubmit: =>
     @$el.find('.btn.update-view').click (e) =>
       e.preventDefault()
+      @model.entries.setPage(1)
       @model.entries.fetch()
       app.workspace.navigate "#{location.pathname.substring(1)}?#{@queryAndSortAsParams()}"
       @$el.find('.alert-error').hide()

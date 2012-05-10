@@ -3,13 +3,16 @@ h2
   |  
   span#count.secondary
 
-.control-bar
+.form-actions
   .right
-    a#refresh(href='#')
+    a.btn#refresh(href='#')
       i.icon-refresh
+      |  Refresh
     |  
-    a#show-queue-query(href='#', 'data-toggle'='#queue-query')
-      i.icon-eye-open
+    a.btn#show-queue-query(href='#', 'data-toggle'='#queue-query')
+      i.icon-filter
+      |  Filter &amp; Sort
+  .pagination
   .clear
 
   #queue-query
