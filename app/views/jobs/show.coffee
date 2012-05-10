@@ -22,7 +22,9 @@ class app.views.jobs.show extends Backbone.BoundView
       selector: '.edit-button'
       elAttribute: 'href'
       converter: (_, v) -> "/jobs/#{v}/edit"
-    name: '.name'
+    name:
+      selector: '.name'
+      converter: (_, v, __, m) -> m.nameWithDisabled()
     schedule: '.schedule'
     hooks: '.hooks'
     workerName: '.workerName'
@@ -55,13 +57,17 @@ class app.views.jobs.show extends Backbone.BoundView
     .mouseleave(_.debounce(@hideDataField, 500, yes))
     .find('.btn').click (e) =>
       e.preventDefault()
-      data =
-        jobId: @model.id
-        data: @$el.find('#run-data').val()
-      run = new app.models.run(data)
-      run.save {},
-        success: @runCreatedCallback
-        error: => @$el.html 'error creating run'
+      if @model.get('enabled') or confirm('This job is disabled. Click OK to run it anyway.')
+        @run()
+
+  run: =>
+    data =
+      jobId: @model.id
+      data: @$el.find('#run-data').val()
+    run = new app.models.run(data)
+    run.save {},
+      success: @runCreatedCallback
+      error: => @$el.html 'error creating run'
 
   render: ->
     super()

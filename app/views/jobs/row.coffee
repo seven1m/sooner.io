@@ -17,7 +17,9 @@ class app.views.jobs.row extends Backbone.BoundView
       elAttribute: 'href'
       converter: (_, v) -> "/jobs/#{v}"
     ]
-    name: '.name'
+    name:
+      selector: '.name'
+      converter: (_, v, __, m) -> m.nameWithDisabled()
     schedule: '.schedule'
     hooks: '.hooks'
     lastRanAt:
