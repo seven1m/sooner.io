@@ -20,7 +20,7 @@ You'll need at least Node.js 0.6.x and MongoDB.
     cd scripts.git
     git init --bare
     rm -rf hooks
-    ln -sr ../lib/git-hooks hooks
+    ln -s ../lib/git-hooks hooks
     cd ..
     git clone scripts.git scripts-working-copy
 
