@@ -41,9 +41,20 @@ queue.sync = (socket) ->
     if id = data.id
       callback null, queue(id)
     else
+      ops = 0
       dbInfo.listCollections (collections) ->
-        queues = ({name: q.replace(/^queue_/, '')} for q in collections when q.match(/queue_/))
-        callback null, queues
+        queues = []
+        for q in collections when q.match(/queue_/)
+          ops++
+          add = (name) ->
+            queue(name).collection.group ['status'], {}, {count: 0}, ((obj, prev) -> prev.count++), null, null, (err, res) ->
+              if err then throw err
+              counts = {}
+              counts[r.status || 'null'] = r.count for r in res
+              queues.push {name: name, counts: counts}
+              if --ops == 0
+                callback null, queues
+          add q.replace(/^queue_/, '')
 
   socket.on 'sync::read::queue_entry', (data, callback) =>
     if id = (data.id || data._id)

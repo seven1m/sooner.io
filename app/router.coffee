@@ -2,6 +2,7 @@ class app.router extends Backbone.Router
 
   routes:
     '':              'default'
+    #'dashboard':     'dashboardShow' # TODO
     'jobs':          'jobsIndex'
     'jobs/:id':      'jobsShow'
     'jobs/:id/edit': 'jobsEdit'
@@ -12,6 +13,12 @@ class app.router extends Backbone.Router
 
   default: ->
     @navigate 'jobs', trigger: yes
+
+  dashboardShow: ->
+    @_highlightTab 'dashboard'
+    app.view.remove() if app.view
+    v = app.view = new app.views.dashboard.show().render()
+    $('#main .root').html v.$el
 
   jobsIndex: ->
     @_highlightTab 'jobs'

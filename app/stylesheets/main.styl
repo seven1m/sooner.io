@@ -1,3 +1,9 @@
+color-outline = #333
+color-neutral = #999
+color-good = #08c
+color-warning = #bd9300
+color-error = #cb4500
+
 body
   padding 20px
   font 14px "Lucida Grande", Helvetica, Arial, sans-serif
@@ -6,7 +12,7 @@ a
   color #00B7FF
 
 h1, h2, h3
-  font-family "Happy Monkey", Arial, Helvetica, sans-serif
+  font-family "Bree Serif", Arial, Helvetica, sans-serif
 
 header h1
   float right
@@ -15,6 +21,9 @@ header h1
 h2 i
   color #b00000
   vertical-align baseline
+
+h3
+  color #777
 
 nav
   margin-top 10px
@@ -96,3 +105,46 @@ td.data table td
   clear both
   height 0
   overflow hidden
+
+.graph, .graph svg
+  width 112px
+  height 112px
+  .misc
+    stroke color-outline
+    fill color-neutral
+  /* some common status colors */
+  .success, .good, .complete, .finished
+    fill color-good
+  .warn, .warning, .pending, .wait, .waiting
+    fill color-warning
+  .err, .error, .problem, .fail, .failure
+    fill color-error
+
+.queue
+  h2
+    background-color #ddd
+    border-top-left-radius 5px
+    border-top-right-radius 5px
+    padding 5px 15px
+    margin -15px -15px 10px -15px
+  background-color #eee
+  margin-bottom 25px
+  padding 15px
+  min-height 151px
+  border-radius 5px
+  .misc, .statuses
+    color color-neutral
+  /* some common status colors */
+  .success, .good, .complete, .finished
+    color color-good
+  .warn, .warning, .pending, .wait, .waiting
+    color color-warning
+  .err, .error, .problem, .fail, .failure
+    color color-error
+  .statuses
+    float left
+    width 200px
+    .table th, .table td
+      border none
+  .graphs
+    float left

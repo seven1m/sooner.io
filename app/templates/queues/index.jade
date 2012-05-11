@@ -1,16 +1,4 @@
-if queues.length > 0
-  table.table.table-bordered.table-striped
-    thead
-      tr
-        th Name
-    tbody
-      for _, i in queues
-        - queue = queues.at(i) // needed for Backbone collection
-        tr
-          td
-            a(href="/queues/#{queue.get('name')}")= queue.get('name')
-else
-  p: em no queues defined
+#queues
 
 h3 Help
 

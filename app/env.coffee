@@ -5,6 +5,7 @@
 #= require vendor/backbone.queryparams
 #= require vendor/bootstrap
 #= require vendor/date
+#= require vendor/d3.v2
 
 #= require lib/sync
 #= require app
