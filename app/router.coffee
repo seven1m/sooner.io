@@ -14,11 +14,13 @@ class app.router extends Backbone.Router
     @navigate 'jobs', trigger: yes
 
   jobsIndex: ->
+    @_highlightTab 'jobs'
     app.view.remove() if app.view
     v = app.view = new app.views.jobs.index(collection: app.data.jobs).render()
     $('#main .root').html v.$el
 
   jobsShow: (id, params) ->
+    @_highlightTab 'jobs'
     app.data.jobs.getOrFetch id, (err, job) ->
       if err
         $('#main .root').html err
@@ -32,6 +34,7 @@ class app.router extends Backbone.Router
           $('#main .root').html v.$el
 
   jobsEdit: (id) ->
+    @_highlightTab 'jobs'
     app.data.jobs.getOrFetch id, (err, job) ->
       if err
         $('#main .root').html err
@@ -41,6 +44,7 @@ class app.router extends Backbone.Router
         $('#main .root').html v.$el
 
   runsShow: (id, params) ->
+    @_highlightTab 'jobs'
     run = new app.models.run _id: id
     app.view.remove() if app.view
     v = app.view = new app.views.runs.show(model: run).render()
@@ -48,11 +52,13 @@ class app.router extends Backbone.Router
     run.fetch()
 
   queuesIndex: ->
+    @_highlightTab 'queues'
     app.view.remove() if app.view
     v = app.view = new app.views.queues.index(collection: app.data.queues).render()
     $('#main .root').html v.$el
 
   queuesShow: (id, params) ->
+    @_highlightTab 'queues'
     queue = new app.models.queue(name: id)
     unless (v = app.view) and (v instanceof app.views.queues.show) and (v.model.get('name') == queue.get('name'))
       app.view.remove() if app.view
@@ -61,6 +67,10 @@ class app.router extends Backbone.Router
     v.setParams params
 
   statusShow: (id) ->
+    @_highlightTab 'status'
     app.view.remove() if app.view
     v = app.view = new app.views.status.show().render()
     $('#main .root').html v.$el
+
+  _highlightTab: (name) ->
+    $('nav li').removeClass('active').filter(".#{name}").addClass('active')

@@ -11,20 +11,22 @@ html
 
     != css('/vendor/stylesheets/bootstrap')
     != css('/stylesheets/main')
-    link(href='http://fonts.googleapis.com/css?family=Inconsolata', rel='stylesheet', type='text/css')
+    link(href='http://fonts.googleapis.com/css?family=Inconsolata|Happy+Monkey', rel='stylesheet', type='text/css')
 
   body
-    nav.navbar.navbar-fixed-top
-      .navbar-inner
-        .container
-          .brand Sooner.io
-          ul.nav
-            li
-              a(href='/jobs') Jobs
-            li
-              a(href='/queues') Queues
-            li
-              a(href='/status') Status
+    .container
+      .row
+        .span12
+          header
+            h1 Sooner.io
+          nav
+            ul.nav.nav-tabs
+              li.tab.jobs
+                a(href='/jobs') Jobs
+              li.tab.queues
+                a(href='/queues') Queues
+              li.tab.status
+                a(href='/status') Status
 
     #main
       .container

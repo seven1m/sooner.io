@@ -30,6 +30,6 @@ class app.views.jobs.row extends Backbone.BoundView
       elAttribute: 'html'
       converter: (_, v) -> app.helpers.statusIcon(v) + ' ' + v
     enabled:
-      selector: 'a.name'
+      selector: '.name, .schedule, .hooks'
       elAttribute: 'class'
       converter: (_, v) -> 'disabled' unless v
