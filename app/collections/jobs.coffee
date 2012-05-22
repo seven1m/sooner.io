@@ -2,6 +2,9 @@ class app.collections.jobs extends Backbone.Collection
   model: app.models.job
   namespace: 'job'
 
+  comparator: (job) ->
+    job.get('name')
+
   getOrFetch: (id, callback) ->
     obj = @get(id)
     if obj
