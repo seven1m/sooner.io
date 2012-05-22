@@ -67,6 +67,7 @@ schema.methods.newRun = ->
     name:       @name
     path:       @path
     workerName: @workerName
+    data:       ''
 
 schema.methods.newCron = ->
   new CronJob @schedule, =>
@@ -81,7 +82,7 @@ schema.methods.newCron = ->
 schema.methods.hookEvent = (hook, data) ->
   console.log "#{@name} triggered by event '#{hook}' with data #{data}"
   run = @newRun()
-  run.data = (data || '').toString()
+  run.data = data.toString() if data
   run.save (err, run) ->
     if err then throw err
     GLOBAL.hook.emit 'sync::refresh::job', _id: run.jobId
