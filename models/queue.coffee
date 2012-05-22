@@ -42,7 +42,7 @@ queue.sync = (socket) ->
       callback null, queue(id)
     else
       dbInfo.listCollections (collections) ->
-        queues = ({name: q.replace(/^queue_/, '')} for q in collections when q.match(/queue_/))
+        queues = ({name: q.replace(/^queue_/, '')} for q in collections when q.match(/^queue_/))
         callback null, queues
 
   socket.on 'sync::read::queue_entry', (data, callback) =>
