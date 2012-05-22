@@ -147,7 +147,7 @@ schema.methods.setProgress = (current, max, callback) ->
     @progress[0] = @progress[1]
   else
     @progress[0] = current
-    @progress[1] = max unless typeof max == 'undefined'
+    @progress[1] = max unless typeof max == 'undefined' or max == null
   @markModified 'progress'
   @refresh()
   @save callback
