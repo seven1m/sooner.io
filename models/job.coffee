@@ -79,9 +79,9 @@ schema.methods.newCron = ->
         GLOBAL.hook.emit 'sync::trigger::run', _id: run._id, name: run.name
 
 schema.methods.hookEvent = (hook, data) ->
-  console.log "#{@name} triggered by event '#{hook}' with data #{JSON.stringify data}"
+  console.log "#{@name} triggered by event '#{hook}' with data #{data}"
   run = @newRun()
-  run.data = data
+  run.data = data.toString()
   run.save (err, run) ->
     if err then throw err
     GLOBAL.hook.emit 'sync::refresh::job', _id: run.jobId

@@ -29,7 +29,7 @@ class Script extends EventEmitter2
   execute: (data) =>
     @openSocket()
     if @realPath
-      child = childProcess.spawn @realPath, [@sockPath, data], {}
+      child = childProcess.spawn @realPath, [data, @sockPath], {}
 
       @emit 'start', child.pid.toString()
 

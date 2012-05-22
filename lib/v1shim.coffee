@@ -3,7 +3,7 @@ config = JSON.parse(fs.readFileSync(__dirname + '/../config.json'))
 
 _ = require 'underscore'
 
-if data = process.argv[3]
+if data = process.argv[2]
   try
     exports.data = JSON.parse(data)
   catch e

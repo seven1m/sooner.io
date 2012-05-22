@@ -103,7 +103,7 @@ Here is an example of using dnode from within CoffeeScript:
 #!/usr/bin/env coffee
 
 dnode = require 'dnode'
-dnode.connect process.argv[2], (remote, conn) ->
+dnode.connect process.argv[3], (remote, conn) ->
   console.log 'half way'
   remote.progress 50
   done = ->
@@ -114,7 +114,7 @@ dnode.connect process.argv[2], (remote, conn) ->
 
 A few things to note:
 
-* The first argument passed to your script (`process.argv[2]` above) is the unix socket that dnode can use to communicate with the parent process. This socket is automatically cleaned up once your script is finished executing.
+* The second argument passed to your script (`process.argv[3]` above) is the unix socket that dnode can use to communicate with the parent process. This socket is automatically cleaned up once your script is finished executing.
 * Speaking of "finished", you will need to call `conn.end()` once you are finished working in order to close the dnode socket connection.
 
 #### API calls via stderr
@@ -139,7 +139,7 @@ echo 'done!'
 * event
 * data
 
-Emits an event that other jobs can watch, consequently allowing one job to trigger another job. Data passed as the second argument is available to any triggered jobs as the `data` variable.
+Emits an event that other jobs can watch, consequently allowing one job to trigger another job. Data passed as the second argument is available to any triggered jobs as a script parameter (see below).
 
 #### progress
 
@@ -149,6 +149,14 @@ Emits an event that other jobs can watch, consequently allowing one job to trigg
 * max (optional, defaults to 100)
 
 If you wish to track incremental progress of your job, you may call, e.g. `progress(5, 10)` (this will show a progress bar at half-way). The first argument is the current number of units of work complete, while the second is the total number of units of work. The second argument is optional and can be used to change the maximum on the fly.
+
+### Script Arguments
+
+Data specified in the text field in the web interface or passed via an emitted event is passed as the first argument to your script, **as a string.**
+
+In CoffeeScript, the first argument is available as `process.argv[2]` (because the 0th and 1st arguments are filled with `coffee` and your script name, respectively). You may wish to `JSON.parse(process.argv[2])` if you know your script will receive JSON.
+
+Even if you pass a JSON object, it will be converted to a string. It is up to your script to parse the data as it sees fit.
 
 ### Queue Access
 
