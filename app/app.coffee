@@ -24,11 +24,12 @@
 
   bindLinks: ->
     $(document).on 'click', 'a:not([href^="http"]):not([href="#"])', (e) ->
-      e.preventDefault()
-      href = $(@).attr('href')
-      if href.match(/^\?/)
-        href = "#{location.pathname}#{href}"
-      app.workspace.navigate href, trigger: yes
+      if !(e.altKey or e.ctrlKey or e.metaKey or e.shiftKey)
+        e.preventDefault()
+        href = $(@).attr('href')
+        if href.match(/^\?/)
+          href = "#{location.pathname}#{href}"
+        app.workspace.navigate href, trigger: yes
 
     $(document).on 'click', 'a[href="#"][data-toggle]', (e) ->
       e.preventDefault()
