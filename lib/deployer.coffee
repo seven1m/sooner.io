@@ -24,7 +24,7 @@ class Deployer
     mongoose.connect @config.db
 
   getJobs: (callback) =>
-    models.job.find {}, (err, jobs) =>
+    models.job.find deleted: false, (err, jobs) =>
       if err then throw err
       @paths = {}
       @paths[job.path] = job for job in jobs
