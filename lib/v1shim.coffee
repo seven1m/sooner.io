@@ -173,17 +173,19 @@ exports.shell.run = (cmd, args, callback) ->
 
 xml2js = require 'xml2js'
 
-exports.stringToJSON = (string, callback) ->
+exports.xml = {}
+
+exports.xml.stringToJSON = (string, callback) ->
   parser = new xml2js.Parser()
   parser.parseString string, (err, result) ->
     callback(err, result)
-
-exports.fileToJSON = (path, callback) ->
+  
+exports.xml.fileToJSON = (path, callback) ->
   path = fs.realpathSync("#{basePath}/#{path}")
   if path.indexOf(basePath) == 0 and path.indexOf('..') == -1
     fs.readFile path, (err, data) ->
       if err then throw err
-      exports.stringToJSON data, callback
+      exports.xml.stringToJSON data, callback
   else
     throw "Invalid path."
 
