@@ -43,6 +43,10 @@ schema = new Schema
     type: String
   pid:
     type: String
+  report:
+    type: Boolean
+    default: false
+    required: true
   ranAt:
     type: Date
   completedAt:
@@ -187,6 +191,10 @@ model.sync = (socket) ->
       if err
         console.log err
         callback err.toString()
+      else if not job
+        err = "job not found #{data.jobId}"
+        console.log err
+        callback err
       else
         run = job.newRun()
         run.data = data.data

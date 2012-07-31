@@ -5,7 +5,8 @@ models = require(__dirname + '/../models')
 
 class Deployer
 
-  scriptsDir: __dirname + '/../scripts-working-copy'
+  jobsDir: __dirname + '/../scripts-working-copy/'
+  reportsPath: 'reports/'
 
   constructor: (opts) ->
     @opts = opts
@@ -30,43 +31,49 @@ class Deployer
       @paths[job.path] = job for job in jobs
       callback()
 
+  jobFiles: =>
+    fs.readdirSync @jobsDir
+
+  reportFiles: =>
+    @reportsPath + p for p in fs.readdirSync @jobsDir + @reportsPath
+
   loadScripts: (callback) =>
     @found = {}
     @ops = 0
-    fs.readdir @scriptsDir, (err, files) =>
-      if err then throw err
-      for file in files
+    for file in @jobFiles().concat @reportFiles()
+      @ops++
+      @found[file] = true
+      @updateJob file, (job) =>
+        if --@ops == 0
+          callback()
+    for path, job of @paths
+      unless @found[path]
         @ops++
-        @found[file] = true
-        @updateJob file, (job) =>
+        @deleteJob job, =>
           if --@ops == 0
             callback()
-      for path, job of @paths
-        unless @found[path]
-          @ops++
-          @deleteJob job, =>
-            if --@ops == 0
-              callback()
 
   updateJob: (path, callback) =>
-    fullPath = "#{@scriptsDir}/#{path}"
+    fullPath = "#{@jobsDir}/#{path}"
     fs.stat fullPath, (err, stats) =>
       if err then throw err
       if @isScript(path, stats)
         if job = @paths[path]
-          console.log "updating job #{job.name}"
+          console.log "updating #{job.name}"
           job.deleted = false
           job.save (err) =>
             if err then throw err
             callback job
         else
           # TODO track renames
-          console.log "adding job #{path}"
+          console.log "adding #{path}"
+          report = path.match(/^reports\//)?
           job = new models.job
-            name: path
+            name: path.split(/\//)[1]
             workerName: 'worker'
-            enabled: false
+            enabled: report # jobs are disabled by default
             path: path
+            report: report
           job.save (err) =>
             if err then throw err
             callback job
@@ -77,7 +84,7 @@ class Deployer
     stats.isFile() and not path.match(/^\./) and stats.mode & 64 # executable by user
 
   deleteJob: (job, callback) =>
-    console.log "marking job #{job.name} as deleted"
+    console.log "marking #{job.name} as deleted"
     job.deleted = true
     job.save (err) =>
       if err then throw err

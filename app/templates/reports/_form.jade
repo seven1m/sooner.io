@@ -1,0 +1,13 @@
+fieldset
+  .control-group
+    label.control-label(for='name') Name
+    input.input-xlarge#name(name='name')
+    span.help-inline
+      | filename:
+      span#path
+  .control-group
+    label.control-label(for='workerName') Worker Name
+    input.input-large#workerName(name='workerName')
+    span.help-inline which worker will process this report
+  .form-actions
+    button.btn.btn-primary#save Save

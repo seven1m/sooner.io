@@ -42,23 +42,13 @@ class app.views.jobs.show extends Backbone.BoundView
       selector: '.updatedAt'
       converter: app.converters.date_time.long
 
-  showDataField: =>
-    $('#run-data').fadeIn()
+  events:
+    'click #run-data-area .btn': 'clickRun'
 
-  hideDataField: =>
-    $('#run-data').fadeOut()
-
-  runCreatedCallback: (run) =>
-    app.workspace.navigate "/runs/#{run.get('_id')}", trigger: yes
-
-  bindRun: =>
-    @$el.find('#run-data-area')
-    .mouseenter(_.debounce(@showDataField, 500, yes))
-    .mouseleave(_.debounce(@hideDataField, 500, yes))
-    .find('.btn').click (e) =>
-      e.preventDefault()
-      if @model.get('enabled') or confirm('This job is disabled. Click OK to run it anyway.')
-        @run()
+  clickRun: (e) =>
+    e.preventDefault()
+    if @model.get('enabled') or confirm('This job is disabled. Click OK to run it anyway.')
+      @run()
 
   run: =>
     data =
@@ -69,8 +59,10 @@ class app.views.jobs.show extends Backbone.BoundView
       success: @runCreatedCallback
       error: => @$el.html 'error creating run'
 
+  runCreatedCallback: (run) =>
+    app.workspace.navigate "/runs/#{run.get('_id')}", trigger: yes
+
   render: ->
     super()
     @list.render().$el.appendTo @$el.find('#job-history')
-    @bindRun()
     @

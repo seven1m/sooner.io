@@ -216,6 +216,28 @@ If you manage to keep the data object flat (only a single-layer JS object), all 
 
 If you're using the Mongoose Queue model, the `createdAt` and `updatedAt` fields will be updated automatically for you; if not, you will need to update them yourself.
 
+## Reporting
+
+* Report model
+* `/reports` folder
+* added/updated just like job scripts
+* multiple data sets
+* script outputs data sets and html
+* each data set exportable to CSV (strip html tags)
+* graphs
+
+## Upgrading
+
+### Upgrading from 0.3.x to 0.4.x
+
+```bash
+mongo soonerio
+> db.jobs.update({report: null}, {$set: {report: false}}, false, true)
+> db.runs.update({report: null}, {$set: {report: false}}, false, true)
+<Ctrl-C>
+bye
+```
+
 ## License
 
 Copyright (c) 2012, [Tim Morgan](http://timmorgan.org)

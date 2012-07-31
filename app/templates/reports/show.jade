@@ -1,0 +1,26 @@
+h2.name
+
+table.table.table-bordered
+  tbody
+    tr
+      th Created
+      td.createdAt
+    tr
+      th Updated
+      td.updatedAt
+    tr
+      th Worker Name
+      td.workerName
+    tr
+      th Last Run
+      td.lastRanAt
+
+.form-actions
+  a.btn.edit-button(href='/reports/:id/edit')
+    i.icon-pencil
+    |  Edit
+  .right#run-data-area
+    input#run-data(name='data', placeholder='arguments (optional)')
+    a.btn(href='#')
+      i.icon-cog
+      |  Run Now

@@ -17,6 +17,9 @@
     @data.jobs = new app.collections.jobs
     @data.jobs.fetch()
 
+    @data.reports = new app.collections.reports
+    @data.reports.fetch()
+
     @data.queues = new app.collections.queues
     @data.queues.fetch()
 

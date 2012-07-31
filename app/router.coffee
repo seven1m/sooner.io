@@ -1,14 +1,17 @@
 class app.router extends Backbone.Router
 
   routes:
-    '':              'default'
-    'jobs':          'jobsIndex'
-    'jobs/:id':      'jobsShow'
-    'jobs/:id/edit': 'jobsEdit'
-    'runs/:id':      'runsShow'
-    'queues':        'queuesIndex'
-    'queues/:id':    'queuesShow'
-    'status':        'statusShow'
+    '':                 'default'
+    'jobs':             'jobsIndex'
+    'jobs/:id':         'jobsShow'
+    'jobs/:id/edit':    'jobsEdit'
+    'reports':          'reportsIndex'
+    'reports/:id':      'reportsShow'
+    'reports/:id/edit': 'reportsEdit'
+    'runs/:id':         'runsShow'
+    'queues':           'queuesIndex'
+    'queues/:id':       'queuesShow'
+    'status':           'statusShow'
 
   default: ->
     @navigate 'jobs', trigger: yes
@@ -41,6 +44,36 @@ class app.router extends Backbone.Router
       else
         app.view.remove() if app.view
         v = app.view = new app.views.jobs.edit(model: job).render()
+        $('#main .root').html v.$el
+
+  reportsIndex: ->
+    @_highlightTab 'reports'
+    app.view.remove() if app.view
+    v = app.view = new app.views.reports.index(collection: app.data.reports).render()
+    $('#main .root').html v.$el
+
+  reportsShow: (id, params) ->
+    @_highlightTab 'reports'
+    app.data.reports.getOrFetch id, (err, report) ->
+      if err
+        $('#main .root').html err
+      else
+        if (v = app.view) and (v instanceof app.views.reports.show) and (v.model.id == report.id)
+          v.setHistoryPage(params.page) if params
+        else
+          app.view.remove() if app.view
+          historyPage = (params && params.page) || 1
+          v = app.view = new app.views.reports.show(model: report, historyPage: historyPage).render()
+          $('#main .root').html v.$el
+
+  reportsEdit: (id) ->
+    @_highlightTab 'reports'
+    app.data.reports.getOrFetch id, (err, report) ->
+      if err
+        $('#main .root').html err
+      else
+        app.view.remove() if app.view
+        v = app.view = new app.views.reports.edit(model: report).render()
         $('#main .root').html v.$el
 
   runsShow: (id, params) ->

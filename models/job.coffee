@@ -18,7 +18,7 @@ schema = new Schema
         false
   hooks:
     type: String
-    trim: yes
+    trim: true
   workerName:
     type: String
     default: 'worker'
@@ -42,6 +42,10 @@ schema = new Schema
   mutex:
     type: Boolean
     default: true
+  report:
+    type: Boolean
+    required: true
+    default: false
   deleted:
     type: Boolean
     default: false
@@ -67,6 +71,7 @@ schema.methods.newRun = ->
     name:       @name
     path:       @path
     workerName: @workerName
+    report:     @report
     data:       ''
 
 schema.methods.newCron = ->
@@ -93,11 +98,17 @@ module.exports = model = mongoose.model 'Job', schema
 model.sync = (socket) ->
   name = @modelName.toLowerCase()
 
-  socket.on 'sync::read::job', (data, callback) =>
+  readJob = (data, report, callback) =>
     if id = (data._id || data.id)
-      @findOne _id: id, deleted: false, callback
+      @findOne _id: id, deleted: false, report: report, callback
     else
-      @find deleted: false, callback
+      @find deleted: false, report: report, callback
+
+  socket.on 'sync::read::job', (data, callback) =>
+    readJob data, false, callback
+
+  socket.on 'sync::read::report', (data, callback) =>
+    readJob data, true, callback
 
   socket.on 'sync::update::job', (data, callback) =>
     @findById data._id || data.id, (err, job) =>
@@ -113,3 +124,19 @@ model.sync = (socket) ->
             GLOBAL.hook.emit 'sync::refresh::job', _id: job.id
             GLOBAL.hook.emit 'worker::reload::jobs'
             callback null, job
+
+  socket.on 'sync::update::report', (data, callback) =>
+    @findById data._id || data.id, (err, report) =>
+      if err or not report
+        callback err || 'report not found'
+      else
+        for attr in ['name', 'workerName']
+          report[attr] = data[attr] if data[attr]?
+        report.save (err) =>
+          if err
+            callback err
+          else
+            GLOBAL.hook.emit 'sync::refresh::report', _id: report.id
+            GLOBAL.hook.emit 'worker::reload::reports'
+            callback null, report
+
