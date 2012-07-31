@@ -6,8 +6,6 @@ mongoose = require('mongoose')
 models = require(__dirname + '/../models')
 
 class Worker
-  startDelay: 2500
-
   constructor: (@opts) ->
     console.log "Starting \"#{@opts.name}\" worker..."
     @cache =
