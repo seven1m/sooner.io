@@ -48,13 +48,12 @@ class Watcher
       sort[watch.id_field] = -1
       limit = 1
     collection.find(query, fields).sort(sort).limit(limit).toArray (err, results) =>
-      if @opts.debug then console.log "polling #{watch.collection}...", query, fields, sort, limit
+      if @opts.debug then console.log "polling #{watch.collection}..."
       if results.length > 0
         if watch.last_id? # not first time
           ids = (r._id for r in results)
           console.log "Emitting #{watch.hook} with:", ids
           @hook.emit watch.hook, ids
-        console.log 'set last_id to', results[results.length-1][watch.id_field]
         watch.last_id = results[results.length-1][watch.id_field]
 
   watchExit: =>
