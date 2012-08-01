@@ -35,22 +35,27 @@ class Watcher
         setInterval _.bind(@pollCollection, @, watch, collection), watch.frequency
 
   pollCollection: (watch, collection) =>
+    query = {}
+    sort = {}
+    fields = {}
+    watch.id_field ?= '_id'
+    fields[watch.id_field] = 1
     if watch.last_id
-      query = {_id: {$gt: watch.last_id}}
+      query[watch.id_field] = {$gt: watch.last_id}
+      sort[watch.id_field] = 1
       limit = 10000
-      sort = {_id: 1}
     else
-      query = {}
+      sort[watch.id_field] = -1
       limit = 1
-      sort = {_id: -1}
-    collection.find(query, {_id: 1}).sort(sort).limit(limit).toArray (err, results) =>
-      if @opts.debug then console.log "polling #{watch.collection}..."
+    collection.find(query, fields).sort(sort).limit(limit).toArray (err, results) =>
+      if @opts.debug then console.log "polling #{watch.collection}...", query, fields, sort, limit
       if results.length > 0
         if watch.last_id? # not first time
           ids = (r._id for r in results)
           console.log "Emitting #{watch.hook} with:", ids
           @hook.emit watch.hook, ids
-        watch.last_id = results[results.length-1]._id
+        console.log 'set last_id to', results[results.length-1][watch.id_field]
+        watch.last_id = results[results.length-1][watch.id_field]
 
   watchExit: =>
     process.on 'SIGINT', =>
