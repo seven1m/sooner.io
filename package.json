@@ -18,7 +18,7 @@
     , "coffee-script": "latest"
     , "nib": "latest"
     , "jade": ">= 0.0.1"
-    , "mongoose": "latest"
+    , "mongoose": "2.x.x"
     , "underscore": "latest"
     , "resource-routes": "git://github.com/seven1m/express-resource-routes.git"
     , "paginator": "git://github.com/seven1m/paginator.git"
