@@ -72,6 +72,16 @@ schema.methods.fail = (message, callback) ->
       if callback
         callback message
 
+schema.methods.failSilently = (message, callback) ->
+  console.log 'job', @name, 'fail silently:', message
+  @status = 'fail'
+  @refresh message
+  @save (err) =>
+    @remove (err) =>
+      if err then throw err
+      if callback
+        callback message
+
 schema.methods.updateJob = (callback) ->
   models.job.findById @jobId, (err, job) =>
     if err then throw err
@@ -104,7 +114,7 @@ schema.methods.run = (callback) ->
       if err then throw err
 
       if runningCount > 0 and job.mutex
-        @fail 'this job is already running', callback
+        @failSilently 'this job is already running', callback
       else
         @status = 'busy'
         @ranAt = new Date()
