@@ -31,7 +31,7 @@ queue.connect = ->
   if !mongoose.connection or mongoose.connection.readyState != 1
     # FIXME config path should be configurable
     @config = JSON.parse(fs.readFileSync(__dirname + '/../config.json'))
-    mongoose.connect @config.db
+    mongoose.connect @config.db, {db: {safe:true}}
 
 queue.disconnect = ->
   mongoose.disconnect()
