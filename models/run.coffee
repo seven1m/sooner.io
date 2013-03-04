@@ -66,11 +66,16 @@ schema.methods.fail = (message, callback) ->
   @output += message
   @ranAt = @completedAt = new Date()
   @refresh message
-  @save (err) =>
-    if err then throw err
-    @updateJob =>
-      if callback
-        callback message
+  try
+    @save (err) =>
+      if err then throw err
+      @updateJob =>
+        if callback
+          callback message
+  catch err
+    console.log 'could not save run'
+    if callback
+      callback message
 
 schema.methods.failSilently = (message, callback) ->
   console.log 'job', @name, 'fail silently:', message
