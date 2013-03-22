@@ -33,9 +33,14 @@ class Worker
     @hook.emit 'cxn::connected'
 
   cleanUp: =>
-    models.run.find {status: {$in: ['busy', 'idle']}, workerName: @hook.name}, (err, runs) =>
-      console.log "Found #{runs.length} run(s) in limbo."
-      run.fail('stuck running during restart') for run in runs
+    models.run.where('status').in(['busy', 'idle']).where('workerName', @hook.name).run (err, runs) =>
+      if err
+        console.log "Too many failed runs... marking them all failed."
+        models.run.update {status: {$in: ['busy', 'idle']}}, {$set: {status: 'fail'}}, {multi: true}, (err) ->
+          if err then throw err
+      else
+        console.log "Found #{runs.length} run(s) in limbo."
+        run.fail('stuck running during restart') for run in runs
 
   loadJobs: =>
     console.log 'loading jobs...'
