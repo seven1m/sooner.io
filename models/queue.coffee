@@ -10,11 +10,7 @@ queue = (name) ->
   name = "queue_#{name}"
   model = queues[name]
   unless model
-    schema = new Schema
-      status: String
-      data: {}
-      createdAt: Date
-      updatedAt: Date
+    schema = new Schema {status: String, data: {}, createdAt: Date, updatedAt: Date}, {collection: name}
     schema.pre 'save', (next) ->
       if !@createdAt
         @createdAt = @updatedAt = new Date()
