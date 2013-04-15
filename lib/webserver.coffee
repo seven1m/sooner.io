@@ -72,7 +72,7 @@ class WebServer
     @app.listen @opts.port
     console.log "Express server listening on port %d in %s mode", @app.address().port, @app.settings.env
 
-    @io = GLOBAL.io = socketio.listen @app
+    @io = GLOBAL.io = socketio.listen(@app, {log: false})
     models.connect @io
     if process.env.NODE_DISABLE_WS
       @io.set 'transports', ['htmlfile', 'xhr-polling', 'jsonp-polling']
