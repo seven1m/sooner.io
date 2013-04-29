@@ -9,6 +9,11 @@ fieldset
     label.control-label(for='description') Description
     textarea.input-large#description(name='description')
   .control-group
+    label.control-label(for='group') Group
+    input.input-large#group(name='group')
+    span.help-inline
+      | jobs with the same group name will be grouped together in the index
+  .control-group
     label.control-label(for='enabled') Enabled
     input#enabled(type='checkbox', name='enabled', value='enabled')
   .control-group

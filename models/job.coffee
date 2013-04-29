@@ -10,6 +10,8 @@ schema = new Schema
     required: true
   description:
     type: String
+  group:
+    type: String
   schedule:
     type: String
     validate: (v) ->
@@ -61,6 +63,7 @@ schema.pre 'save', (next) ->
 schema.methods.updateAttributes = (attrs) ->
   @name        = attrs.name
   @description = attrs.description
+  @group       = attrs.group
   @schedule    = attrs.schedule
   @enabled     = attrs.enabled == '1'
   @mutex       = attrs.mutex == '1'
@@ -112,7 +115,7 @@ model.sync = (socket) ->
       if err or not job
         callback err || 'job not found'
       else
-        for attr in ['name', 'description', 'enabled', 'schedule', 'hooks', 'workerName', 'mutex', 'timeout']
+        for attr in ['name', 'description', 'group', 'enabled', 'schedule', 'hooks', 'workerName', 'mutex', 'timeout']
           job[attr] = data[attr] if data[attr]?
         job.save (err) =>
           if err

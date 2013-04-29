@@ -33,3 +33,9 @@ class app.views.jobs.row extends Backbone.BoundView
       selector: '.name, .schedule, .hooks'
       elAttribute: 'class'
       converter: (_, v) -> 'disabled' unless v
+
+  render: =>
+    super()
+    if group = @model.get('groupId')
+      @$el.addClass("grouped group-#{group}")
+    @
