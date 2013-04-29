@@ -1,6 +1,6 @@
 {
     "name": "sooner.io"
-  , "version": "0.3.2"
+  , "version": "0.3.4"
   , "author": "Tim Morgan <tim@timmorgan.org>"
   , "description": "a distributed job scheduling engine and web-based management app, brought to you from the Sooner State"
   , "repository": {
