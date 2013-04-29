@@ -7,6 +7,7 @@ class app.views.jobs.edit extends Backbone.BoundView
 
   bindings:
     name: '#name'
+    description: '#description'
     path: '#path'
     enabled:
       selector: '#enabled'

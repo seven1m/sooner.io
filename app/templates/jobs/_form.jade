@@ -6,6 +6,9 @@ fieldset
       | filename:
       span#path
   .control-group
+    label.control-label(for='description') Description
+    textarea.input-large#description(name='description')
+  .control-group
     label.control-label(for='enabled') Enabled
     input#enabled(type='checkbox', name='enabled', value='enabled')
   .control-group
