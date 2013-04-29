@@ -17,6 +17,7 @@ class app.views.jobs.edit extends Backbone.BoundView
     mutex:
       selector: '#mutex'
       elAttribute: 'checked'
+    timeout: '#timeout'
 
   render: ->
     super()

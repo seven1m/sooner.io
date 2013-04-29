@@ -85,7 +85,7 @@ class Worker
     models.run.findOne _id: data.id || data._id, workerName: @hook.name, (err, run) =>
       if !err and run
         console.log "stopping: #{run.name} run #{run._id}"
-        run.stop()
+        run.stop('user')
 
   watchExit: =>
     process.on 'SIGINT', =>

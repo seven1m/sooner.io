@@ -42,6 +42,9 @@ schema = new Schema
   mutex:
     type: Boolean
     default: true
+  timeout:
+    type: Number
+    default: 0
   deleted:
     type: Boolean
     default: false
@@ -60,6 +63,7 @@ schema.methods.updateAttributes = (attrs) ->
   @mutex      = attrs.mutex == '1'
   @hooks      = attrs.hooks
   @workerName = attrs.workerName
+  @timeout    = attrs.timeout
 
 schema.methods.newRun = ->
   new models.run
@@ -67,6 +71,7 @@ schema.methods.newRun = ->
     name:       @name
     path:       @path
     workerName: @workerName
+    timeout:    @timeout
     data:       ''
 
 schema.methods.newCron = ->
@@ -104,7 +109,7 @@ model.sync = (socket) ->
       if err or not job
         callback err || 'job not found'
       else
-        for attr in ['name', 'enabled', 'schedule', 'hooks', 'workerName', 'mutex']
+        for attr in ['name', 'enabled', 'schedule', 'hooks', 'workerName', 'mutex', 'timeout']
           job[attr] = data[attr] if data[attr]?
         job.save (err) =>
           if err

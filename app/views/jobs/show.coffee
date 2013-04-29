@@ -27,6 +27,7 @@ class app.views.jobs.show extends Backbone.BoundView
       converter: (_, v, __, m) -> m.nameWithDisabled()
     schedule: '.schedule'
     hooks: '.hooks'
+    timeout: '.timeout'
     workerName: '.workerName'
     lastStatus:
       selector: '.lastStatus'

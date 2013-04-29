@@ -22,6 +22,11 @@ fieldset
     input.input-large#workerName(name='workerName')
     span.help-inline which worker will process this job
   .control-group
+    label.control-label(for='timeout') Timeout
+    input#timeout(name='timeout', value='0')
+    span.help-inline
+      | max number of seconds to run; zero to disable timeout
+  .control-group
     label.control-label(for='mutex') Mutex
     input#mutex(type='checkbox', name='mutex', value='on')
   .form-actions

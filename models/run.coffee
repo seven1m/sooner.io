@@ -22,6 +22,8 @@ schema = new Schema
     type: String
   hooks:
     type: Array
+  timeout:
+    type: Number
   data:
     type: {}
   progress:
@@ -61,6 +63,7 @@ schema.methods.succeed = (callback) ->
   @updateJob callback
 
 schema.methods.fail = (message, callback) ->
+  message += "\n"
   console.log 'job', @name, 'fail:', message
   @status = 'fail'
   @output += message
@@ -150,12 +153,16 @@ schema.methods.run = (callback) ->
 
         script.execute @data
 
+        if job.timeout > 0
+          setTimeout _.bind(@stop, @, "timeout (#{job.timeout})"), job.timeout * 1000
+
 schema.methods.stoppable = ->
   @status in ['idle', 'busy']
 
-schema.methods.stop = ->
+schema.methods.stop = (reason) ->
   if @pid
     process.kill @pid, 'SIGINT'
+    @fail "script killed by #{reason}"
 
 schema.methods.setProgress = (current, max, callback) ->
   if current == 'max'
