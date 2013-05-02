@@ -129,6 +129,7 @@ schema.methods.run = (callback) ->
         @save()
         @updateJob()
         @refresh()
+        timer = null
 
         script.on 'start', (pid) =>
           @pid = pid
@@ -141,6 +142,7 @@ schema.methods.run = (callback) ->
           @save()
 
         script.on 'end', (code) =>
+          clearTimeout(timer) if timer
           @completedAt = new Date()
           @result = code
           if code == 0
@@ -154,7 +156,8 @@ schema.methods.run = (callback) ->
         script.execute @data
 
         if job.timeout > 0
-          setTimeout _.bind(@stop, @, "timeout (#{job.timeout})"), job.timeout * 1000
+          console.log("Setting timeout for '#{@name}' of #{job.timeout} seconds")
+          timer = setTimeout _.bind(@stop, @, "timeout (#{job.timeout})"), job.timeout * 1000
 
 schema.methods.stoppable = ->
   @status in ['idle', 'busy']
