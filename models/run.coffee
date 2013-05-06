@@ -22,6 +22,8 @@ schema = new Schema
     type: String
   hooks:
     type: Array
+  workerName:
+    type: String
   timeout:
     type: Number
   data:
@@ -191,14 +193,15 @@ model.sync = (socket) ->
     if id = (data.id || data._id)
       @findById id, callback
     else
-      q = @where('jobId', data.jobId).select(LISTABLE_ATTRS)
-      q = q.sort.apply(q, data.sort || ['createdAt', -1])
+      attrs = {}; attrs[a] = true for a in LISTABLE_ATTRS
+      data.sort ?= {createdAt: -1}
+      q = @where('jobId', data.jobId).select(attrs).sort(data.sort)
       _.clone(q).count (err, count) ->
         if err
           console.log err
           callback(err.toString())
         else
-          q.skip(data.skip).limit(Math.min(data.limit, 100)).run (err, models) ->
+          q.skip(data.skip).limit(Math.min(data.limit, 100)).exec (err, models) ->
             if err
               console.log err
               callback(err.toString())

@@ -43,7 +43,7 @@ class WebServer
         @io.sockets.emit @hook.event, data
 
   setupServer: =>
-    @app = express.createServer()
+    @app = express()
 
     @app.configure =>
       @app.set 'views', __dirname + '/../app/templates'
@@ -58,9 +58,10 @@ class WebServer
       @app.use require('connect-assets')(src: "#{__dirname}/../app")
       @app.use express.static(__dirname + '/../public')
       @app.use jadeBrowser('/js/templates.js', '**/*.jade', root: __dirname + '/../app/templates')
-      @app.dynamicHelpers
-        req: (req, _) => req
-        params: (req, _) => req.params
+      @app.use (req, res, next) ->
+        res.locals.req = (req, _) => req
+        res.locals.params = (req, _) => req.params
+        next()
       @app.use @layoutMiddleware
 
     @app.configure 'development', =>
@@ -69,10 +70,10 @@ class WebServer
     @app.configure 'production', =>
       @app.use express.errorHandler()
 
-    @app.listen @opts.port
-    console.log "Express server listening on port %d in %s mode", @app.address().port, @app.settings.env
+    server = @app.listen @opts.port
+    console.log "Express server listening on port %d in %s mode", server.address().port, @app.settings.env
 
-    @io = GLOBAL.io = socketio.listen(@app, {log: false})
+    @io = GLOBAL.io = socketio.listen(server, {log: false})
     models.connect @io
     if process.env.NODE_DISABLE_WS
       @io.set 'transports', ['htmlfile', 'xhr-polling', 'jsonp-polling']

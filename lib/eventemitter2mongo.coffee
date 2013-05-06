@@ -77,7 +77,8 @@ class EventEmitter2Mongo extends EventEmitter2
     data = Array.prototype.slice.call(arguments, 0)
     if @collection
       # insert into mongo
-      @collection.insert data: data
+      @collection.insert data: data, (err) ->
+        if err then console.log(err)
     else
       # queue locally until our mongo connection is ready
       @queue.push data
