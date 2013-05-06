@@ -22,7 +22,7 @@
     , "underscore": "latest"
     , "express-resource-routes": "git://github.com/seven1m/express-resource-routes.git"
     , "paginator": "git://github.com/seven1m/paginator.git"
-    , "cron": "git://github.com/ncb000gt/node-cron.git#1cef12d7"
+    , "cron": "latest"
     , "socket.io": "latest"
     , "optimist": "latest"
     , "markdown": "latest"
