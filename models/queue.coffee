@@ -52,7 +52,7 @@ queue.sync = (socket) ->
           console.log err
           callback(err.toString())
         else
-          q.skip(data.skip).limit(Math.min(data.limit, 100)).run (err, models) ->
+          q.skip(data.skip).limit(Math.min(data.limit, 100)).exec (err, models) ->
             if err
               console.log err
               callback(err.toString())

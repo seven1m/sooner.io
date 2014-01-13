@@ -12,6 +12,7 @@ class app.views.runs.outputRow extends Backbone.View
 
   render: =>
     @$el.html $(jade.render('runs/output_row', run: @model)).html()
+    @$el.data 'run-id', @model.id
     @pos = 0
     @refresh()
     @

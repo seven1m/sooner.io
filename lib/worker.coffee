@@ -33,7 +33,7 @@ class Worker
     @hook.emit 'cxn::connected'
 
   cleanUp: =>
-    models.run.where('status').in(['busy', 'idle']).where('workerName', @hook.name).run (err, runs) =>
+    models.run.where('status').in(['busy', 'idle']).where('workerName', @hook.name).exec (err, runs) =>
       if err
         console.log "Too many failed runs... marking them all failed."
         models.run.update {status: {$in: ['busy', 'idle']}}, {$set: {status: 'fail'}}, {multi: true}, (err) ->
@@ -75,7 +75,7 @@ class Worker
   triggerJob: (data) =>
     models.run.findOne _id: data.id || data._id, workerName: @hook.name, (err, run) =>
       if err or !run
-        console.log "Could not find run with id #{data.runId}."
+        console.log "Could not find run with id #{data.id || data._id}. Error code: #{err || 'none'}"
       else
         console.log "running: #{run.name}"
         run.run =>
