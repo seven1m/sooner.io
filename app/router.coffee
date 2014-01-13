@@ -29,7 +29,7 @@ class app.router extends Backbone.Router
           v.setHistoryPage(params.page) if params
         else
           app.view.remove() if app.view
-          historyPage = (params && params.page) || 1
+          historyPage = parseInt(params?.page || 1)
           v = app.view = new app.views.jobs.show(model: job, historyPage: historyPage).render()
           $('#main .root').html v.$el
 
