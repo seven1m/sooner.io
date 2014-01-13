@@ -194,8 +194,10 @@ model.sync = (socket) ->
       @findById id, callback
     else
       attrs = {}; attrs[a] = true for a in LISTABLE_ATTRS
+      q = @where('jobId', data.jobId).select(attrs)
       data.sort ?= {createdAt: -1}
-      q = @where('jobId', data.jobId).select(attrs).sort(data.sort)
+      data.sort = _.flatten([key, dir] for key, dir of data.sort) # hacky hack
+      q = q.sort.apply(q, data.sort)
       _.clone(q).count (err, count) ->
         if err
           console.log err
