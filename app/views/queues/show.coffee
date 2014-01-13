@@ -13,7 +13,7 @@ class app.views.queues.show extends Backbone.BoundView
     opts ?= {}
     @model.entries.setPage(opts.page || 1)
     @model.set 'query', if opts.query then JSON.parse(opts.query) else {}
-    @model.set 'sort', if opts.sort then JSON.parse(opts.sort) else ["createdAt", -1]
+    @model.set 'sort', if opts.sort then JSON.parse(opts.sort) else {"createdAt": -1}
     @model.entries.fetch()
 
   queryAndSortAsParams: =>
