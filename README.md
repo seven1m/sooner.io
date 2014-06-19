@@ -1,4 +1,4 @@
-# Sooner.io
+# Sooner.io - NOTE: THIS PROJECT IS NO LONGER MAINTAINED
 
 Sooner.io is the distributed job scheduling engine and web-based management app built on [Node.js](http://nodejs.org), brought to you from the [Sooner State](http://en.wikipedia.org/wiki/Oklahoma).
 
